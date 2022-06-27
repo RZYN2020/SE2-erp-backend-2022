@@ -1,12 +1,12 @@
 package com.nju.edu.erp.utils;
 
-import static java.nio.file.Path.*;
 
 import com.nju.edu.erp.model.vo.warehouse.WarehouseCountingVO;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +66,7 @@ public class ExcelService {
       FileOutputStream out = new FileOutputStream("inventory.xlsx");
       workbook.write(out);
       out.close();
-      byte[] exceldata = Files.readAllBytes(of("inventory.xlsx"));
+      byte[] exceldata = Files.readAllBytes(Paths.get("inventory.xlsx"));
       return exceldata;
   }
 }
