@@ -56,7 +56,7 @@
     <!--  three new method by Doom Graham   -->
 
     <delete id="deleteOneById">
-        delete from customer where id = #{id}
+        delete from customer where id = #{customerId};
     </delete>
 
     <select id="findMaxCustomerId" resultType="java.lang.Integer">
@@ -64,7 +64,7 @@
     </select>
 
     <insert id = "createCustomer" parameterType="CustomerPO">
-        insert into Customer (id, `type`, level, `name`, `phone`, `address`, zipcode, `email`, line_of_credit, receivable, payable, `operator`)
+        insert into customer (id, `type`, level, `name`, `phone`, `address`, zipcode, `email`, line_of_credit, receivable, payable, `operator`)
         values (#{id}, #{type}, #{level}, #{name}, #{phone}, #{address}, #{zipcode}, #{email}, #{lineOfCredit}, #{receivable}, #{payable}, #{operator})
     </insert>
 

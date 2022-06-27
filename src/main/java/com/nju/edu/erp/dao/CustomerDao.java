@@ -17,7 +17,7 @@ public interface CustomerDao {
     List<CustomerPO> findAllByType(CustomerType customerType);
 
     //TODO:
-    int deleteOneById(Integer id);
+    void deleteOneById(Integer customerId);
 
     int findMaxCustomerId();
 
