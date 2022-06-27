@@ -1,5 +1,6 @@
 package com.nju.edu.erp.service.Impl;
 
+import com.gaoice.easyexcel.spring.boot.autoconfigure.annotation.ResponseExcel;
 import com.nju.edu.erp.dao.*;
 import com.nju.edu.erp.enums.sheetState.WarehouseInputSheetState;
 import com.nju.edu.erp.enums.sheetState.WarehouseOutputSheetState;
@@ -355,14 +356,26 @@ public class WarehouseServiceImpl implements WarehouseService {
      */
     @Override
     public List<WarehouseIODetailPO> getWarehouseIODetailByTime(String beginDateStr,String endDateStr) {
-        // TODO
+        // TODO it by myself
         /**
          * 1.注意日期的格式转换和转换异常
          * 2.考虑开始时间大于结束时间的情况、查询结果为空的情况
          * 3.Dao层和service层接口已实现
          *
          */
-        return null;
+        List<WarehouseIODetailPO> res = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date beginDate = sdf.parse(beginDateStr);
+            Date endDate = sdf.parse(endDateStr);
+            if (beginDate.compareTo(endDate) < 0) {
+                res = warehouseInputSheetDao.getWarehouseIODetailByTime(beginDate, endDate);
+                if (res == null) res = new ArrayList<>();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 
     /**
@@ -372,13 +385,28 @@ public class WarehouseServiceImpl implements WarehouseService {
      * @return
      */
     public int getWarehouseInputProductQuantityByTime(String beginDateStr,String endDateStr){
-        // TODO
+        // TODO it by myself
         /**
          * 1.注意日期的格式转换和转换异常
          * 2.考虑开始时间大于结束时间的情况、查询结果为空的情况
          * 3.Dao层和service层接口已实现，方法对应的Mapper为WarehouseInputSheetMapper
          */
-        return 0;
+        int num = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date beginDate = sdf.parse(beginDateStr);
+            Date endDate = sdf.parse(endDateStr);
+            if (beginDate.compareTo(endDate) < 0) {
+                try {
+                    num = warehouseInputSheetDao.getWarehouseInputProductQuantityByTime(beginDate, endDate);
+                } catch (NullPointerException ignored) {
+
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return num;
     }
 
     /**
@@ -388,14 +416,29 @@ public class WarehouseServiceImpl implements WarehouseService {
      * @return
      */
     public int getWarehouseOutProductQuantityByTime(String beginDateStr,String endDateStr){
-        // TODO
+        // TODO it by myself
         /**
          * 1.注意日期的格式转换和转换异常
          * 2.考虑开始时间大于结束时间的情况、查询结果为空的情况
          * 3.Dao层和service层接口已提供，需要先补充WarehouseInputSheetMapper中的sql语句
          */
+        int num = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date beginDate = sdf.parse(beginDateStr);
+            Date endDate = sdf.parse(endDateStr);
+            // 比较一下开始时间和结束时间, 如果不正确则不执行直接return num = 0
+            if (beginDate.compareTo(endDate) < 0) {
+                try {
+                    num = warehouseOutputSheetDao.getWarehouseOutputProductQuantityByTime(beginDate, endDate);
+                } catch (NullPointerException ignored) {
 
-        return 0;
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return num;
     }
 
     /**
@@ -417,5 +460,10 @@ public class WarehouseServiceImpl implements WarehouseService {
             res.add(vo);
         }
         return res;
+    }
+
+    @Override
+    public List<WarehouseCountingVO> warehouseCountingExcel() {
+        return warehouseCounting();
     }
 }

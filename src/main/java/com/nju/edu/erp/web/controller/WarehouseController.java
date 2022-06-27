@@ -1,5 +1,6 @@
 package com.nju.edu.erp.web.controller;
 
+import com.gaoice.easyexcel.spring.boot.autoconfigure.annotation.ResponseExcel;
 import com.nju.edu.erp.auth.Authorized;
 import com.nju.edu.erp.enums.Role;
 import com.nju.edu.erp.enums.sheetState.WarehouseInputSheetState;
@@ -178,5 +179,13 @@ public class WarehouseController {
     @Authorized(roles = {Role.ADMIN,Role.INVENTORY_MANAGER})
     public Response getWarehouseCounting() {
         return Response.buildSuccess(warehouseService.warehouseCounting());
+    }
+
+    @GetMapping("warehouse/counting/excel")
+    @Authorized(roles = {Role.ADMIN,Role.INVENTORY_MANAGER})
+//    @RequestMapping("/getWarehouseCountingExcel")
+    @ResponseExcel({"id", "product", "quantity", "purchasePrice", "batchId", "productionDate"})
+    public Response getWarehouseCountingExcel() {
+        return Response.buildSuccess(warehouseService.warehouseCountingExcel());
     }
 }

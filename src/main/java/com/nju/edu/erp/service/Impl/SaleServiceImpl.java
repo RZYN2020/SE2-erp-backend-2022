@@ -62,6 +62,9 @@ public class SaleServiceImpl implements SaleService {
         // TODO
         // 需要持久化销售单（SaleSheet）和销售单content（SaleSheetContent），其中总价或者折后价格的计算需要在后端进行
         // 需要的service和dao层相关方法均已提供，可以不用自己再实现一遍
+        SaleSheetPO saleSheetPO = new SaleSheetPO();
+        BeanUtils.copyProperties(saleSheetVO, saleSheetPO);
+
     }
 
     @Override
@@ -70,7 +73,27 @@ public class SaleServiceImpl implements SaleService {
         // TODO
         // 根据单据状态获取销售单（注意：VO包含SaleSheetContent）
         // 依赖的dao层部分方法未提供，需要自己实现
-        return null;
+        List<SaleSheetVO> res = new ArrayList<>();
+        List<SaleSheetPO> all;
+        if(state == null) {
+            all = saleSheetDao.findAllSheet();
+        } else {
+            all = saleSheetDao.findAllByState(state);
+        }
+        for (SaleSheetPO po : all) {
+            SaleSheetVO vo = new SaleSheetVO();
+            BeanUtils.copyProperties(po, vo);
+            List<SaleSheetContentPO> alll = saleSheetDao.findContentBySheetId(po.getId());
+            List<SaleSheetContentVO> vos = new ArrayList<>();
+            for (SaleSheetContentPO p : alll) {
+                SaleSheetContentVO v = new SaleSheetContentVO();
+                BeanUtils.copyProperties(p, v);
+                vos.add(v);
+            }
+            vo.setSaleSheetContent(vos);
+            res.add(vo);
+        }
+        return res;
     }
 
     /**
@@ -103,11 +126,11 @@ public class SaleServiceImpl implements SaleService {
      * @return
      */
     public CustomerPurchaseAmountPO getMaxAmountCustomerOfSalesmanByTime(String salesman,String beginDateStr,String endDateStr){
-        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try{
-            Date beginTime =dateFormat.parse(beginDateStr);
-            Date endTime=dateFormat.parse(endDateStr);
-            if(beginTime.compareTo(endTime)>0){
+            Date beginTime = dateFormat.parse(beginDateStr);
+            Date endTime = dateFormat.parse(endDateStr);
+            if(beginTime.compareTo(endTime) > 0){
                 return null;
             }else{
                 return saleSheetDao.getMaxAmountCustomerOfSalesmanByTime(salesman,beginTime,endTime);

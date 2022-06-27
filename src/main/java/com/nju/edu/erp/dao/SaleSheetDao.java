@@ -40,6 +40,14 @@ public interface SaleSheetDao {
     List<SaleSheetPO> findAllSheet();
 
     /**
+     * 根据state返回销售单
+     * @param state 销售单状态
+     * @return 销售单列表
+     */
+    // TODO: create findAllByState
+    List<SaleSheetPO> findAllByState(SaleSheetState state);
+
+    /**
      * 查找指定id的销售单
      * @param id
      * @return
