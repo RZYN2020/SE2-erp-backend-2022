@@ -1,6 +1,5 @@
 package com.nju.edu.erp.web.controller;
 
-import com.gaoice.easyexcel.spring.boot.autoconfigure.annotation.ResponseExcel;
 import com.nju.edu.erp.auth.Authorized;
 import com.nju.edu.erp.enums.Role;
 import com.nju.edu.erp.enums.sheetState.WarehouseInputSheetState;
@@ -9,12 +8,15 @@ import com.nju.edu.erp.exception.MyServiceException;
 import com.nju.edu.erp.model.po.*;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.model.vo.warehouse.GetWareProductInfoParamsVO;
-import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormVO;
-import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormVO;
 import com.nju.edu.erp.service.WarehouseService;
+import com.nju.edu.erp.utils.ExcelService;
 import com.nju.edu.erp.web.Response;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -181,11 +183,15 @@ public class WarehouseController {
         return Response.buildSuccess(warehouseService.warehouseCounting());
     }
 
-    @GetMapping("warehouse/counting/excel")
+
     @Authorized(roles = {Role.ADMIN,Role.INVENTORY_MANAGER})
-//    @RequestMapping("/getWarehouseCountingExcel")
-    @ResponseExcel({"id", "product", "quantity", "purchasePrice", "batchId", "productionDate"})
-    public Response getWarehouseCountingExcel() {
-        return Response.buildSuccess(warehouseService.warehouseCountingExcel());
+    @RequestMapping("warehouse/counting/excel")
+    public ResponseEntity<ByteArrayResource> getWarehouseCountingExcel() throws IOException {
+        byte[] data = ExcelService.WriteWarehouseCountingToExcel(warehouseService.warehouseCountingExcel());
+        ByteArrayResource resource = new ByteArrayResource(data);
+        return ResponseEntity.ok()
+               .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+
     }
 }

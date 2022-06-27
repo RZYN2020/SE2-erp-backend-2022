@@ -16,9 +16,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class FooService {
+public class ExcelService {
 
-  public byte[] WriteWarehouseCountingToExcel(List<WarehouseCountingVO> l) throws IOException {
+  public static byte[] WriteWarehouseCountingToExcel(List<WarehouseCountingVO> l) throws IOException {
     //Blank workbook
     XSSFWorkbook workbook = new XSSFWorkbook();
 
