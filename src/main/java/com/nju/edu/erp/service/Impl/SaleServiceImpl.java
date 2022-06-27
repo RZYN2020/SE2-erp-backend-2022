@@ -3,6 +3,8 @@ package com.nju.edu.erp.service.Impl;
 import com.nju.edu.erp.dao.CustomerDao;
 import com.nju.edu.erp.dao.ProductDao;
 import com.nju.edu.erp.dao.SaleSheetDao;
+import com.nju.edu.erp.dao.WarehouseDao;
+import com.nju.edu.erp.enums.sheetState.PurchaseReturnsSheetState;
 import com.nju.edu.erp.enums.sheetState.PurchaseSheetState;
 import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.model.po.*;
@@ -45,24 +47,28 @@ public class SaleServiceImpl implements SaleService {
 
     private final ProductService productService;
 
+    private final WarehouseDao warehouseDao;
+
     private final CustomerService customerService;
 
     private final WarehouseService warehouseService;
 
     @Autowired
-    public SaleServiceImpl(SaleSheetDao saleSheetDao, ProductDao productDao, CustomerDao customerDao, ProductService productService, CustomerService customerService, WarehouseService warehouseService) {
+    public SaleServiceImpl(SaleSheetDao saleSheetDao, ProductDao productDao, CustomerDao customerDao,
+        ProductService productService, CustomerService customerService,
+        WarehouseDao warehouseDao, WarehouseService warehouseService) {
         this.saleSheetDao = saleSheetDao;
         this.productDao = productDao;
         this.customerDao = customerDao;
         this.productService = productService;
         this.customerService = customerService;
         this.warehouseService = warehouseService;
+        this.warehouseDao = warehouseDao;
     }
 
     @Override
     @Transactional
     public void makeSaleSheet(UserVO userVO, SaleSheetVO saleSheetVO) {
-        // TODO
         // 需要持久化销售单（SaleSheet）和销售单content（SaleSheetContent），其中总价或者折后价格的计算需要在后端进行
         // 需要的service和dao层相关方法均已提供，可以不用自己再实现一遍
         SaleSheetPO saleSheetPO = new SaleSheetPO();
@@ -91,7 +97,7 @@ public class SaleServiceImpl implements SaleService {
             totalAmount = totalAmount.add(pContentPO.getTotalPrice());
         }
         saleSheetDao.saveBatchSheetContent(pContentPOList);
-        saleSheetPO.setRawTotalAmount(totalAmount);//TODO 区分rawTotalAmount和finalAmount
+        saleSheetPO.setRawTotalAmount(totalAmount);
         BigDecimal finalAmount = totalAmount.multiply(saleSheetVO.getDiscount()).subtract(saleSheetVO.getVoucherAmount());
         saleSheetPO.setFinalAmount(finalAmount);
         saleSheetDao.saveSheet(saleSheetPO);
@@ -168,23 +174,12 @@ public class SaleServiceImpl implements SaleService {
 
                 for(SaleSheetContentPO content : saleSheetContent) {
                     //修改商品数量
-                    ProductPO product = productDao.findById(content.getPid());
-                    product.setRecentRp(content.getUnitPrice());
-                    int curQuantity = product.getQuantity() - content.getQuantity();
-                    if (curQuantity <= 0) {
-                        productDao.deleteById(content.getPid());
-                    } else {
-                        product.setQuantity(curQuantity);
-                        productDao.updateById(product);
+                    List<WarehouseOutputFormContentVO> temp_list = feedSales(content.getPid(), content.getUnitPrice(), content.getQuantity());
+                    if (temp_list.isEmpty()) {
+                        saleSheetDao.updateSheetState(saleSheetId, SaleSheetState.FAILURE);
+                        throw new RuntimeException("库存数量不足！审批失败！");
                     }
-
-                    //指定进货单
-                    WarehouseOutputFormContentVO woContentVO = new WarehouseOutputFormContentVO();
-                    woContentVO.setSalePrice(content.getUnitPrice());
-                    woContentVO.setQuantity(content.getQuantity());
-                    woContentVO.setRemark(content.getRemark());
-                    woContentVO.setPid(content.getPid());
-                    wareOut_list.add(woContentVO);
+                    wareOut_list.addAll(temp_list);
                 }
                 // 更新客户表(更新应收字段)
                 SaleSheetPO saleSheet = saleSheetDao.findSheetById(saleSheetId);
@@ -247,5 +242,48 @@ public class SaleServiceImpl implements SaleService {
         }
         sVO.setSaleSheetContent(saleSheetContentVOList);
         return sVO;
+    }
+
+    /**
+     * 满足针对一个商品的销售请求
+     * @param pid
+     * @param unitPrice
+     * @param amount
+     * @return
+     */
+    private List<WarehouseOutputFormContentVO> feedSales(String pid, BigDecimal unitPrice, Integer amount) {
+        //当前的策略是进价低的优先出库
+        List<WarehouseOutputFormContentVO> outForm_list = new ArrayList<>();
+
+        List<WarehousePO> stocks = warehouseDao.findByPidOrderByPurchasePricePos(pid);
+        int capacity = 0;
+        for (WarehousePO stock : stocks) {
+            capacity += stock.getQuantity();
+        }
+        if (capacity < amount) return outForm_list;
+
+        for (WarehousePO stock : stocks) {
+            int consume_amount = Math.min(amount, stock.getQuantity());
+            stock.setQuantity(stock.getQuantity() - consume_amount);
+            warehouseDao.deductQuantity(stock);
+            amount -= consume_amount;
+
+            WarehouseOutputFormContentVO woContentVO = new WarehouseOutputFormContentVO();
+            woContentVO.setSalePrice(unitPrice);
+            woContentVO.setQuantity(consume_amount);
+            woContentVO.setPid(pid);
+            woContentVO.setBatchId(stock.getBatchId());
+            outForm_list.add(woContentVO);
+
+            assert amount >= 0;
+            if (amount == 0) break;
+        }
+
+        ProductInfoVO productInfoVO = productService.getOneProductByPid(pid);
+        productInfoVO.setQuantity(productInfoVO.getQuantity() - amount);
+        productInfoVO.setRecentRp(unitPrice);
+        productService.updateProduct(productInfoVO);
+
+        return outForm_list;
     }
 }
