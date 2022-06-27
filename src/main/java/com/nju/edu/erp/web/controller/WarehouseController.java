@@ -8,12 +8,15 @@ import com.nju.edu.erp.exception.MyServiceException;
 import com.nju.edu.erp.model.po.*;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.model.vo.warehouse.GetWareProductInfoParamsVO;
-import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormVO;
-import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormVO;
 import com.nju.edu.erp.service.WarehouseService;
+import com.nju.edu.erp.utils.ExcelService;
 import com.nju.edu.erp.web.Response;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -178,5 +181,17 @@ public class WarehouseController {
     @Authorized(roles = {Role.ADMIN,Role.INVENTORY_MANAGER})
     public Response getWarehouseCounting() {
         return Response.buildSuccess(warehouseService.warehouseCounting());
+    }
+
+
+    @Authorized(roles = {Role.ADMIN,Role.INVENTORY_MANAGER})
+    @RequestMapping("warehouse/counting/excel")
+    public ResponseEntity<ByteArrayResource> getWarehouseCountingExcel() throws IOException {
+        byte[] data = ExcelService.WriteWarehouseCountingToExcel(warehouseService.warehouseCountingExcel());
+        ByteArrayResource resource = new ByteArrayResource(data);
+        return ResponseEntity.ok()
+               .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+
     }
 }

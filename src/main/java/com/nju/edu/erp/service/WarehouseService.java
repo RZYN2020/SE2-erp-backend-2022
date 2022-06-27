@@ -109,4 +109,6 @@ public interface WarehouseService {
      *
      */
     List<WarehouseCountingVO> warehouseCounting();
+
+    List<WarehouseCountingVO> warehouseCountingExcel();
 }

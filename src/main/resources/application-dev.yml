@@ -4,6 +4,7 @@ spring:
     username: zyz
     password: zyz
     driver-class-name: com.mysql.cj.jdbc.Driver
+
 mybatis:
   type-aliases-package: com.nju.edu.erp.model.po
   configuration:
