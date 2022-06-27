@@ -2,7 +2,10 @@ package com.nju.edu.erp.service;
 
 import com.nju.edu.erp.enums.CustomerType;
 import com.nju.edu.erp.model.po.CustomerPO;
+import com.nju.edu.erp.model.vo.CreateCustomerVO;
+import com.nju.edu.erp.model.vo.CreateProductVO;
 import com.nju.edu.erp.model.vo.CustomerVO;
+import com.nju.edu.erp.model.vo.ProductInfoVO;
 
 import java.util.List;
 
@@ -20,6 +23,16 @@ public interface CustomerService {
      */
     List<CustomerPO> getCustomersByType(CustomerType type);
 
-
     CustomerPO findCustomerById(Integer supplier);
+
+    // TODO: 客户管理 增加客户 删除客户
+    /**
+     * 增加客户
+     */
+    CustomerVO createCustomer(CreateCustomerVO inputVO);
+
+    /**
+     * 删除客户
+     */
+    void deleteCustomerById(Integer id);
 }

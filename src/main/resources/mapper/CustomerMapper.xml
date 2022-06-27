@@ -53,6 +53,23 @@
         select * from customer where `type` = #{type}
     </select>
 
+    <!--  three new method by Doom Graham   -->
+
+    <delete id="deleteOneById">
+        delete from customer where id = #{id}
+    </delete>
+
+    <select id="findMaxCustomerId" resultType="java.lang.Integer">
+        select max(id) from customer
+    </select>
+
+    <insert id = "createCustomer" parameterType="CustomerPO">
+        insert into Customer (id, `type`, level, `name`, `phone`, `address`, zipcode, `email`, line_of_credit, receivable, payable, `operator`)
+        values (#{id}, #{type}, #{level}, #{name}, #{phone}, #{address}, #{zipcode}, #{email}, #{lineOfCredit}, #{receivable}, #{payable}, #{operator})
+    </insert>
+
+    <!--  three new method by Doom Graham   -->
+
     <resultMap id="CustomerPO" type="com.nju.edu.erp.model.po.CustomerPO">
         <id column="id" property="id"></id>
         <result column="type" property="type"></result>
