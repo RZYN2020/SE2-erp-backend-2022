@@ -44,6 +44,8 @@ public interface WarehouseOutputSheetDao {
      */
     List<WarehouseOutputSheetPO> getDraftSheets(WarehouseOutputSheetState state);
 
+
+
     /**
      * 根据id获取单据
      * @param sheetId
@@ -63,6 +65,8 @@ public interface WarehouseOutputSheetDao {
      * @return
      */
     List<WarehouseOutputSheetContentPO> getAllContentById(String sheetId);
+
+    List<WarehouseOutputSheetContentPO> getAllContentBySHD(String saleSheetID);
 
 
     /**

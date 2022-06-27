@@ -1,7 +1,9 @@
 package com.nju.edu.erp.dao;
 
 
+import com.nju.edu.erp.enums.sheetState.PurchaseReturnsSheetState;
 import com.nju.edu.erp.enums.sheetState.SaleSheetState;
+import com.nju.edu.erp.model.po.PurchaseReturnsSheetPO;
 import com.nju.edu.erp.model.po.SaleSheetContentPO;
 import com.nju.edu.erp.model.po.SaleSheetPO;
 import com.nju.edu.erp.model.po.CustomerPurchaseAmountPO;
@@ -38,6 +40,13 @@ public interface SaleSheetDao {
      * 查找所有销售单
      */
     List<SaleSheetPO> findAllSheet();
+
+    /**
+     * 返回指定状态的销售单
+     * @param state != null
+     * @return
+     */
+    List<SaleSheetPO> findAllByState(SaleSheetState state);
 
     /**
      * 查找指定id的销售单

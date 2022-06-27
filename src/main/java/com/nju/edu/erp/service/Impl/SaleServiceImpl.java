@@ -3,6 +3,9 @@ package com.nju.edu.erp.service.Impl;
 import com.nju.edu.erp.dao.CustomerDao;
 import com.nju.edu.erp.dao.ProductDao;
 import com.nju.edu.erp.dao.SaleSheetDao;
+import com.nju.edu.erp.dao.WarehouseDao;
+import com.nju.edu.erp.enums.sheetState.PurchaseReturnsSheetState;
+import com.nju.edu.erp.enums.sheetState.PurchaseSheetState;
 import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.model.po.*;
 import com.nju.edu.erp.model.vo.ProductInfoVO;
@@ -11,6 +14,8 @@ import com.nju.edu.erp.model.vo.Sale.SaleSheetVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.model.vo.purchase.PurchaseSheetContentVO;
 import com.nju.edu.erp.model.vo.purchase.PurchaseSheetVO;
+import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormContentVO;
+import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormVO;
 import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormContentVO;
 import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormVO;
 import com.nju.edu.erp.service.CustomerService;
@@ -42,26 +47,60 @@ public class SaleServiceImpl implements SaleService {
 
     private final ProductService productService;
 
+    private final WarehouseDao warehouseDao;
+
     private final CustomerService customerService;
 
     private final WarehouseService warehouseService;
 
     @Autowired
-    public SaleServiceImpl(SaleSheetDao saleSheetDao, ProductDao productDao, CustomerDao customerDao, ProductService productService, CustomerService customerService, WarehouseService warehouseService) {
+    public SaleServiceImpl(SaleSheetDao saleSheetDao, ProductDao productDao, CustomerDao customerDao,
+        ProductService productService, CustomerService customerService,
+        WarehouseDao warehouseDao, WarehouseService warehouseService) {
         this.saleSheetDao = saleSheetDao;
         this.productDao = productDao;
         this.customerDao = customerDao;
         this.productService = productService;
         this.customerService = customerService;
         this.warehouseService = warehouseService;
+        this.warehouseDao = warehouseDao;
     }
 
     @Override
     @Transactional
     public void makeSaleSheet(UserVO userVO, SaleSheetVO saleSheetVO) {
-        // TODO
         // 需要持久化销售单（SaleSheet）和销售单content（SaleSheetContent），其中总价或者折后价格的计算需要在后端进行
         // 需要的service和dao层相关方法均已提供，可以不用自己再实现一遍
+        SaleSheetPO saleSheetPO = new SaleSheetPO();
+        BeanUtils.copyProperties(saleSheetVO, saleSheetPO);
+        // 此处根据制定单据人员确定操作员
+        saleSheetPO.setOperator(userVO.getName());
+        saleSheetPO.setCreateTime(new Date());
+        SaleSheetPO latest = saleSheetDao.getLatestSheet();
+        String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "XSD");
+        saleSheetPO.setId(id);
+        saleSheetPO.setState(SaleSheetState.PENDING_LEVEL_1);
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        List<SaleSheetContentPO> pContentPOList = new ArrayList<>();
+        for(SaleSheetContentVO content : saleSheetVO.getSaleSheetContent()) {
+            SaleSheetContentPO pContentPO = new SaleSheetContentPO();
+            BeanUtils.copyProperties(content,pContentPO);
+            pContentPO.setSaleSheetId(id);
+            BigDecimal unitPrice = pContentPO.getUnitPrice();
+            if(unitPrice == null) {
+                ProductPO product = productDao.findById(content.getPid());
+                unitPrice = product.getPurchasePrice();
+                pContentPO.setUnitPrice(unitPrice);
+            }
+            pContentPO.setTotalPrice(unitPrice.multiply(BigDecimal.valueOf(pContentPO.getQuantity())));
+            pContentPOList.add(pContentPO);
+            totalAmount = totalAmount.add(pContentPO.getTotalPrice());
+        }
+        saleSheetDao.saveBatchSheetContent(pContentPOList);
+        saleSheetPO.setRawTotalAmount(totalAmount);
+        BigDecimal finalAmount = totalAmount.multiply(saleSheetVO.getDiscount()).subtract(saleSheetVO.getVoucherAmount());
+        saleSheetPO.setFinalAmount(finalAmount);
+        saleSheetDao.saveSheet(saleSheetPO);
     }
 
     @Override
@@ -70,7 +109,27 @@ public class SaleServiceImpl implements SaleService {
         // TODO
         // 根据单据状态获取销售单（注意：VO包含SaleSheetContent）
         // 依赖的dao层部分方法未提供，需要自己实现
-        return null;
+        List<SaleSheetVO> res = new ArrayList<>();
+        List<SaleSheetPO> all;
+        if(state == null) {
+            all = saleSheetDao.findAllSheet();
+        } else {
+            all = saleSheetDao.findAllByState(state);
+        }
+        for(SaleSheetPO po: all) {
+            SaleSheetVO vo = new SaleSheetVO();
+            BeanUtils.copyProperties(po, vo);
+            List<SaleSheetContentPO> all_saleContent = saleSheetDao.findContentBySheetId(po.getId());
+            List<SaleSheetContentVO> vos = new ArrayList<>();
+            for (SaleSheetContentPO p : all_saleContent) {
+                SaleSheetContentVO v = new SaleSheetContentVO();
+                BeanUtils.copyProperties(p, v);
+                vos.add(v);
+            }
+            vo.setSaleSheetContent(vos);
+            res.add(vo);
+        }
+        return res;
     }
 
     /**
@@ -93,6 +152,50 @@ public class SaleServiceImpl implements SaleService {
                  4. 新建出库草稿
             2. 一级审批状态不能直接到审批完成状态； 二级审批状态不能回到一级审批状态
          */
+        if(state.equals(SaleSheetState.FAILURE)) {
+            SaleSheetPO saleSheet = saleSheetDao.findSheetById(saleSheetId);
+            if(saleSheet.getState() == SaleSheetState.SUCCESS) throw new RuntimeException("状态更新失败");
+            int effectLines = saleSheetDao.updateSheetState(saleSheetId, state);
+            if(effectLines == 0) throw new RuntimeException("状态更新失败");
+        } else {
+            SaleSheetState prevState;
+            if(state.equals(SaleSheetState.SUCCESS)) {
+                prevState = SaleSheetState.PENDING_LEVEL_2;
+            } else if(state.equals(SaleSheetState.PENDING_LEVEL_2)) {
+                prevState = SaleSheetState.PENDING_LEVEL_1;
+            } else {
+                throw new RuntimeException("状态更新失败");
+            }
+            int effectLines = saleSheetDao.updateSheetStateOnPrev(saleSheetId, prevState, state);
+            if(effectLines == 0) throw new RuntimeException("状态更新失败");
+            if(state.equals(SaleSheetState.SUCCESS)) {
+                List<SaleSheetContentPO> saleSheetContent =  saleSheetDao.findContentBySheetId(saleSheetId);
+                List<WarehouseOutputFormContentVO> wareOut_list = new ArrayList<>();
+
+                for(SaleSheetContentPO content : saleSheetContent) {
+                    //修改商品数量
+                    List<WarehouseOutputFormContentVO> temp_list = feedSales(content.getPid(), content.getUnitPrice(), content.getQuantity());
+                    if (temp_list.isEmpty()) {
+                        saleSheetDao.updateSheetState(saleSheetId, SaleSheetState.FAILURE);
+                        throw new RuntimeException("库存数量不足！审批失败！");
+                    }
+                    wareOut_list.addAll(temp_list);
+                }
+                // 更新客户表(更新应收字段)
+                SaleSheetPO saleSheet = saleSheetDao.findSheetById(saleSheetId);
+                CustomerPO customerPO = customerService.findCustomerById(saleSheet.getSupplier());
+                customerPO.setReceivable(customerPO.getReceivable().add(saleSheet.getFinalAmount()));
+                customerService.updateCustomer(customerPO);
+
+                // 制定出库单草稿(在这里关联进货单)
+                // 调用创建出库单的方法
+                WarehouseOutputFormVO warehouseOutputFormVO = new WarehouseOutputFormVO();
+                warehouseOutputFormVO.setOperator(null); // 暂时不填操作人(确认草稿单的时候填写)
+                warehouseOutputFormVO.setSaleSheetId(saleSheetId);
+                warehouseOutputFormVO.setList(wareOut_list);
+                warehouseService.productOutOfWarehouse(warehouseOutputFormVO);
+            }
+        }
     }
 
     /**
@@ -103,16 +206,16 @@ public class SaleServiceImpl implements SaleService {
      * @return
      */
     public CustomerPurchaseAmountPO getMaxAmountCustomerOfSalesmanByTime(String salesman,String beginDateStr,String endDateStr){
-        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try{
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
             Date beginTime =dateFormat.parse(beginDateStr);
             Date endTime=dateFormat.parse(endDateStr);
-            if(beginTime.compareTo(endTime)>0){
+            if(beginTime.compareTo(endTime)>0) {
                 return null;
-            }else{
+            } else {
                 return saleSheetDao.getMaxAmountCustomerOfSalesmanByTime(salesman,beginTime,endTime);
             }
-        }catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;
@@ -139,5 +242,48 @@ public class SaleServiceImpl implements SaleService {
         }
         sVO.setSaleSheetContent(saleSheetContentVOList);
         return sVO;
+    }
+
+    /**
+     * 满足针对一个商品的销售请求
+     * @param pid
+     * @param unitPrice
+     * @param amount
+     * @return
+     */
+    private List<WarehouseOutputFormContentVO> feedSales(String pid, BigDecimal unitPrice, Integer amount) {
+        //当前的策略是进价低的优先出库
+        List<WarehouseOutputFormContentVO> outForm_list = new ArrayList<>();
+
+        List<WarehousePO> stocks = warehouseDao.findByPidOrderByPurchasePricePos(pid);
+        int capacity = 0;
+        for (WarehousePO stock : stocks) {
+            capacity += stock.getQuantity();
+        }
+        if (capacity < amount) return outForm_list;
+
+        for (WarehousePO stock : stocks) {
+            int consume_amount = Math.min(amount, stock.getQuantity());
+            stock.setQuantity(stock.getQuantity() - consume_amount);
+            warehouseDao.deductQuantity(stock);
+            amount -= consume_amount;
+
+            WarehouseOutputFormContentVO woContentVO = new WarehouseOutputFormContentVO();
+            woContentVO.setSalePrice(unitPrice);
+            woContentVO.setQuantity(consume_amount);
+            woContentVO.setPid(pid);
+            woContentVO.setBatchId(stock.getBatchId());
+            outForm_list.add(woContentVO);
+
+            assert amount >= 0;
+            if (amount == 0) break;
+        }
+
+        ProductInfoVO productInfoVO = productService.getOneProductByPid(pid);
+        productInfoVO.setQuantity(productInfoVO.getQuantity() - amount);
+        productInfoVO.setRecentRp(unitPrice);
+        productService.updateProduct(productInfoVO);
+
+        return outForm_list;
     }
 }

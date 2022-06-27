@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.SaleReturnSheetDao">
+  <insert id="saveSheet">
+    insert into sale_return_sheet (id, saleSheetID, operator, remark, totalAmount, `state`)
+    values (#{id}, #{saleSheetID}, #{operator}, #{remark}, #{totalAmount}, #{state}) ;
+  </insert>
+
+  <insert id="saveBatchSheetContent" useGeneratedKeys="true" keyProperty="id">
+    insert into sale_return_sheet_content (sale_return_sheet_id, pid, quantity, unit_price, total_price, remark) values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.saleReturnSheetId},#{item.pid},#{item.quantity},#{item.unitPrice},#{item.totalPrice},#{item.remark})
+    </foreach>
+  </insert>
+
+  <update id="updateState">
+    update sale_return_sheet
+    set state = #{state}
+    where id = #{saleReturnSheetId}
+  </update>
+
+  <update id="updateStateV2">
+    update sale_return_sheet
+    set state = #{state}
+    where id = #{saleReturnSheetId} and state = #{prevState}
+  </update>
+
+  <select id="getLatestSheet" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+    select * from sale_return_sheet order by id desc limit 0,1 ;
+  </select>
+
+  <select id="findAllByState" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+    select * from sale_return_sheet where state = #{state}
+  </select>
+
+  <select id="findContentBySheetId" resultType="com.nju.edu.erp.model.po.SaleReturnSheetContentPO">
+    select * from sale_return_sheet_content where sale_return_sheet_id = #{saleReturnsheetId};
+  </select>
+
+  <select id="findSheetById" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+    select * from sale_return_sheet where id = #{saleReturnSheetId};
+  </select>
+
+</mapper>

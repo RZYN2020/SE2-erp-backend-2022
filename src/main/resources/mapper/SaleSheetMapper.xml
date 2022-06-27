@@ -33,6 +33,10 @@
         select * from sale_sheet;
     </select>
 
+    <select id="findAllByState" resultType="com.nju.edu.erp.model.po.SaleSheetPO">
+        select * from sale_sheet where state = #{state}
+    </select>
+
     <select id="findContentBySheetId" resultType="com.nju.edu.erp.model.po.SaleSheetContentPO">
         select * from sale_sheet_content where sale_sheet_id = #{sheetId};
     </select>
