@@ -3,6 +3,7 @@ package com.nju.edu.erp.service.Impl;
 import com.nju.edu.erp.dao.CustomerDao;
 import com.nju.edu.erp.dao.ProductDao;
 import com.nju.edu.erp.dao.SaleSheetDao;
+import com.nju.edu.erp.enums.sheetState.PurchaseSheetState;
 import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.model.po.*;
 import com.nju.edu.erp.model.vo.ProductInfoVO;
@@ -11,6 +12,8 @@ import com.nju.edu.erp.model.vo.Sale.SaleSheetVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.model.vo.purchase.PurchaseSheetContentVO;
 import com.nju.edu.erp.model.vo.purchase.PurchaseSheetVO;
+import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormContentVO;
+import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormVO;
 import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormContentVO;
 import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormVO;
 import com.nju.edu.erp.service.CustomerService;
@@ -62,6 +65,36 @@ public class SaleServiceImpl implements SaleService {
         // TODO
         // 需要持久化销售单（SaleSheet）和销售单content（SaleSheetContent），其中总价或者折后价格的计算需要在后端进行
         // 需要的service和dao层相关方法均已提供，可以不用自己再实现一遍
+        SaleSheetPO saleSheetPO = new SaleSheetPO();
+        BeanUtils.copyProperties(saleSheetVO, saleSheetPO);
+        // 此处根据制定单据人员确定操作员
+        saleSheetPO.setOperator(userVO.getName());
+        saleSheetPO.setCreateTime(new Date());
+        SaleSheetPO latest = saleSheetDao.getLatestSheet();
+        String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "XSD");
+        saleSheetPO.setId(id);
+        saleSheetPO.setState(SaleSheetState.PENDING_LEVEL_1);
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        List<SaleSheetContentPO> pContentPOList = new ArrayList<>();
+        for(SaleSheetContentVO content : saleSheetVO.getSaleSheetContent()) {
+            SaleSheetContentPO pContentPO = new SaleSheetContentPO();
+            BeanUtils.copyProperties(content,pContentPO);
+            pContentPO.setSaleSheetId(id);
+            BigDecimal unitPrice = pContentPO.getUnitPrice();
+            if(unitPrice == null) {
+                ProductPO product = productDao.findById(content.getPid());
+                unitPrice = product.getPurchasePrice();
+                pContentPO.setUnitPrice(unitPrice);
+            }
+            pContentPO.setTotalPrice(unitPrice.multiply(BigDecimal.valueOf(pContentPO.getQuantity())));
+            pContentPOList.add(pContentPO);
+            totalAmount = totalAmount.add(pContentPO.getTotalPrice());
+        }
+        saleSheetDao.saveBatchSheetContent(pContentPOList);
+        saleSheetPO.setRawTotalAmount(totalAmount);//TODO 区分rawTotalAmount和finalAmount
+        BigDecimal finalAmount = totalAmount.multiply(saleSheetVO.getDiscount()).subtract(saleSheetVO.getVoucherAmount());
+        saleSheetPO.setFinalAmount(finalAmount);
+        saleSheetDao.saveSheet(saleSheetPO);
     }
 
     @Override
@@ -70,7 +103,27 @@ public class SaleServiceImpl implements SaleService {
         // TODO
         // 根据单据状态获取销售单（注意：VO包含SaleSheetContent）
         // 依赖的dao层部分方法未提供，需要自己实现
-        return null;
+        List<SaleSheetVO> res = new ArrayList<>();
+        List<SaleSheetPO> all;
+        if(state == null) {
+            all = saleSheetDao.findAllSheet();
+        } else {
+            all = saleSheetDao.findAllByState(state);
+        }
+        for(SaleSheetPO po: all) {
+            SaleSheetVO vo = new SaleSheetVO();
+            BeanUtils.copyProperties(po, vo);
+            List<SaleSheetContentPO> all_saleContent = saleSheetDao.findContentBySheetId(po.getId());
+            List<SaleSheetContentVO> vos = new ArrayList<>();
+            for (SaleSheetContentPO p : all_saleContent) {
+                SaleSheetContentVO v = new SaleSheetContentVO();
+                BeanUtils.copyProperties(p, v);
+                vos.add(v);
+            }
+            vo.setSaleSheetContent(vos);
+            res.add(vo);
+        }
+        return res;
     }
 
     /**
@@ -93,6 +146,61 @@ public class SaleServiceImpl implements SaleService {
                  4. 新建出库草稿
             2. 一级审批状态不能直接到审批完成状态； 二级审批状态不能回到一级审批状态
          */
+        if(state.equals(SaleSheetState.FAILURE)) {
+            SaleSheetPO saleSheet = saleSheetDao.findSheetById(saleSheetId);
+            if(saleSheet.getState() == SaleSheetState.SUCCESS) throw new RuntimeException("状态更新失败");
+            int effectLines = saleSheetDao.updateSheetState(saleSheetId, state);
+            if(effectLines == 0) throw new RuntimeException("状态更新失败");
+        } else {
+            SaleSheetState prevState;
+            if(state.equals(SaleSheetState.SUCCESS)) {
+                prevState = SaleSheetState.PENDING_LEVEL_2;
+            } else if(state.equals(SaleSheetState.PENDING_LEVEL_2)) {
+                prevState = SaleSheetState.PENDING_LEVEL_1;
+            } else {
+                throw new RuntimeException("状态更新失败");
+            }
+            int effectLines = saleSheetDao.updateSheetStateOnPrev(saleSheetId, prevState, state);
+            if(effectLines == 0) throw new RuntimeException("状态更新失败");
+            if(state.equals(SaleSheetState.SUCCESS)) {
+                List<SaleSheetContentPO> saleSheetContent =  saleSheetDao.findContentBySheetId(saleSheetId);
+                List<WarehouseOutputFormContentVO> wareOut_list = new ArrayList<>();
+
+                for(SaleSheetContentPO content : saleSheetContent) {
+                    //修改商品数量
+                    ProductPO product = productDao.findById(content.getPid());
+                    product.setRecentRp(content.getUnitPrice());
+                    int curQuantity = product.getQuantity() - content.getQuantity();
+                    if (curQuantity <= 0) {
+                        productDao.deleteById(content.getPid());
+                    } else {
+                        product.setQuantity(curQuantity);
+                        productDao.updateById(product);
+                    }
+
+                    //指定进货单
+                    WarehouseOutputFormContentVO woContentVO = new WarehouseOutputFormContentVO();
+                    woContentVO.setSalePrice(content.getUnitPrice());
+                    woContentVO.setQuantity(content.getQuantity());
+                    woContentVO.setRemark(content.getRemark());
+                    woContentVO.setPid(content.getPid());
+                    wareOut_list.add(woContentVO);
+                }
+                // 更新客户表(更新应收字段)
+                SaleSheetPO saleSheet = saleSheetDao.findSheetById(saleSheetId);
+                CustomerPO customerPO = customerService.findCustomerById(saleSheet.getSupplier());
+                customerPO.setReceivable(customerPO.getReceivable().add(saleSheet.getFinalAmount()));
+                customerService.updateCustomer(customerPO);
+
+                // 制定出库单草稿(在这里关联进货单)
+                // 调用创建出库单的方法
+                WarehouseOutputFormVO warehouseOutputFormVO = new WarehouseOutputFormVO();
+                warehouseOutputFormVO.setOperator(null); // 暂时不填操作人(确认草稿单的时候填写)
+                warehouseOutputFormVO.setSaleSheetId(saleSheetId);
+                warehouseOutputFormVO.setList(wareOut_list);
+                warehouseService.productOutOfWarehouse(warehouseOutputFormVO);
+            }
+        }
     }
 
     /**
@@ -103,16 +211,16 @@ public class SaleServiceImpl implements SaleService {
      * @return
      */
     public CustomerPurchaseAmountPO getMaxAmountCustomerOfSalesmanByTime(String salesman,String beginDateStr,String endDateStr){
-        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try{
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
             Date beginTime =dateFormat.parse(beginDateStr);
             Date endTime=dateFormat.parse(endDateStr);
-            if(beginTime.compareTo(endTime)>0){
+            if(beginTime.compareTo(endTime)>0) {
                 return null;
-            }else{
+            } else {
                 return saleSheetDao.getMaxAmountCustomerOfSalesmanByTime(salesman,beginTime,endTime);
             }
-        }catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;
