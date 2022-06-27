@@ -26,21 +26,21 @@ public class CustomerController {
         return Response.buildSuccess(customerService.getCustomersByType(type));
     }
 
-    @GetMapping("/create")
+    @PostMapping("/create")
     public Response createCustomer(@RequestBody CreateCustomerVO inputVO) {
         return Response.buildSuccess(customerService.createCustomer(inputVO));
     }
 
-    @GetMapping("/update")
-    public Response updateCustomer(@RequestParam CustomerVO customerVO) {
+    @PostMapping("/update")
+    public Response updateCustomer(@RequestBody CustomerVO customerVO) {
         CustomerPO customerPO = new CustomerPO();
         BeanUtils.copyProperties(customerVO, customerPO);
         customerService.updateCustomer(customerPO);
         return Response.buildSuccess();
     }
 
-    @GetMapping("/delete")
-    public Response deleteCustomerById(@RequestParam(value = "id") int id) {
+    @PostMapping("/delete")
+    public Response deleteCustomerById(@RequestBody int id) {
         customerService.deleteCustomerById(id);
         return Response.buildSuccess();
     }
