@@ -18,7 +18,7 @@ public class CustomerPO { // 客户PO
     /**
      * 分类(供应商\销售商)
      */
-	private String type;
+	  private String type;
     /**
      * 级别（五级，一级普通用户，五级VIP客户）
      */
