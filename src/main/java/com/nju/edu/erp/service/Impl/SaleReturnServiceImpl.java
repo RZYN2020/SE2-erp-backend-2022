@@ -23,6 +23,7 @@ import com.nju.edu.erp.model.po.SaleReturnSheetContentPO;
 //import com.nju.edu.erp.model.vo.Sale.SaleReturnSheetContentVO;
 //import com.nju.edu.erp.model.vo.Sale.SaleReturnSheetVO;
 import com.nju.edu.erp.model.po.SaleReturnSheetPO;
+import com.nju.edu.erp.model.po.SaleSheetContentPO;
 import com.nju.edu.erp.model.po.SaleSheetPO;
 import com.nju.edu.erp.model.po.WarehouseInputSheetContentPO;
 import com.nju.edu.erp.model.po.WarehouseOutputSheetContentPO;
@@ -40,6 +41,7 @@ import com.nju.edu.erp.service.SaleReturnService;
 import com.nju.edu.erp.service.WarehouseService;
 import com.nju.edu.erp.utils.IdGenerator;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -100,22 +102,23 @@ public class SaleReturnServiceImpl implements SaleReturnService {
     saleReturnSheetPO.setState(SaleReturnSheetState.PENDING_LEVEL_1);
     BigDecimal totalAmount = BigDecimal.ZERO;
     List<SaleReturnSheetContentPO> saleReturnSheetContent = saleReturnSheetDao.findContentBySaleReturnSheetId(saleReturnSheetPO.getId());
-    Map<String, SaleReturnSheetContentPO> map = new HashMap<>();
-    for(SaleReturnSheetContentPO item : saleReturnSheetContent) {
-      map.put(item.getPid(), item);
-    }
+    Map<String, SaleSheetContentPO> map = new HashMap<>();
 
     SaleSheetPO saleSheetPO = saleSheetDao.findSheetById(saleReturnSheetPO.getSaleSheetID());
     BigDecimal discount = saleSheetPO.getDiscount();
     BigDecimal voucher_amount = saleSheetPO.getVoucherAmount();
     BigDecimal total_amount = saleSheetPO.getRawTotalAmount();
-    BigDecimal ratio = discount.subtract(voucher_amount.divide(total_amount));
+    BigDecimal ratio = discount.subtract(voucher_amount.divide(total_amount, 10, RoundingMode.HALF_UP));
+    for(SaleSheetContentPO item : saleSheetDao.findContentBySheetId(saleSheetPO.getId())) {
+      map.put(item.getPid(), item);
+    }
 
     List<SaleReturnSheetContentPO> pContentPOList = new ArrayList<>();
     for(SaleReturnSheetContentVO content : saleReturnSheetVO.getSaleReturnSheetContent()) {
       SaleReturnSheetContentPO pContentPO = new SaleReturnSheetContentPO();
       BeanUtils.copyProperties(content,pContentPO);
       pContentPO.setSaleReturnSheetId(id);
+      pContentPO.setUnitPrice(map.get(content.getPid()).getUnitPrice());
       BigDecimal returnPrice = pContentPO.getUnitPrice().multiply(ratio);
       pContentPO.setTotalPrice(returnPrice.multiply(BigDecimal.valueOf(pContentPO.getQuantity())));
       pContentPOList.add(pContentPO);

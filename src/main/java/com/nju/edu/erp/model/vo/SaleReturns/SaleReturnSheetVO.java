@@ -32,7 +32,7 @@ public class SaleReturnSheetVO {
    */
   private String remark;
   /**
-   * 折让前总额
+   * 折让前总额,前端传null
    */
   private BigDecimal totalAmount;
   /**
