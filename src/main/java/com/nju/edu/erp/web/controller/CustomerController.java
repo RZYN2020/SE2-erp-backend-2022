@@ -39,8 +39,8 @@ public class CustomerController {
         return Response.buildSuccess();
     }
 
-    @PostMapping("/delete")
-    public Response deleteCustomerById(@RequestBody int id) {
+    @GetMapping("/delete")
+    public Response deleteCustomerById(@RequestParam(value = "id") int id) {
         customerService.deleteCustomerById(id);
         return Response.buildSuccess();
     }
