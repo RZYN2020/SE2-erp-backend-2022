@@ -66,10 +66,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerVO createCustomer(CreateCustomerVO inputVO) {
         // 仿照ProductServiceImpl.createProduct
-        System.out.println("赵锁子");
 
         // 生成客户id
-        int customerId = customerDao.findMaxCustomerId() + 1;
+        int customerId;
+        try {
+            customerId = customerDao.findMaxCustomerId() + 1;
+        } catch (NullPointerException ignored) {
+            customerId = 1;
+        }
 
         CustomerPO savePO = new CustomerPO();
         BeanUtils.copyProperties(inputVO, savePO);
