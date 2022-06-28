@@ -29,6 +29,7 @@
 <!--    <delete id="deleteById">-->
 <!--        delete from category where id = #{id}-->
 <!--    </delete>-->
+
     <update id="updateOne" parameterType="CustomerPO">
                 update customer
                 <set>
