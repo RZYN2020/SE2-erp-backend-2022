@@ -1,7 +1,13 @@
 package com.nju.edu.erp.model.vo;
 
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class JobVO {
     String name; // 员工姓名
     BigDecimal basic_salary; // 基本工资

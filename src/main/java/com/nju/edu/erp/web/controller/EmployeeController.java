@@ -4,6 +4,7 @@ import com.nju.edu.erp.enums.CustomerType;
 import com.nju.edu.erp.model.po.CustomerPO;
 import com.nju.edu.erp.model.vo.CreateCustomerVO;
 import com.nju.edu.erp.model.vo.CustomerVO;
+import com.nju.edu.erp.model.vo.EmployeeVO;
 import com.nju.edu.erp.service.CustomerService;
 import com.nju.edu.erp.service.EmployeeService;
 import com.nju.edu.erp.web.Response;
