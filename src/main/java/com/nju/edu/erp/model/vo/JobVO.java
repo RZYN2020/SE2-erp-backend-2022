@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobVO {
-    String name; // 员工姓名
-    BigDecimal basic_salary; // 基本工资
-    BigDecimal job_salary; // 岗位工资
-    Integer level; // 岗位级别, 同EmployeeVO里的job_level
-    int calculate_method; // 薪资计算方式
-    int payment_method; // 薪资发放方式
-    int tax; // 税务信息(表驱动)
+    private String name; // 员工姓名
+    private BigDecimal basicSalary; // 基本工资
+    private BigDecimal jobSalary; // 岗位工资
+    private Integer level; // 岗位级别, 同EmployeeVO里的job_level
+    private int calculateMethod; // 薪资计算方式
+    private int paymentMethod; // 薪资发放方式
+    private int tax; // 税务信息(表驱动)
 }
