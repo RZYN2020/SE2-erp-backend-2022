@@ -49,7 +49,7 @@ public class SaleReturnController {
   /**
    * 销售经理审批
    *
-   * @param saleSheetId 进货单id
+   * @param id 进货单id
    * @param state 修改后的状态("审批失败"/"待二级审批")
    */
   @GetMapping(value = "/first-approval")
