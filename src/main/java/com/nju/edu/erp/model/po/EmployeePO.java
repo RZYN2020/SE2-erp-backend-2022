@@ -1,7 +1,16 @@
 package com.nju.edu.erp.model.po;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class EmployeePO {
     Integer id; // 员工id
     String name; // 姓名
