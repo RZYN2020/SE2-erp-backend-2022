@@ -20,7 +20,7 @@ public class SaleReturnSheetContentVO {
    */
   private Integer quantity;
   /**
-   * 单价
+   * 退还单价，前端传null
    */
   private BigDecimal unitPrice;
   /**

@@ -15,4 +15,11 @@ public interface CustomerDao {
     CustomerPO findOneById(Integer supplier);
 
     List<CustomerPO> findAllByType(CustomerType customerType);
+
+    //TODO:
+    void deleteOneById(Integer customerId);
+
+    int findMaxCustomerId();
+
+    void createCustomer(CustomerPO customerPO);
 }

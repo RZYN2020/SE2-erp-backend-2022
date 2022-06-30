@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nju.edu.erp.dao.SaleReturnSheetDao">
   <insert id="saveSheet">
-    insert into sale_return_sheet (id, saleSheetID, operator, remark, totalAmount, `state`)
+    insert into sale_return_sheet (id, sale_sheet_id, operator, remark, total_amount, `state`)
     values (#{id}, #{saleSheetID}, #{operator}, #{remark}, #{totalAmount}, #{state}) ;
   </insert>
 
@@ -33,7 +33,11 @@
     select * from sale_return_sheet where state = #{state}
   </select>
 
-  <select id="findContentBySheetId" resultType="com.nju.edu.erp.model.po.SaleReturnSheetContentPO">
+  <select id="findAllSheet" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+    select * from sale_return_sheet;
+  </select>
+
+  <select id="findContentBySaleReturnSheetId" resultType="com.nju.edu.erp.model.po.SaleReturnSheetContentPO">
     select * from sale_return_sheet_content where sale_return_sheet_id = #{saleReturnsheetId};
   </select>
 

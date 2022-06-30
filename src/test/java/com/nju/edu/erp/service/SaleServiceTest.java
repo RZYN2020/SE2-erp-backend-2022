@@ -14,7 +14,9 @@ import com.nju.edu.erp.model.vo.Sale.SaleSheetContentVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.utils.IdGenerator;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,8 +27,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 @SpringBootTest
 public class SaleServiceTest { // 该测试为集成测试，需要用到数据库，请大家连给定的测试数据库进行测试
@@ -48,8 +48,6 @@ public class SaleServiceTest { // 该测试为集成测试，需要用到数据�
     @Autowired
     WarehouseOutputSheetDao warehouseOutputSheetDao;
 
-
-
     @Test
     public void warehouseServiceTest(){
         if(warehouseService==null){
@@ -64,7 +62,7 @@ public class SaleServiceTest { // 该测试为集成测试，需要用到数据�
     @Rollback(value = true)
     public void makeSaleSheet() { // 测试销售单是否生成成功
         UserVO userVO = UserVO.builder()
-                .name("xiaoshoujingli")
+                .name("SalesManagerA")
                 .role(Role.SALE_MANAGER)
                 .build();
 
