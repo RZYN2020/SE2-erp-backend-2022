@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.JobDao">
+
+    <select id="findAll" resultType="com.nju.edu.erp.model.po.JobPO">
+        select * from job
+    </select>
+
+    <update id="update" parameterType="JobPO">
+        update job
+        <set>
+            <if test = "job_level != null">`job_level` = #{job_level}, </if>
+            <if test = "basic_salary != null">`basic_salary` = #{basic_salary}, </if>
+            <if test = "job_salary != null">`job_salary` = #{job_salary}, </if>
+            <if test = "calculate_method != null">`calculate_method` = #{calculate_method}, </if>
+            <if test = "payment_method != null">`payment_method` = #{payment_method}, </if>
+            <if test = "tax_method != null">`tax_method` = #{tax_method}, </if>
+        </set>
+        where name = #{name}
+    </update>
+
+    <resultMap id="JobPO" type="com.nju.edu.erp.model.po.JobPO">
+        <id column="name" property="name"></id>
+        <id column="job_level" property="job_level"></id>
+        <result column="basic_salary" property="basic_salary"></result>
+        <result column="job_salary" property="job_salary"></result>
+        <result column="calculate_method" property="calculate_method"></result>
+        <result column="payment_method" property="payment_method"></result>
+        <result column="tax_method" property="tax_method"></result>
+    </resultMap>
+
+</mapper>
