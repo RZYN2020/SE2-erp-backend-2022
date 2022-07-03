@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,6 +41,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(inputVO, savePO);
         savePO.setId(employeeId);
         savePO.setUsername(inputVO.getName());
+        savePO.setSignTimes(getToday());
+
         employeeDao.createEmployee(savePO);
 
         EmployeePO responsePO = employeeDao.findOneById(employeeId);
@@ -67,5 +70,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         UserVO ans = new UserVO();
         BeanUtils.copyProperties(userPO, ans);
         return ans;
+    }
+
+    @Override
+    public void signIn(String username) {
+        employeeDao.signIn(username);
+    }
+
+    @Override
+    public int findAbsence(String username) {
+        int signInTimes = employeeDao.findSignInTimes(username);
+        return getToday() - signInTimes;
+    }
+
+    @Override
+    public EmployeePO findOneById(int id) {
+        return employeeDao.findOneById(id);
+    }
+
+    private int getToday() {
+        // 返回今天是一个月第几天
+        Date now = new Date();
+        return Integer.parseInt(now.toString().split(" ")[2]);
     }
 }
