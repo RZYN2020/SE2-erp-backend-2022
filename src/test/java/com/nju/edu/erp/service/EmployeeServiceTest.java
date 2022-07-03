@@ -1,6 +1,7 @@
 package com.nju.edu.erp.service;
 
 
+import com.nju.edu.erp.model.po.EmployeePO;
 import com.nju.edu.erp.model.vo.EmployeeVO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,21 @@ public class EmployeeServiceTest {
         Assertions.assertEquals(employeeVO.getAccount(), target.getAccount());
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void signInTest() {
+        employeeService.signIn("lock");
+        EmployeePO lockson = employeeService.findOneById(1);
+        Assertions.assertEquals(2, lockson.getSignTimes());
+    }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void findAbsenceTest() {
+        Date now = new Date();
+        Assertions.assertEquals(Integer.parseInt(now.toString().split(" ")[2]) - 1, employeeService.findAbsence("lock"));
+    }
 
 }

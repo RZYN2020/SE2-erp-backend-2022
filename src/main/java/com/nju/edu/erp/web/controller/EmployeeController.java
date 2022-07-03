@@ -39,13 +39,14 @@ public class EmployeeController {
   }
 
   @GetMapping("/signIn")
-  public Response signIn(@RequestParam Integer username) {
-    return null;
+  public Response signIn(@RequestParam String username) {
+    employeeService.signIn(username);
+    return Response.buildSuccess();
   }
 
   @GetMapping("/findAbsence")
-  public Response findAbsence(@RequestParam Integer username) {
-    return null;
+  public Response findAbsence(@RequestParam String username) {
+    return Response.buildSuccess(employeeService.findAbsence(username));
   }
 
 }

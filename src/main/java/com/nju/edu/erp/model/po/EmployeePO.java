@@ -19,7 +19,7 @@ public class EmployeePO {
     private String phoneNumber; // 手机
     private String job; // 工作岗位
     private Integer jobLevel; // 岗位级别
-    private Integer sign_times; // 员工每月打卡次数
+    private Integer signTimes; // 员工每月打卡次数
     private String username; // 该员工的账户(User)的name
     private String account; // 工资卡账户
 }
