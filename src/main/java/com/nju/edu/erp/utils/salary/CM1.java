@@ -27,6 +27,15 @@ public class CM1 implements CalculateMethod{
     return actually_paid;
   }
 
+  public TaxVO calculate_tax(EmployeePO employeePO) {
+    return TaxMethod.calculateTax(calculate_payable(employeePO));
+  }
+
+  public BigDecimal calculate_payable(EmployeePO employeePO) {
+    JobPO jobPO = jobDao.findJobByKey(employeePO.getName(), employeePO.getJobLevel());
+    return jobPO.getBasicSalary().add(jobPO.getJobSalary());
+  }
+
   public String display() {
     return identifier;
   }

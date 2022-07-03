@@ -20,7 +20,9 @@ public class SalarySheetPO {
   private BigDecimal basic_salary;//基本工资
   private BigDecimal job_salary;//岗位工资
   private BigDecimal commission;//提成
-  private TaxVO tax;
+  private BigDecimal income_tax;
+  private BigDecimal insurance;
+  private BigDecimal fund;
   private String remark;
   private SalarySheetState state;
 }
