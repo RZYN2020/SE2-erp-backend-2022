@@ -7,6 +7,7 @@ import com.nju.edu.erp.model.vo.JobVO;
 import com.nju.edu.erp.service.JobService;
 import com.nju.edu.erp.utils.salary.CM1;
 import com.nju.edu.erp.utils.salary.CM2;
+import com.nju.edu.erp.utils.salary.CalMethods;
 import com.nju.edu.erp.utils.salary.CalculateMethod;
 import com.nju.edu.erp.utils.salary.SignIn;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +29,7 @@ public class JobServiceImpl implements JobService {
     public JobServiceImpl(JobDao jobDao, EmployeeDao employeeDao) {
         this.jobDao = jobDao;
         signIn = new SignIn(employeeDao);
-        initCalMethods();
+        CalMethods.init(jobDao, signIn);
     }
 
     @Override
@@ -46,11 +47,5 @@ public class JobServiceImpl implements JobService {
     @Override
     public void updateJob(JobPO jobPO) {
         jobDao.update(jobPO);
-    }
-
-    private void initCalMethods() {
-        calMethods = new CalculateMethod[16];
-        calMethods[0] = new CM1(jobDao, signIn);
-        calMethods[1] = new CM2(jobDao, signIn);
     }
 }

@@ -16,5 +16,7 @@ public interface JobDao {
 
     void update(JobPO jobPO);
 
-    JobPO findJob(String name, Integer level);
+    JobPO findJobByKey(String name, Integer level);
+
+    JobPO findJobByEmployee(Integer employeeId);
 }
