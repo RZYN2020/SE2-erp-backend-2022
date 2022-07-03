@@ -26,6 +26,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     public EmployeeServiceImpl(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
+        SignIn.init(employeeDao);
     }
 
     @Override
