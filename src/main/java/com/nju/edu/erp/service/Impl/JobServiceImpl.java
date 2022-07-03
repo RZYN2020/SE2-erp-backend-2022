@@ -21,15 +21,11 @@ import java.util.List;
 public class JobServiceImpl implements JobService {
 
     private final JobDao jobDao;
-    private SignIn signIn;
-
-    private CalculateMethod[] calMethods;
 
     @Autowired
     public JobServiceImpl(JobDao jobDao, EmployeeDao employeeDao) {
         this.jobDao = jobDao;
-        signIn = new SignIn(employeeDao);
-        CalMethods.init(jobDao, signIn);
+        CalMethods.init(jobDao);
     }
 
     @Override
