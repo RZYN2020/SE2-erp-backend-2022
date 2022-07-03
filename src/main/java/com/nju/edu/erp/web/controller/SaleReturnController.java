@@ -49,17 +49,17 @@ public class SaleReturnController {
   /**
    * 销售经理审批
    *
-   * @param saleSheetId 进货单id
+   * @param id 进货单id
    * @param state 修改后的状态("审批失败"/"待二级审批")
    */
   @GetMapping(value = "/first-approval")
   @Authorized(roles = {Role.SALE_MANAGER, Role.ADMIN})
   public Response firstApproval(
-      @RequestParam("saleSheetId") String saleSheetId,
+      @RequestParam("id") String id,
       @RequestParam("state") SaleReturnSheetState state) {
     if (state.equals(SaleReturnSheetState.FAILURE)
         || state.equals(SaleReturnSheetState.PENDING_LEVEL_2)) {
-      saleReturnService.approval(saleSheetId, state);
+      saleReturnService.approval(id, state);
       return Response.buildSuccess();
     } else {
       return Response.buildFailed("000000", "操作失败");
@@ -73,10 +73,10 @@ public class SaleReturnController {
    */
   @Authorized (roles = {Role.GM, Role.ADMIN})
   @GetMapping(value = "/second-approval")
-  public Response secondApproval(@RequestParam("saleSheetId") String saleSheetId,
+  public Response secondApproval(@RequestParam("id") String id,
       @RequestParam("state") SaleReturnSheetState state)  {
     if(state.equals(SaleSheetState.FAILURE) || state.equals(SaleSheetState.SUCCESS)) {
-      saleReturnService.approval(saleSheetId, state);
+      saleReturnService.approval(id, state);
       return Response.buildSuccess();
     } else {
       return Response.buildFailed("000000","操作失败"); // code可能得改一个其他的

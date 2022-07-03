@@ -1,5 +1,6 @@
 package com.nju.edu.erp.model.vo.SaleReturns;
 
+import com.nju.edu.erp.enums.sheetState.SaleReturnSheetState;
 import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetContentVO;
 import java.math.BigDecimal;
@@ -38,7 +39,7 @@ public class SaleReturnSheetVO {
   /**
    * 单据状态, 新建单据时前端传null
    */
-  private SaleSheetState state;
+  private SaleReturnSheetState state;
   /**
    * 退货单具体内容
    */

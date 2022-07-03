@@ -1,9 +1,8 @@
 package com.nju.edu.erp.enums.sheetState;
 
 import com.nju.edu.erp.enums.BaseEnum;
-import com.nju.edu.erp.model.po.SaleReturnSheetPO;
 
-public enum SaleReturnSheetState implements BaseEnum<SaleReturnSheetState, String>  {
+public enum SalarySheetState implements BaseEnum<SalarySheetState, String>, SheetState {
   PENDING_LEVEL_1("待一级审批"), // 待销售经理审批
   PENDING_LEVEL_2("待二级审批"), // 待总经理审批
   SUCCESS("审批完成"),
@@ -11,7 +10,7 @@ public enum SaleReturnSheetState implements BaseEnum<SaleReturnSheetState, Strin
 
   private final String value;
 
-  SaleReturnSheetState(String value) {
+  SalarySheetState(String value) {
     this.value = value;
   }
 
@@ -19,5 +18,4 @@ public enum SaleReturnSheetState implements BaseEnum<SaleReturnSheetState, Strin
   public String getValue() {
     return value;
   }
-
 }

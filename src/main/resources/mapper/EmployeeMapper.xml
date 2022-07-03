@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.EmployeeDao">
+
+    <select id="findMaxEmployeeId" resultType="java.lang.Integer">
+        select max(id) from employee
+    </select>
+
+    <!--  birth_date 是否需要 ` ` 可能会出错   -->
+    <insert id = "createEmployee" parameterType="EmployeePO">
+        insert into employee (id, `name`, `gender`, birth_date , `phone_number`, `job`, job_level, sign_times, `username`, `account`)
+        values (#{id}, #{name}, #{gender}, #{birthDate}, #{phoneNumber}, #{job}, #{jobLevel}, #{signTimes}, #{username}, #{account})
+    </insert>
+
+    <select id="findOneById" resultType="com.nju.edu.erp.model.po.EmployeePO">
+        select * from employee where id=#{employeeId}
+    </select>
+
+    <select id="findAll" resultType="com.nju.edu.erp.model.po.EmployeePO">
+        select * from employee
+    </select>
+
+    <select id="findUserByEmployeeId" resultType="com.nju.edu.erp.model.po.User">
+        select user.id, user.name, user.password, user.role from user, employee where employee.username = user.name and employee.id = #{id}
+    </select>
+
+    <update id="signIn">
+        update employee set sign_times = sign_times + 1 where username = #{username}
+    </update>
+
+    <select id="findSignInTimes" resultType="java.lang.Integer">
+        select sign_times from employee where username = #{username};
+    </select>
+
+    <select id="findMaxUserId" resultType="java.lang.Integer">
+        select max(id) from user
+    </select>
+
+    <insert id = "createUser" parameterType="com.nju.edu.erp.model.po.User">
+        insert into user (id, `name`, `password`, `role`)
+        values (#{id}, #{name}, #{password}, #{role})
+    </insert>
+
+    <resultMap id="User" type="com.nju.edu.erp.model.po.User">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="password" property="password"></result>
+        <result column="role" property="role"></result>
+    </resultMap>
+
+    <resultMap id="EmployeePO" type="com.nju.edu.erp.model.po.EmployeePO">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="gender" property="gender"></result>
+        <result column="phone_number" property="phoneNumber"></result>
+        <result column="birth_date" property="birthDate"></result>
+        <result column="job" property="job"></result>
+        <result column="job_level" property="jobLevel"></result>
+        <result column="sign_times" property="signTimes"></result>
+        <result column="username" property="username"></result>
+        <result column="account" property="account"></result>
+    </resultMap>
+
+</mapper>
