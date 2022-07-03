@@ -7,6 +7,7 @@ import com.nju.edu.erp.model.po.User;
 import com.nju.edu.erp.model.vo.EmployeeVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.service.EmployeeService;
+import com.nju.edu.erp.utils.salary.SignIn;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,12 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeDao employeeDao;
+    private SignIn signIn;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
+        signIn = new SignIn(employeeDao);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(inputVO, savePO);
         savePO.setId(employeeId);
         savePO.setUsername(inputVO.getName());
-        savePO.setSignTimes(getToday());
+        savePO.setSignTimes(signIn.getToday());
 
         employeeDao.createEmployee(savePO);
 
@@ -78,19 +81,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public int findAbsence(String username) {
-        int signInTimes = employeeDao.findSignInTimes(username);
-        return getToday() - signInTimes;
-    }
-
-    @Override
     public EmployeePO findOneById(int id) {
         return employeeDao.findOneById(id);
     }
 
-    private int getToday() {
-        // 返回今天是一个月第几天
-        Date now = new Date();
-        return Integer.parseInt(now.toString().split(" ")[2]);
+    @Override
+    public int findAbsence(String username) {
+        int signInTimes = employeeDao.findSignInTimes(username);
+        return signIn.getToday() - signInTimes;
     }
+
 }
