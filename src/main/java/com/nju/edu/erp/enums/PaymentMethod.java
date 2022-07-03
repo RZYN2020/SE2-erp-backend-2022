@@ -1,17 +1,17 @@
 package com.nju.edu.erp.enums;
 
-public enum PaymentMethod implements BaseEnum<CustomerType, Integer>{
-  Yearly(1),
-  Monthly(2);
+public enum PaymentMethod implements BaseEnum<CustomerType, String>{
+  Yearly("月薪制"),
+  Monthly("年薪制");
 
-  private final Integer value;
+  private final String value;
 
-  PaymentMethod(Integer value) {
+  PaymentMethod(String value) {
     this.value = value;
   }
 
   @Override
-  public Integer getValue() {
+  public String getValue() {
     return value;
   }
 }

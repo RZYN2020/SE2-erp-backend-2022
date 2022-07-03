@@ -7,21 +7,25 @@ import com.nju.edu.erp.model.po.User;
 import com.nju.edu.erp.model.vo.EmployeeVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.service.EmployeeService;
+import com.nju.edu.erp.utils.salary.SignIn;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeDao employeeDao;
+    private SignIn signIn;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
+        signIn = new SignIn(employeeDao);
     }
 
     @Override
@@ -40,6 +44,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(inputVO, savePO);
         savePO.setId(employeeId);
         savePO.setUsername(inputVO.getName());
+        savePO.setSignTimes(signIn.getToday());
+
         employeeDao.createEmployee(savePO);
 
         EmployeePO responsePO = employeeDao.findOneById(employeeId);
@@ -68,4 +74,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(userPO, ans);
         return ans;
     }
+
+    @Override
+    public void signIn(String username) {
+        employeeDao.signIn(username);
+    }
+
+    @Override
+    public EmployeePO findOneById(int id) {
+        return employeeDao.findOneById(id);
+    }
+
+    @Override
+    public int findAbsence(String username) {
+        int signInTimes = employeeDao.findSignInTimes(username);
+        return signIn.getToday() - signInTimes;
+    }
+
 }

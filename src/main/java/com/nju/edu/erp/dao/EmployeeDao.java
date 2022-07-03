@@ -20,4 +20,8 @@ public interface EmployeeDao {
     List<EmployeePO> findAll();
 
     User findUserByEmployeeId(Integer id);
+
+    void signIn(String username);
+
+    int findSignInTimes(String username);
 }
