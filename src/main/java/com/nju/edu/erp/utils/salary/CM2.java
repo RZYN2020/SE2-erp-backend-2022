@@ -10,9 +10,11 @@ public class CM2 implements CalculateMethod{
   private final String identifier = "基本工资 + 提成 + 岗位工资 - 税款";
 
   private JobDao jobDao;
+  private SignIn signIn;
 
-  public CM2(JobDao jobDao) {
+  public CM2(JobDao jobDao, SignIn signIn) {
     this.jobDao = jobDao;
+    this.signIn = signIn;
   }
 
   public BigDecimal doCalculate(EmployeePO employeePO) {
@@ -21,6 +23,8 @@ public class CM2 implements CalculateMethod{
     TaxVO taxVO = TaxMethod.calculateTax(payable);
     BigDecimal total_tax = taxVO.getIncome_tax().add(taxVO.getInsurance()).add(taxVO.getFund());
     BigDecimal actually_paid = payable.subtract(total_tax);
+    BigDecimal absence = new BigDecimal(signIn.findAbsence(employeePO.getUsername()));
+    actually_paid = actually_paid.multiply(absence).divide(new BigDecimal((30)));
     return actually_paid;
   }
 
