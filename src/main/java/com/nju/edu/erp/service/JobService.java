@@ -3,6 +3,7 @@ package com.nju.edu.erp.service;
 import com.nju.edu.erp.model.po.JobPO;
 import com.nju.edu.erp.model.vo.JobVO;
 
+import com.nju.edu.erp.utils.salary.CalculateMethod;
 import java.util.List;
 
 public interface JobService {
@@ -17,5 +18,4 @@ public interface JobService {
      * @param jobPO 岗位信息
      */
     void updateJob(JobPO jobPO);
-
 }

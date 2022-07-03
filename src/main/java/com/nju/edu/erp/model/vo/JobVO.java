@@ -19,5 +19,4 @@ public class JobVO {
     private Integer jobLevel; // 岗位级别, 同EmployeeVO里的job_level
     private int calculateMethod; // 薪资计算方式
     private PaymentMethod paymentMethod; // 薪资发放方式(月薪制 年薪制)
-    private int tax; // 税务信息(表驱动)
 }

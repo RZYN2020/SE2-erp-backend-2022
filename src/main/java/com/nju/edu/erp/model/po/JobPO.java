@@ -19,5 +19,4 @@ public class JobPO {
     private Integer jobLevel; // 岗位级别
     private int calculateMethod; // 薪资计算方式
     private PaymentMethod paymentMethod; // 薪资发放方式
-    private int tax; // 税务信息(表驱动)
 }

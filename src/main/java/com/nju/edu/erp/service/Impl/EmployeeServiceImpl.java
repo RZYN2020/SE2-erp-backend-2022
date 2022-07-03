@@ -20,12 +20,11 @@ import java.util.List;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeDao employeeDao;
-    private SignIn signIn;
+
 
     @Autowired
     public EmployeeServiceImpl(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
-        signIn = new SignIn(employeeDao);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(inputVO, savePO);
         savePO.setId(employeeId);
         savePO.setUsername(inputVO.getName());
-        savePO.setSignTimes(signIn.getToday());
+        savePO.setSignTimes(SignIn.getToday());
 
         employeeDao.createEmployee(savePO);
 
@@ -88,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public int findAbsence(String username) {
         int signInTimes = employeeDao.findSignInTimes(username);
-        return signIn.getToday() - signInTimes;
+        return SignIn.getToday() - signInTimes;
     }
 
 }

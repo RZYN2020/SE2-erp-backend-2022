@@ -10,20 +10,19 @@ public class CM2 implements CalculateMethod{
   private final String identifier = "基本工资 + 提成 + 岗位工资 - 税款";
 
   private JobDao jobDao;
-  private SignIn signIn;
 
-  public CM2(JobDao jobDao, SignIn signIn) {
+
+  public CM2(JobDao jobDao) {
     this.jobDao = jobDao;
-    this.signIn = signIn;
   }
 
   public BigDecimal doCalculate(EmployeePO employeePO) {
-    JobPO jobPO = jobDao.findJob(employeePO.getName(), employeePO.getJobLevel());
+    JobPO jobPO = jobDao.findJobByKey(employeePO.getName(), employeePO.getJobLevel());
     BigDecimal payable = jobPO.getBasicSalary().add(jobPO.getJobSalary());
     TaxVO taxVO = TaxMethod.calculateTax(payable);
     BigDecimal total_tax = taxVO.getIncome_tax().add(taxVO.getInsurance()).add(taxVO.getFund());
     BigDecimal actually_paid = payable.subtract(total_tax);
-    BigDecimal absence = new BigDecimal(signIn.findAbsence(employeePO.getUsername()));
+    BigDecimal absence = new BigDecimal(SignIn.findAbsence(employeePO.getUsername()));
     actually_paid = actually_paid.multiply(absence).divide(new BigDecimal((30)));
     return actually_paid;
   }
