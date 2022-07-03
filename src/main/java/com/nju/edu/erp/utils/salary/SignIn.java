@@ -4,18 +4,18 @@ import com.nju.edu.erp.dao.EmployeeDao;
 import java.util.Date;
 
 public class SignIn {
-  private EmployeeDao employeeDao;
+  private static EmployeeDao employeeDao;
 
-  public SignIn(EmployeeDao employeeDao) {
-    this.employeeDao = employeeDao;
+  public static void init(EmployeeDao employeeDao_) {
+    employeeDao = employeeDao_;
   }
 
-  public int findAbsence(String username) {
+  public static int findAbsence(String username) {
     int signInTimes = employeeDao.findSignInTimes(username);
     return getToday() - signInTimes;
   }
 
-   public int getToday() {
+   public static int getToday() {
     // 返回今天是一个月第几天
     Date now = new Date();
     return Integer.parseInt(now.toString().split(" ")[2]);
