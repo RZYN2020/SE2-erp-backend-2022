@@ -16,6 +16,7 @@ public class SalarySheetPO {
   private String id;
   private String operator;
   private int employee_id;
+  private String remark;
   private String employee_name;
   private BigDecimal basic_salary;//基本工资
   private BigDecimal job_salary;//岗位工资
@@ -23,6 +24,5 @@ public class SalarySheetPO {
   private BigDecimal income_tax;
   private BigDecimal insurance;
   private BigDecimal fund;
-  private String remark;
   private SalarySheetState state;
 }
