@@ -2,6 +2,7 @@ package com.nju.edu.erp.service.Impl;
 
 import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.dao.JobDao;
+import com.nju.edu.erp.enums.PaymentMethod;
 import com.nju.edu.erp.model.po.JobPO;
 import com.nju.edu.erp.model.vo.JobVO;
 import com.nju.edu.erp.service.JobService;
@@ -43,5 +44,19 @@ public class JobServiceImpl implements JobService {
     @Override
     public void updateJob(JobPO jobPO) {
         jobDao.update(jobPO);
+    }
+
+    @Override
+    public List<String> findAllCalculateMethod() {
+        List<String> ans = new ArrayList<>();
+        for (int i = 0; i < CalMethods.getSize(); i++) {
+            ans.add(CalMethods.get(i).display());
+        }
+        return ans;
+    }
+
+    @Override
+    public List<PaymentMethod> findAllPaymentMethod() {
+        return jobDao.findAllPaymentMethod();
     }
 }

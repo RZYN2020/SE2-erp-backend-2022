@@ -1,6 +1,7 @@
 package com.nju.edu.erp.dao;
 
 
+import com.nju.edu.erp.enums.PaymentMethod;
 import com.nju.edu.erp.model.po.JobPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
@@ -19,4 +20,6 @@ public interface JobDao {
     JobPO findJobByKey(String name, Integer level);
 
     JobPO findJobByEmployee(Integer employeeId);
+
+    List<PaymentMethod> findAllPaymentMethod();
 }

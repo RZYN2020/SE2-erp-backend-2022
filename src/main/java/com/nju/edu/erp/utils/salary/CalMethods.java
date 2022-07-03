@@ -25,4 +25,8 @@ public class CalMethods {
   public static CalculateMethod get(Integer idx) {
     return calculateMethods.get(idx);
   }
+
+  public static int getSize() {
+    return calculateMethods.size();
+  }
 }

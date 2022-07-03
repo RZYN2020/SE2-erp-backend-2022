@@ -13,15 +13,19 @@
     <update id="update" parameterType="JobPO">
         update job
         <set>
-            <if test = "job_level != null">`job_level` = #{job_level}, </if>
-            <if test = "basic_salary != null">`basic_salary` = #{basic_salary}, </if>
-            <if test = "job_salary != null">`job_salary` = #{job_salary}, </if>
-            <if test = "calculate_method != null">`calculate_method` = #{calculate_method}, </if>
-            <if test = "payment_method != null">`payment_method` = #{payment_method}, </if>
-            <if test = "tax_method != null">`tax_method` = #{tax_method}, </if>
+            <if test = "jobLevel != null">`job_level` = #{jobLevel}, </if>
+            <if test = "basicSalary != null">`basic_salary` = #{basicSalary}, </if>
+            <if test = "jobSalary != null">`job_salary` = #{jobSalary}, </if>
+            <if test = "calculateMethod != null">`calculate_method` = #{calculateMethod}, </if>
+            <if test = "paymentMethod != null">`payment_method` = #{paymentMethod}, </if>
+<!--            <if test = "taxMethod != null">`tax_method` = #{taxMethod}, </if>-->
         </set>
         where name = #{name}
     </update>
+
+    <select id="findAllPaymentMethod" resultType="com.nju.edu.erp.enums.PaymentMethod">
+        select distinct payment_method from job
+    </select>
 
     <resultMap id="JobPO" type="com.nju.edu.erp.model.po.JobPO">
         <id column="name" property="name"></id>

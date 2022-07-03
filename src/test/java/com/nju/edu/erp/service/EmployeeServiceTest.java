@@ -3,6 +3,7 @@ package com.nju.edu.erp.service;
 
 import com.nju.edu.erp.model.po.EmployeePO;
 import com.nju.edu.erp.model.vo.EmployeeVO;
+import com.nju.edu.erp.model.vo.UserVO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class EmployeeServiceTest {
         Assertions.assertEquals(employeeVO.getJob(), target.getJob());
         Assertions.assertEquals(employeeVO.getJobLevel(), target.getJobLevel());
         Assertions.assertEquals(employeeVO.getAccount(), target.getAccount());
+
+        UserVO userVO = employeeService.findUserByEmployeeId(2);
+        System.out.println("赵咣");
     }
 
     @Test

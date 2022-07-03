@@ -43,7 +43,6 @@ public class SalarySheet implements Sheet {
     salarySheetPO.setBasic_salary(jobPO.getBasicSalary());
     salarySheetPO.setJob_salary(jobPO.getJobSalary());
     salarySheetPO.setCommission(new BigDecimal(0)); //TODO:提成策略
-    TaxVO taxVO =
 
   }
 
