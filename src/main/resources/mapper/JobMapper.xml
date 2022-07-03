@@ -6,6 +6,10 @@
         select * from job
     </select>
 
+    <select id="findJob" resultType="com.nju.edu.erp.model.po.JobPO">
+        select * from job where `name` = #{name} and job_level = #{level}
+    </select>
+
     <update id="update" parameterType="JobPO">
         update job
         <set>
