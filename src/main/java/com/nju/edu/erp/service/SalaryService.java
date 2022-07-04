@@ -9,7 +9,6 @@ import com.nju.edu.erp.utils.sheet.SalarySheet;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface SalaryService {
 
   void makeSalarySheet(UserVO userVO, SalarySheetVO salarySheetVO);
