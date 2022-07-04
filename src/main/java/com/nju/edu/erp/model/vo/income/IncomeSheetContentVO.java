@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class IncomeSheetContentVO {
-  private Integer id;
+  private Integer id;//null
   private String incomeSheetId;//null
   private String account;
   private BigDecimal amount;

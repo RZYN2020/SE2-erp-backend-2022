@@ -29,7 +29,7 @@ public class IncomeController {
     this.incomeService = incomeService;
   }
 
-  @Authorized(roles = {Role.HR, Role.GM, Role.ADMIN})
+  @Authorized(roles = {Role.FINANCIAL_STAFF, Role.GM, Role.ADMIN})
   @PostMapping(value = "/sheet-make")
   public Response makeIncomeSheet(UserVO userVO, @RequestBody IncomeSheetVO incomeSheetVO)  {
     incomeService.makeIncomeSheet(userVO, incomeSheetVO);
@@ -42,7 +42,7 @@ public class IncomeController {
   }
 
   @GetMapping(value = "/approval")
-  @Authorized (roles = {Role.SALE_MANAGER, Role.ADMIN})
+  @Authorized (roles = {Role.ADMIN})
   public Response approval(@RequestParam("saleSheetId") String id,
       @RequestParam("state") IncomeSheetState state)  {
     if(state.equals(IncomeSheetState.FAILURE) || state.equals(IncomeSheetState.SUCCESS)) {

@@ -16,8 +16,8 @@ public class IncomeSheetPO {
   private String id;
   private Integer customer_id;
   private String operator;
-  private BigDecimal totalAmount;
+  private BigDecimal total_amount;
   private IncomeSheetState state;
-  private Date createTime;
+  private Date create_time;
 
 }

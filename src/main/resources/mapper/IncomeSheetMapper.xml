@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.IncomeSheetDao">
+
+  <insert id="saveSheet">
+    insert into income_sheet (id, operator, customer_id, create_time, `state`, total_amount)
+    values (#{id}, #{operator}, #{customer_id}, #{create_time}, #{state}, #{total_amount}) ;
+  </insert>
+
+  <insert id="saveBatchSheetContent" useGeneratedKeys="true" keyProperty="id">
+    insert into income_sheet_content (income_sheet_id, account, amount, remark) values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.income_sheet_id},#{item.account},#{item.amount},#{item.remark})
+    </foreach>
+  </insert>
+
+  <select id="getLatest" resultMap="IncomeSheetPO">
+    select * from income_sheet order by id desc limit 0,1 ;
+  </select>
+
+  <select id="findAll" resultMap="IncomeSheetPO">
+    select * from income_sheet;
+  </select>
+
+  <select id="findAllByState" resultMap="IncomeSheetPO">
+    select * from income_sheet where `state` = #{state}
+  </select>
+
+  <select id="findContentBySheetId" resultMap="IncomeSheetPO">
+    select * from income_sheet_content where income_sheet_id = #{incomeSheetId};
+  </select>
+
+  <select id="getSheetById" resultMap="IncomeSheetPO">
+    select * from income_sheet where id = #{id}
+  </select>
+
+  <update id="updateState">
+    update income_sheet
+    set state = #{state}
+    where id = #{id}
+  </update>
+
+  <update id="updateStateV2">
+    update income_sheet
+    set state = #{state}
+    where id = #{id} and state = #{prevState}
+  </update>
+
+  <resultMap id="IncomeSheetPO" type="com.nju.edu.erp.model.po.IncomeSheetPO">
+    <id column="id" property="id"></id>
+    <result column="operator" property="operator"></result>
+    <result column="customer_id" property="customer_id"></result>
+    <result column="create_time" property="create_time"></result>
+    <result column="state" property="state"></result>
+    <result column="total_amount" property="total_amount"></result>
+  </resultMap>
+
+</mapper>

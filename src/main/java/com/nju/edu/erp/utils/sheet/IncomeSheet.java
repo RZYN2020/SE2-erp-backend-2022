@@ -18,6 +18,7 @@ import com.nju.edu.erp.service.CustomerService;
 import com.nju.edu.erp.utils.IdGenerator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 
@@ -41,19 +42,20 @@ public class IncomeSheet implements Sheet {
     IncomeSheetPO latest = incomeSheetDao.getLatest();
     String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "SKD");
     incomeSheetPO.setId(id);
+    incomeSheetPO.setCreate_time(new Date());
     incomeSheetPO.setState(IncomeSheetState.PENDING_LEVEL_1);
     BigDecimal totalAmount = BigDecimal.ZERO;
     List<IncomeSheetContentPO> contentBatch = new ArrayList<>();
     for (IncomeSheetContentVO vo : incomeSheetVO.getIncomeSheetContent()) {
       IncomeSheetContentPO po = new IncomeSheetContentPO();
       BeanUtils.copyProperties(vo, po);
-      po.setIncomeSheetId(id);
+      po.setIncome_sheet_id(id);
       totalAmount = totalAmount.add(po.getAmount());
       contentBatch.add(po);
     }
 
     incomeSheetDao.saveBatchSheetContent(contentBatch);
-    incomeSheetPO.setTotalAmount(totalAmount);
+    incomeSheetPO.setTotal_amount(totalAmount);
     incomeSheetDao.saveSheet(incomeSheetPO);
   }
 
@@ -103,7 +105,7 @@ public class IncomeSheet implements Sheet {
 
       //更改客户应付数据
       CustomerPO customerPO = customerService.findCustomerById(incomeSheetPO.getCustomer_id());
-      customerPO.setPayable(customerPO.getPayable().add(incomeSheetPO.getTotalAmount()));
+      customerPO.setPayable(customerPO.getPayable().add(incomeSheetPO.getTotal_amount()));
       customerService.updateCustomer(customerPO);
     }
   }

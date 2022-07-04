@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class IncomeSheetVO implements SheetVO {
-  private String id;
+  private String id;//null
   private Integer customer_id;
-  private String operator;
+  private String operator;//null
   private List<IncomeSheetContentVO> incomeSheetContent;
-  private BigDecimal totalAmount;
-  private IncomeSheetState state;
-  private Date createTime;
+  private BigDecimal totalAmount;//null
+  private IncomeSheetState state;//null
+  private Date createTime;//null
 }
