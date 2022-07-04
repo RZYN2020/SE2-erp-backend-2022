@@ -24,4 +24,8 @@ public interface EmployeeDao {
     void signIn(String username);
 
     int findSignInTimes(String username);
+
+    void createUser(User user);
+
+    int findMaxUserId();
 }

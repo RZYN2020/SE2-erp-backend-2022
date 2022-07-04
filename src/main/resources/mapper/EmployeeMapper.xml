@@ -21,7 +21,7 @@
     </select>
 
     <select id="findUserByEmployeeId" resultType="com.nju.edu.erp.model.po.User">
-        select user.id, user.name, user.password, user.role from user, employee where employee.username = user.name
+        select user.id, user.name, user.password, user.role from user, employee where employee.username = user.name and employee.id = #{id}
     </select>
 
     <update id="signIn">
@@ -31,6 +31,15 @@
     <select id="findSignInTimes" resultType="java.lang.Integer">
         select sign_times from employee where username = #{username};
     </select>
+
+    <select id="findMaxUserId" resultType="java.lang.Integer">
+        select max(id) from user
+    </select>
+
+    <insert id = "createUser" parameterType="com.nju.edu.erp.model.po.User">
+        insert into user (id, `name`, `password`, `role`)
+        values (#{id}, #{name}, #{password}, #{role})
+    </insert>
 
     <resultMap id="User" type="com.nju.edu.erp.model.po.User">
         <id column="id" property="id"></id>

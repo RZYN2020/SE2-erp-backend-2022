@@ -2,6 +2,7 @@ package com.nju.edu.erp.service.Impl;
 
 
 import com.nju.edu.erp.dao.EmployeeDao;
+import com.nju.edu.erp.enums.Role;
 import com.nju.edu.erp.model.po.EmployeePO;
 import com.nju.edu.erp.model.po.User;
 import com.nju.edu.erp.model.vo.EmployeeVO;
@@ -51,6 +52,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmployeePO responsePO = employeeDao.findOneById(employeeId);
         EmployeeVO ans = new EmployeeVO();
         BeanUtils.copyProperties(responsePO, ans);
+
+        // create User
+        User user = new User();
+        int userId;
+        try {
+            userId = employeeDao.findMaxUserId() + 1;
+        } catch (Exception ignored) {
+            userId = 1;
+        }
+        user.setId(userId);
+        user.setName(responsePO.getName());
+        user.setPassword("123456");
+        user.setRole(Role.valueOf(responsePO.getJob()));
+        employeeDao.createUser(user);
 
         return ans;
     }

@@ -34,11 +34,11 @@ public class JobController {
 
     @GetMapping("/findAllCalculateMethod")
     public Response findAllCalculateMethod() {
-        return null;
+        return Response.buildSuccess(jobService.findAllCalculateMethod());
     }
 
     @GetMapping("/findAllPaymentMethod")
     public Response findAllPaymentMethod() {
-        return null;
+        return Response.buildSuccess(jobService.findAllPaymentMethod());
     }
 }
