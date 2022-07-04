@@ -30,6 +30,7 @@
     <select id="findJobByEmployee" resultType="com.nju.edu.erp.model.po.JobPO">
         select * from job, employee where employee.id = #{employeeId} and employee.job = job.name and employee.job_level = job.job_level
     </select>
+
     <select id="findAllPaymentMethod" resultType="com.nju.edu.erp.enums.PaymentMethod">
         select distinct payment_method from job
     </select>

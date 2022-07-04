@@ -1,11 +1,11 @@
 spring:
   datasource:
-#    url: jdbc:mysql://106.15.187.255:3306/seec_erp
-#    username: zyz
-#    password: zyz
-    url: jdbc:mysql://127.0.0.1:3306/seec_erp
-    username: root
-    password: zyx20011103
+    url: jdbc:mysql://106.15.187.255:3306/seec_erp
+    username: zyz
+    password: zyz
+#    url: jdbc:mysql://127.0.0.1:3306/seec_erp
+#    username: root
+#    password: zyx20011103
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:
