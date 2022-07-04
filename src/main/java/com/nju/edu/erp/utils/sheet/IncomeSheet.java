@@ -46,7 +46,7 @@ public class IncomeSheet implements Sheet {
     incomeSheetPO.setState(IncomeSheetState.PENDING_LEVEL_1);
     BigDecimal totalAmount = BigDecimal.ZERO;
     List<IncomeSheetContentPO> contentBatch = new ArrayList<>();
-    for (IncomeSheetContentVO vo : incomeSheetVO.getIncomeSheetContent()) {
+    for (IncomeSheetContentVO vo : incomeSheetVO.getIncome_sheet_content()) {
       IncomeSheetContentPO po = new IncomeSheetContentPO();
       BeanUtils.copyProperties(vo, po);
       po.setIncome_sheet_id(id);
@@ -79,7 +79,7 @@ public class IncomeSheet implements Sheet {
         BeanUtils.copyProperties(contentPO, contentVO);
         vos.add(contentVO);
       }
-      vo.setIncomeSheetContent(vos);
+      vo.setIncome_sheet_content(vos);
       res.add(vo);
     }
 
@@ -103,7 +103,7 @@ public class IncomeSheet implements Sheet {
       int effectLines = incomeSheetDao.updateStateV2(sheetId, incomeSheetState, prevState);
       if (effectLines == 0) throw new RuntimeException("状态更新失败");
 
-      //更改客户应付数据
+      //更改销售商应付数据
       CustomerPO customerPO = customerService.findCustomerById(incomeSheetPO.getCustomer_id());
       customerPO.setPayable(customerPO.getPayable().add(incomeSheetPO.getTotal_amount()));
       customerService.updateCustomer(customerPO);

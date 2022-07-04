@@ -54,7 +54,7 @@ public class IncomeServiceTest {
         .amount(BigDecimal.valueOf(10000)).remark("item 2")
         .build());
     IncomeSheetVO incomeSheetVO = IncomeSheetVO.builder()
-        .incomeSheetContent(vos)
+        .income_sheet_content(vos)
         .customer_id(2)
         .build();
     IncomeSheetPO prevSheet = incomeSheetDao.getLatest();

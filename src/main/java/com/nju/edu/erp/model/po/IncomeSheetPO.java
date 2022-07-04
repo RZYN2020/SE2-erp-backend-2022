@@ -19,5 +19,4 @@ public class IncomeSheetPO {
   private BigDecimal total_amount;
   private IncomeSheetState state;
   private Date create_time;
-
 }
