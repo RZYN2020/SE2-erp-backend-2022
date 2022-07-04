@@ -26,7 +26,7 @@
     select * from income_sheet where `state` = #{state}
   </select>
 
-  <select id="findContentBySheetId" resultMap="IncomeSheetPO">
+  <select id="findContentBySheetId" resultType="IncomeSheetContentPO">
     select * from income_sheet_content where income_sheet_id = #{incomeSheetId};
   </select>
 

@@ -17,8 +17,8 @@ public class CORSConfig {
 
     private static String[] originsVal =
             new String[] {
-                    "localhost:8009",
-                    "127.0.0.1:8009",
+                    "localhost:8011",
+                    "127.0.0.1:8011",
                     "localhost:8000",
                     "127.0.0.1:8000",
                     "127.0.0.1",
