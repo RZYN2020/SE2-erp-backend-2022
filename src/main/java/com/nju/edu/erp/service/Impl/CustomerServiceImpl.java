@@ -68,7 +68,12 @@ public class CustomerServiceImpl implements CustomerService {
         // 仿照ProductServiceImpl.createProduct
 
         // 生成客户id
-        int customerId = customerDao.findMaxCustomerId() + 1;
+        int customerId;
+        try {
+            customerId = customerDao.findMaxCustomerId() + 1;
+        } catch (NullPointerException ignored) {
+            customerId = 1;
+        }
 
         CustomerPO savePO = new CustomerPO();
         BeanUtils.copyProperties(inputVO, savePO);
