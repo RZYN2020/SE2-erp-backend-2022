@@ -17,7 +17,7 @@ public class CM2 implements CalculateMethod{
   }
 
   public BigDecimal doCalculate(EmployeePO employeePO) {
-    JobPO jobPO = jobDao.findJobByKey(employeePO.getName(), employeePO.getJobLevel());
+    JobPO jobPO = jobDao.findJobByKey(employeePO.getJob(), employeePO.getJobLevel());
     BigDecimal payable = jobPO.getBasicSalary().add(jobPO.getJobSalary());
     TaxVO taxVO = TaxMethod.calculateTax(payable);
     BigDecimal total_tax = taxVO.getIncome_tax().add(taxVO.getInsurance()).add(taxVO.getFund());
