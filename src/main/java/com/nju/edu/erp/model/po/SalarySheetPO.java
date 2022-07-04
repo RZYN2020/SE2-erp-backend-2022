@@ -15,14 +15,13 @@ import lombok.NoArgsConstructor;
 public class SalarySheetPO {
   private String id;
   private String operator;
-  private int employee_id;
+  private Integer employee_id;
   private String remark;
-  private String employee_name;
+  private SalarySheetState state;
   private BigDecimal basic_salary;//基本工资
   private BigDecimal job_salary;//岗位工资
   private BigDecimal commission;//提成
   private BigDecimal income_tax;
   private BigDecimal insurance;
   private BigDecimal fund;
-  private SalarySheetState state;
 }

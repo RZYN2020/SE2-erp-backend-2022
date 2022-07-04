@@ -23,6 +23,14 @@
         where name = #{name}
     </update>
 
+    <select id="findJobByKey" resultType="com.nju.edu.erp.model.po.JobPO">
+        select * from job where `name` = #{name} and job_level = #{level}
+    </select>
+
+    <select id="findJobByEmployee" resultType="com.nju.edu.erp.model.po.JobPO">
+        select * from job, employee where employee.id = #{employeeId} and employee.job = job.name and employee.job_level = job.job_level
+    </select>
+
     <resultMap id="JobPO" type="com.nju.edu.erp.model.po.JobPO">
         <id column="name" property="name"></id>
         <id column="job_level" property="jobLevel"></id>

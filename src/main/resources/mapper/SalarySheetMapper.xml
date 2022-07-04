@@ -3,20 +3,50 @@
 <mapper namespace="com.nju.edu.erp.dao.SalarySheetDao">
 
   <insert id="saveSheet">
-    insert into salary_sheet (id, operator, employee_id, remark, `state`, basic_salary, job_salary, commision, income_tax, insurance, fund)
-    values (#{id}, #{operator}, #{employee_id}, #{remark}, #{`state`}, #{basic_salary}, #{job_salary}, #{commision}, #{income_tax}, #{insurance}, #{fund}) ;
+    insert into salary_sheet (id, operator, employee_id, remark, `state`, basic_salary, job_salary, commission, income_tax, insurance, fund)
+    values (#{id}, #{operator}, #{employee_id}, #{remark}, #{state}, #{basic_salary}, #{job_salary}, #{commission}, #{income_tax}, #{insurance}, #{fund}) ;
   </insert>
 
-  <select id="getLatest" resultType="com.nju.edu.erp.model.po.SalarySheetDao">
+  <select id="getLatest" resultMap="SalarySheetPO">
     select * from salary_sheet order by id desc limit 0,1 ;
   </select>
 
-  <select id="findAll" resultType="com.nju.edu.erp.model.po.SalarySheetDao">
+  <select id="findAll" resultMap="SalarySheetPO">
     select * from salary_sheet;
   </select>
 
-  <select id="findAllByState" resultType="com.nju.edu.erp.model.po.SalarySheetDao">
-    select * from salary_sheet where state = #{state}
+  <select id="findAllByState" resultMap="SalarySheetPO">
+    select * from salary_sheet where `state` = #{state}
   </select>
+
+  <select id="getSheetById" resultMap="SalarySheetPO">
+    select * from salary_sheet where id = #{id}
+  </select>
+
+  <update id="updateState">
+    update salary_sheet
+    set state = #{state}
+    where id = #{id}
+  </update>
+
+  <update id="updateStateV2">
+    update salary_sheet
+    set state = #{state}
+    where id = #{id} and state = #{prevState}
+  </update>
+
+  <resultMap id="SalarySheetPO" type="com.nju.edu.erp.model.po.SalarySheetPO">
+    <id column="id" property="id"></id>
+    <result column="operator" property="operator"></result>
+    <result column="employee_id" property="employee_id"></result>
+    <result column="remark" property="remark"></result>
+    <result column="state" property="state"></result>
+    <result column="basic_salary" property="basic_salary"></result>
+    <result column="job_salary" property="job_salary"></result>
+    <result column="commission" property="commission"></result>
+    <result column="income_tax" property="income_tax"></result>
+    <result column="insurance" property="insurance"></result>
+    <result column="fund" property="fund"></result>
+  </resultMap>
 
 </mapper>

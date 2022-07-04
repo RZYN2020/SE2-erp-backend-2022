@@ -19,4 +19,10 @@ public interface SalarySheetDao {
   List<SalarySheetPO> findAll();
 
   List<SalarySheetPO> findAllByState(SalarySheetState state);
+
+  SalarySheetPO getSheetById(String id);
+
+  int updateState(String id, SalarySheetState state);
+
+  int updateStateV2(String id, SalarySheetState state, SalarySheetState prevState);
 }

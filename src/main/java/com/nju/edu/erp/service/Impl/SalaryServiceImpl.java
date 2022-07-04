@@ -28,7 +28,7 @@ public class SalaryServiceImpl implements SalaryService {
   }
 
   @Override
-  public void makeSaleReturnSheet(UserVO userVO, SalarySheetVO salarySheetVO) {
+  public void makeSalarySheet(UserVO userVO, SalarySheetVO salarySheetVO) {
     Sheet sheet = new SalarySheet(salarySheetDao, employeeDao, jobDao);
     sheet.makeSheet(userVO, salarySheetVO);
   }

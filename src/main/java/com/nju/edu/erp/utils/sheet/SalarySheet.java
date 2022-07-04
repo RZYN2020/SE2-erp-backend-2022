@@ -4,6 +4,7 @@ import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.dao.JobDao;
 import com.nju.edu.erp.dao.SalarySheetDao;
 import com.nju.edu.erp.enums.sheetState.SalarySheetState;
+import com.nju.edu.erp.enums.sheetState.SaleReturnSheetState;
 import com.nju.edu.erp.enums.sheetState.SheetState;
 import com.nju.edu.erp.model.po.JobPO;
 import com.nju.edu.erp.model.po.PurchaseReturnsSheetPO;
@@ -45,7 +46,7 @@ public class SalarySheet implements Sheet {
     String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "GZD");
     salarySheetPO.setId(id);
     salarySheetPO.setState(SalarySheetState.PENDING_LEVEL_1);
-
+    System.out.println(salarySheetPO.getEmployee_id());
     JobPO jobPO = jobDao.findJobByEmployee(salarySheetPO.getEmployee_id());
     salarySheetPO.setBasic_salary(jobPO.getBasicSalary());
     salarySheetPO.setJob_salary(jobPO.getJobSalary());
@@ -69,12 +70,15 @@ public class SalarySheet implements Sheet {
     }
 
     for (SalarySheetPO po : all) {
+      JobPO jobPO = jobDao.findJobByEmployee(po.getEmployee_id());
       SalarySheetVO vo = new SalarySheetVO();
       BeanUtils.copyProperties(po, vo);
       TaxVO taxVO = new TaxVO();
       taxVO.setFund(po.getFund());
       taxVO.setIncome_tax(po.getIncome_tax());
       taxVO.setInsurance(po.getInsurance());
+      vo.setTax(taxVO);
+      vo.setActual_paid(CalMethods.get(jobPO.getCalculateMethod()).doCalculate(employeeDao.findOneById(po.getEmployee_id())));
       res.add(vo);
     }
 
@@ -83,6 +87,23 @@ public class SalarySheet implements Sheet {
 
   @Override
   public void approval(String sheetId, SheetState state) {
-
+    SalarySheetPO salarySheetPO = salarySheetDao.getSheetById(sheetId);
+    SalarySheetState salarySheetState = (SalarySheetState) state;
+    if (state.equals(SalarySheetState.FAILURE)) {
+      if(salarySheetPO.getState() == SalarySheetState.SUCCESS) throw new RuntimeException("状态更新失败");
+      int effectLines = salarySheetDao.updateState(sheetId, salarySheetState);
+      if(effectLines == 0) throw new RuntimeException("状态更新失败");
+    } else {
+      //建立正确的状态迁移
+      SalarySheetState prevState;
+      if (state.equals(SalarySheetState.SUCCESS)) {
+        prevState = SalarySheetState.PENDING_LEVEL_1;
+      } else {
+        throw new RuntimeException("状态更新失败");
+      }
+      int effectLines = salarySheetDao.updateStateV2(sheetId, salarySheetState, prevState);
+      if (effectLines == 0) throw new RuntimeException("状态更新失败");
+      //如果工资单审批成功，则生成工资发放单
+    }
   }
 }

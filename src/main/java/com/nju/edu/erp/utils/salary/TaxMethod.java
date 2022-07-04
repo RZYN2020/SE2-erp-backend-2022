@@ -8,9 +8,9 @@ public class TaxMethod {
   private final static BigDecimal[] payable_step = {new BigDecimal(2000),
       new BigDecimal(5000), new BigDecimal(10000)};
 
-  private final static BigDecimal[] income_tax_step = {};
-  private final static BigDecimal[] insurance_step = {};
-  private final static BigDecimal[] fund_step = {};
+  private final static BigDecimal[] income_tax_step = {new BigDecimal(100), new BigDecimal(200), new BigDecimal(300)};
+  private final static BigDecimal[] insurance_step = {new BigDecimal(100), new BigDecimal(200), new BigDecimal(300)};
+  private final static BigDecimal[] fund_step = {new BigDecimal(100), new BigDecimal(200), new BigDecimal(300)};
 
   public static TaxVO calculateTax(BigDecimal payable) {
     TaxVO ret = new TaxVO();

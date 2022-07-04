@@ -32,7 +32,7 @@ public class CM1 implements CalculateMethod{
   }
 
   public BigDecimal calculate_payable(EmployeePO employeePO) {
-    JobPO jobPO = jobDao.findJobByKey(employeePO.getName(), employeePO.getJobLevel());
+    JobPO jobPO = jobDao.findJobByKey(employeePO.getJob(), employeePO.getJobLevel());
     return jobPO.getBasicSalary().add(jobPO.getJobSalary());
   }
 
