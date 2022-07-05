@@ -42,7 +42,7 @@ public class OutcomeSheet implements Sheet {
     String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "SKD");
     outcomeSheetPO.setId(id);
     outcomeSheetPO.setCreate_time(new Date());
-    outcomeSheetPO.setState(OutcomeSheetState.PENDING_LEVEL_1);
+    outcomeSheetPO.setState(OutcomeSheetState.PENDING);
     BigDecimal totalAmount = BigDecimal.ZERO;
     List<OutcomeSheetContentPO> contentBatch = new ArrayList<>();
     for (OutcomeSheetContentVO vo : outcomeSheetVO.getOutcome_sheet_content()) {
@@ -96,7 +96,7 @@ public class OutcomeSheet implements Sheet {
     } else {
       OutcomeSheetState prevState;
       if (outcomeSheetState.equals(SalarySheetState.SUCCESS)) {
-        prevState = OutcomeSheetState.PENDING_LEVEL_1;
+        prevState = OutcomeSheetState.PENDING;
       } else {
         throw new RuntimeException("状态更新失败");
       }

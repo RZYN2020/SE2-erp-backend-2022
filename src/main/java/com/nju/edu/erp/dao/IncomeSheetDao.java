@@ -28,7 +28,7 @@ public interface IncomeSheetDao {
 
   IncomeSheetPO getSheetById(String id);
 
-  int updateState(String id, IncomeSheetState incomeSheetState);
+  int updateState(String id, IncomeSheetState state);
 
   int updateStateV2(String id, IncomeSheetState state, IncomeSheetState prevState);
 }
