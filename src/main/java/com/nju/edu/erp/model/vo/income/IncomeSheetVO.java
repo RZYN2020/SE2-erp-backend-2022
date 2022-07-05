@@ -21,5 +21,5 @@ public class IncomeSheetVO implements SheetVO {
   private List<IncomeSheetContentVO> income_sheet_content;
   private BigDecimal total_amount;//null
   private IncomeSheetState state;//null
-  private Date createTime;//null
+  private Date create_time;//null
 }

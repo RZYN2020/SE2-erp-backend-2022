@@ -3,6 +3,7 @@ package com.nju.edu.erp.model.po;
 import com.nju.edu.erp.enums.sheetState.SalarySheetState;
 import com.nju.edu.erp.model.vo.TaxVO;
 import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class SalarySheetPO {
   private BigDecimal commission;//提成
   private BigDecimal income_tax;
   private BigDecimal insurance;
+  private Date create_time;
   private BigDecimal fund;
 }

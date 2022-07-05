@@ -22,5 +22,5 @@ public class OutcomeSheetVO implements SheetVO {
   private List<OutcomeSheetContentVO> outcome_sheet_content;
   private BigDecimal total_amount;//null
   private OutcomeSheetState state;//null
-  private Date createTime;//null
+  private Date create_time;//null
 }

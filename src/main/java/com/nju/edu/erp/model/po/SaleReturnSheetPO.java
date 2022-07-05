@@ -41,4 +41,5 @@ public class SaleReturnSheetPO {
    */
   private SaleReturnSheetState state;
 
+  private Date create_time;
 }

@@ -2,6 +2,7 @@ package com.nju.edu.erp.model.vo.Sale;
 
 import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.model.vo.purchase.PurchaseSheetContentVO;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -61,4 +62,6 @@ public class SaleSheetVO {
      * 进货单具体内容
      */
     List<SaleSheetContentVO> saleSheetContent;
+
+    private Date create_time;
 }

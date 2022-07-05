@@ -4,6 +4,7 @@ import com.nju.edu.erp.enums.sheetState.SaleReturnSheetState;
 import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetContentVO;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,5 +45,7 @@ public class SaleReturnSheetVO {
    * 退货单具体内容
    */
   List<SaleReturnSheetContentVO> saleReturnSheetContent;
+
+  private Date create_time;
 
 }

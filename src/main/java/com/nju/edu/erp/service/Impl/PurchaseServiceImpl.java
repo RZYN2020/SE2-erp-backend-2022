@@ -64,7 +64,6 @@ public class PurchaseServiceImpl implements PurchaseService {
         BeanUtils.copyProperties(purchaseSheetVO, purchaseSheetPO);
         // 此处根据制定单据人员确定操作员
         purchaseSheetPO.setOperator(userVO.getName());
-        purchaseSheetPO.setCreateTime(new Date());
         PurchaseSheetPO latest = purchaseSheetDao.getLatest();
         String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "JHD");
         purchaseSheetPO.setId(id);
@@ -154,7 +153,6 @@ public class PurchaseServiceImpl implements PurchaseService {
                 // 根据商品id和单价更新商品最近进价recentPp
                 List<PurchaseSheetContentPO> purchaseSheetContent =  purchaseSheetDao.findContentByPurchaseSheetId(purchaseSheetId);
                 List<WarehouseInputFormContentVO> warehouseInputFormContentVOS = new ArrayList<>();
-
                 for(PurchaseSheetContentPO content : purchaseSheetContent) {
                     ProductInfoVO productInfoVO = new ProductInfoVO();
                     productInfoVO.setId(content.getPid());
@@ -171,6 +169,8 @@ public class PurchaseServiceImpl implements PurchaseService {
                 // 更新客户表(更新应付字段)
                     // 更新应付 payable
                 PurchaseSheetPO purchaseSheet = purchaseSheetDao.findOneById(purchaseSheetId);
+                purchaseSheet.setCreateTime(new Date());
+                purchaseSheetDao.save(purchaseSheet);
                 CustomerPO customerPO = customerService.findCustomerById(purchaseSheet.getSupplier());
                 customerPO.setPayable(customerPO.getPayable().add(purchaseSheet.getTotalAmount()));
                 customerService.updateCustomer(customerPO);
