@@ -74,6 +74,7 @@ public class OutcomeSheet implements Sheet {
       List<OutcomeSheetContentPO> pos = outcomeSheetDao.findContentBySheetId(po.getId());
       List<OutcomeSheetContentVO> vos = new ArrayList<>();
       for (OutcomeSheetContentPO contentPO : pos) {
+        assert contentPO instanceof OutcomeSheetContentPO;
         OutcomeSheetContentVO contentVO = new OutcomeSheetContentVO();
         BeanUtils.copyProperties(contentPO, contentVO);
         vos.add(contentVO);
