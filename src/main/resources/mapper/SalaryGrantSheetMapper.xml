@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.SalaryGrantSheetDao">
+
+    <select id="findAll" resultMap="SalaryGrantSheetPO">
+        select * from salary_grant_sheet;
+    </select>
+
+    <select id="findAllByState" resultMap="SalaryGrantSheetPO">
+        select * from salary_grant_sheet where `state` = #{state}
+    </select>
+
+    <select id="getSheetById" resultMap="SalaryGrantSheetPO">
+        select * from income_sheet where id = #{id}
+    </select>
+
+    <update id="updateState">
+        update salary_grant_sheet
+        set state = #{state}
+        where id = #{id}
+    </update>
+
+    <update id="updateStateV2">
+        update salary_grant_sheet
+        set state = #{state}
+        where id = #{id} and state = #{prevState}
+    </update>
+
+    <resultMap id="SalaryGrantSheetPO" type="com.nju.edu.erp.model.po.SalaryGrantSheetPO">
+        <id column="id" property="id"></id>
+        <result column="employee_id" property="employeeId"></result>
+        <result column="employee_name" property="employeeName"></result>
+        <result column="employee_account" property="employeeAccount"></result>
+        <result column="salary_before_tax" property="salaryBeforeTax"></result>
+        <result column="income_tax" property="incomeTax"></result>
+        <result column="insurance" property="insurance"></result>
+        <result column="fund" property="fund"></result>
+        <result column="real_salary" property="realSalary"></result>
+        <result column="state" property="state"></result>
+    </resultMap>
+
+</mapper>
