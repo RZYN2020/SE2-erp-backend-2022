@@ -107,6 +107,10 @@ public class IncomeSheet implements Sheet {
       CustomerPO customerPO = customerService.findCustomerById(incomeSheetPO.getCustomer_id());
       customerPO.setPayable(customerPO.getPayable().add(incomeSheetPO.getTotal_amount()));
       customerService.updateCustomer(customerPO);
+
+      //设置时间
+      incomeSheetPO.setCreate_time(new Date());
+      incomeSheetDao.saveSheet(incomeSheetPO);
     }
   }
 

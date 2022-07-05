@@ -19,6 +19,7 @@ import com.nju.edu.erp.utils.IdGenerator;
 import com.nju.edu.erp.utils.salary.CalMethods;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 
@@ -103,6 +104,10 @@ public class SalarySheet implements Sheet {
       int effectLines = salarySheetDao.updateStateV2(sheetId, salarySheetState, prevState);
       if (effectLines == 0) throw new RuntimeException("状态更新失败");
       //如果工资单审批成功，则生成工资发放单
+
+      //修改时间
+      salarySheetPO.setCreate_time(new Date());
+      salarySheetDao.saveSheet(salarySheetPO);
     }
   }
 }

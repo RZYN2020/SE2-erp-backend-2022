@@ -107,6 +107,10 @@ public class OutcomeSheet implements Sheet {
       CustomerPO customerPO = customerService.findCustomerById(outcomeSheetPO.getCustomer_id());
       customerPO.setReceivable(customerPO.getPayable().add(outcomeSheetPO.getTotal_amount()));
       customerService.updateCustomer(customerPO);
+
+      //设置时间
+      outcomeSheetPO.setCreate_time(new Date());
+      outcomeSheetDao.saveSheet(outcomeSheetPO);
     }
   }
 

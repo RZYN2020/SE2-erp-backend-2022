@@ -65,7 +65,6 @@ public class PurchaseReturnsServiceImpl implements PurchaseReturnsService {
         BeanUtils.copyProperties(purchaseReturnsSheetVO, purchaseReturnsSheetPO);
         // 此处根据制定单据人员确定操作员
         purchaseReturnsSheetPO.setOperator(userVO.getName());
-        purchaseReturnsSheetPO.setCreateTime(new Date());
         PurchaseReturnsSheetPO latest = purchaseReturnsSheetDao.getLatest();
         String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "JHTHD");
         purchaseReturnsSheetPO.setId(id);
@@ -185,6 +184,10 @@ public class PurchaseReturnsServiceImpl implements PurchaseReturnsService {
 
                 customer.setPayable(customer.getPayable().subtract(payableToDeduct));
                 customerService.updateCustomer(customer);
+
+                PurchaseReturnsSheetPO purchaseReturnsSheetPO = purchaseReturnsSheetDao.findOneById(purchaseReturnsSheetId);
+                purchaseReturnsSheetPO.setCreateTime(new Date());
+                purchaseReturnsSheetDao.save(purchaseReturnsSheetPO);
             }
         }
     }
