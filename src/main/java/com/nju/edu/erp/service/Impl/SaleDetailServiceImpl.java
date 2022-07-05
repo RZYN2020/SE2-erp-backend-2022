@@ -53,6 +53,7 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setUnit_price(contentPO.getUnitPrice());
         recordVO.setTotal_price(contentPO.getTotalPrice());
         recordVO.setSale_time(sheetPO.getCreateTime());
+        recordVO.setAmount(contentPO.getQuantity());
         all.add(recordVO);
       }
     }
@@ -75,6 +76,7 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setUnit_price(contentPO.getUnitPrice());
         recordVO.setTotal_price(contentPO.getTotalPrice());
         recordVO.setSale_time(sheetPO.getCreate_time());
+        recordVO.setAmount(contentPO.getQuantity());
         all.add(recordVO);
       }
     }
