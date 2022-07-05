@@ -43,7 +43,7 @@ public class IncomeSheet implements Sheet {
     String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "SKD");
     incomeSheetPO.setId(id);
     incomeSheetPO.setCreate_time(new Date());
-    incomeSheetPO.setState(IncomeSheetState.PENDING_LEVEL_1);
+    incomeSheetPO.setState(IncomeSheetState.PENDING);
     BigDecimal totalAmount = BigDecimal.ZERO;
     List<IncomeSheetContentPO> contentBatch = new ArrayList<>();
     for (IncomeSheetContentVO vo : incomeSheetVO.getIncome_sheet_content()) {
@@ -96,7 +96,7 @@ public class IncomeSheet implements Sheet {
     } else {
       IncomeSheetState prevState;
       if (incomeSheetState.equals(SalarySheetState.SUCCESS)) {
-        prevState = IncomeSheetState.PENDING_LEVEL_1;
+        prevState = IncomeSheetState.PENDING;
       } else {
         throw new RuntimeException("状态更新失败");
       }
