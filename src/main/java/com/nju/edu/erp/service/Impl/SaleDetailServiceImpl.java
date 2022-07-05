@@ -66,7 +66,7 @@ public class SaleDetailServiceImpl implements SaleDetailService {
     List<SaleReturnSheetPO> all_saleReturn_sheets = saleReturnSheetDao.findAllSheet();
 
     for (SaleReturnSheetPO sheetPO : all_saleReturn_sheets) {
-      List<SaleReturnSheetContentPO> contentPOS = saleReturnSheetDao.findContentBySaleReturnSheetId(sheetPO.getSaleSheetID());
+      List<SaleReturnSheetContentPO> contentPOS = saleReturnSheetDao.findContentBySaleReturnSheetId(sheetPO.getId());
       for (SaleReturnSheetContentPO contentPO : contentPOS) {
         ProductPO productPO = productDao.findById(contentPO.getPid());
         SaleRecordVO recordVO = new SaleRecordVO();
