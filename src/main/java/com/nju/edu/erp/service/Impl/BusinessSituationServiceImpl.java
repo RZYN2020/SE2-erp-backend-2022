@@ -73,6 +73,7 @@ public class BusinessSituationServiceImpl implements BusinessSituationService {
                 BusinessOutcomeVO businessOutcomeVO = new BusinessOutcomeVO();
                 // 支出信息：总支出，销售退货支出，进货支出，人力成本（工资）
 
+
                 String[] beginArray = beginDateStr.split("-");
                 String begin = beginArray[0] + beginArray[1] + beginArray[2].substring(0, 2);
                 String[] endArray = endDateStr.split("-");
