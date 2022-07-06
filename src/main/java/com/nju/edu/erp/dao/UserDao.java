@@ -3,6 +3,7 @@ package com.nju.edu.erp.dao;
 
 import com.nju.edu.erp.model.po.User;
 import com.nju.edu.erp.model.vo.UserVO;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,6 @@ public interface UserDao {
     int createUser(User user);
 
     User findByUsername(String username);
+
+    List<User> findAll();
 }

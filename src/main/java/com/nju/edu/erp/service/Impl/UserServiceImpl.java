@@ -9,6 +9,8 @@ import com.nju.edu.erp.model.po.User;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.service.UserService;
 import io.jsonwebtoken.Claims;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,5 +65,17 @@ public class UserServiceImpl implements UserService {
                 .role(Role.valueOf(claims.get("role").as(String.class)))
                 .build();
         return userVO;
+    }
+
+    @Override
+    public List<UserVO> getAllUsers() {
+        List<UserVO> vos = new ArrayList<>();
+        List<User> pos = userDao.findAll();
+        for (User po : pos) {
+            UserVO vo = new UserVO();
+            BeanUtils.copyProperties(po, vo);
+            vos.add(vo);
+        }
+        return vos;
     }
 }
