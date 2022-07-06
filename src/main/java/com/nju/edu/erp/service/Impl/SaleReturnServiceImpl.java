@@ -198,6 +198,9 @@ public class SaleReturnServiceImpl implements SaleReturnService {
         CustomerPO customerPO = customerService.findCustomerById(saleSheet.getSupplier());
         customerPO.setPayable(customerPO.getPayable().add(saleReturnSheet.getTotalAmount()));
         customerService.updateCustomer(customerPO);
+
+        saleReturnSheet.setCreate_time(new Date());
+        saleReturnSheetDao.saveSheet(saleReturnSheet);
       }
     }
   }

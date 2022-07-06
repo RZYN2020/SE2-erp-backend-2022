@@ -42,7 +42,7 @@ public class OutcomeSheet implements Sheet {
     String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "SKD");
     outcomeSheetPO.setId(id);
     outcomeSheetPO.setCreate_time(new Date());
-    outcomeSheetPO.setState(OutcomeSheetState.PENDING_LEVEL_1);
+    outcomeSheetPO.setState(OutcomeSheetState.PENDING);
     BigDecimal totalAmount = BigDecimal.ZERO;
     List<OutcomeSheetContentPO> contentBatch = new ArrayList<>();
     for (OutcomeSheetContentVO vo : outcomeSheetVO.getOutcome_sheet_content()) {
@@ -74,6 +74,7 @@ public class OutcomeSheet implements Sheet {
       List<OutcomeSheetContentPO> pos = outcomeSheetDao.findContentBySheetId(po.getId());
       List<OutcomeSheetContentVO> vos = new ArrayList<>();
       for (OutcomeSheetContentPO contentPO : pos) {
+        assert contentPO instanceof OutcomeSheetContentPO;
         OutcomeSheetContentVO contentVO = new OutcomeSheetContentVO();
         BeanUtils.copyProperties(contentPO, contentVO);
         vos.add(contentVO);
@@ -95,7 +96,7 @@ public class OutcomeSheet implements Sheet {
     } else {
       OutcomeSheetState prevState;
       if (outcomeSheetState.equals(SalarySheetState.SUCCESS)) {
-        prevState = OutcomeSheetState.PENDING_LEVEL_1;
+        prevState = OutcomeSheetState.PENDING;
       } else {
         throw new RuntimeException("状态更新失败");
       }
@@ -106,6 +107,10 @@ public class OutcomeSheet implements Sheet {
       CustomerPO customerPO = customerService.findCustomerById(outcomeSheetPO.getCustomer_id());
       customerPO.setReceivable(customerPO.getPayable().add(outcomeSheetPO.getTotal_amount()));
       customerService.updateCustomer(customerPO);
+
+      //设置时间
+      outcomeSheetPO.setCreate_time(new Date());
+      outcomeSheetDao.saveSheet(outcomeSheetPO);
     }
   }
 

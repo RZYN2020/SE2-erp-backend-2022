@@ -3,45 +3,45 @@
 <mapper namespace="com.nju.edu.erp.dao.OutcomeSheetDao">
 
   <insert id="saveSheet">
-    insert into Outcome_sheet (id, operator, customer_id, create_time, `state`, total_amount)
+    insert into outcome_sheet (id, operator, customer_id, create_time, `state`, total_amount)
     values (#{id}, #{operator}, #{customer_id}, #{create_time}, #{state}, #{total_amount}) ;
   </insert>
 
   <insert id="saveBatchSheetContent" useGeneratedKeys="true" keyProperty="id">
-    insert into Outcome_sheet_content (Outcome_sheet_id, account, amount, remark) values
+    insert into outcome_sheet_content (outcome_sheet_id, account, amount, remark) values
     <foreach collection="list" item="item" index="index" separator=",">
-      (#{item.Outcome_sheet_id},#{item.account},#{item.amount},#{item.remark})
+      (#{item.outcome_sheet_id},#{item.account},#{item.amount},#{item.remark})
     </foreach>
   </insert>
 
   <select id="getLatest" resultMap="OutcomeSheetPO">
-    select * from Outcome_sheet order by id desc limit 0,1 ;
+    select * from outcome_sheet order by id desc limit 0,1 ;
   </select>
 
   <select id="findAll" resultMap="OutcomeSheetPO">
-    select * from Outcome_sheet;
+    select * from outcome_sheet;
   </select>
 
   <select id="findAllByState" resultMap="OutcomeSheetPO">
-    select * from Outcome_sheet where `state` = #{state}
+    select * from outcome_sheet where `state` = #{state}
   </select>
 
-  <select id="findContentBySheetId" resultMap="OutcomeSheetPO">
-    select * from Outcome_sheet_content where Outcome_sheet_id = #{OutcomeSheetId};
+  <select id="findContentBySheetId" resultType="OutcomeSheetContentPO">
+    select * from outcome_sheet_content where outcome_sheet_id = #{outcmeSheetId};
   </select>
 
   <select id="getSheetById" resultMap="OutcomeSheetPO">
-    select * from Outcome_sheet where id = #{id}
+    select * from outcome_sheet where id = #{id}
   </select>
 
   <update id="updateState">
-    update Outcome_sheet
+    update outcome_sheet
     set state = #{state}
     where id = #{id}
   </update>
 
   <update id="updateStateV2">
-    update Outcome_sheet
+    update outcome_sheet
     set state = #{state}
     where id = #{id} and state = #{prevState}
   </update>

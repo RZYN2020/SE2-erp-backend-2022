@@ -194,6 +194,10 @@ public class SaleServiceImpl implements SaleService {
                 warehouseOutputFormVO.setSaleSheetId(saleSheetId);
                 warehouseOutputFormVO.setList(wareOut_list);
                 warehouseService.productOutOfWarehouse(warehouseOutputFormVO);
+
+                //修改时间
+                saleSheet.setCreateTime(new Date());
+                saleSheetDao.saveSheet(saleSheet);
             }
         }
     }
