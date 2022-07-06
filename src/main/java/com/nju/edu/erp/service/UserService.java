@@ -1,6 +1,7 @@
 package com.nju.edu.erp.service;
 
 import com.nju.edu.erp.model.vo.UserVO;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -27,5 +28,10 @@ public interface UserService {
      */
     UserVO auth(String token);
 
+    /**
+     * 获取所有User信息
+     * @return
+     */
+    List<UserVO> getAllUsers();
 
 }

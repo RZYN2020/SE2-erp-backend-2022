@@ -6,6 +6,7 @@ import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.service.UserService;
 import com.nju.edu.erp.web.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -40,5 +41,10 @@ public class UserController {
     @GetMapping("/auth")
     public Response userAuth(@RequestParam(name = "token") String token) {
         return Response.buildSuccess(userService.auth(token));
+    }
+
+    @GetMapping("/show-all")
+    public Response userShow() {
+        return Response.buildSuccess(userService.getAllUsers());
     }
 }
