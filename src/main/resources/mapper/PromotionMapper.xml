@@ -29,4 +29,15 @@
     select * from price_strategy;
   </select>
 
+  <resultMap id="UserStrategyPO" type="com.nju.edu.erp.model.po.promotion.UserStrategyPO">
+    <id column="id" property="id"></id>
+    <result column="effect_level" property="effect_level"></result>
+    <result column="product_id" property="product_id"></result>
+    <result column="product_amount" property="product_amount"></result>
+    <result column="coupon" property="coupon"></result>
+    <result column="discount" property="discount"></result>
+    <result column="begin_date" property="begin_date"></result>
+    <result column="end_date" property="end_date"></result>
+  </resultMap>
+
 </mapper>
