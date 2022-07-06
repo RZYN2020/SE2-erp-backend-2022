@@ -1,8 +1,7 @@
-package com.nju.edu.erp.model.vo.promotion;
+package com.nju.edu.erp.model.po.promotion;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,22 +11,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PromotionPackageVO {
+public class PriceStrategyPO {
+
+  private Integer id;
 
   /**
-   * 特价包内含的商品
+   * 生效的总价(如果是用户策略, 则该值为NULL)
    */
-  private List<String> product_id;
+  private BigDecimal effect_price;
 
   /**
-   * 特价包商品数量，下标与上述列表一一对应
+   * 赠品的pid
    */
-  private List<Integer> product_amount;
+  private String product_id;
 
   /**
-   * 该特价包折让的价格
+   * 赠品数量
    */
-  private BigDecimal voucher_amount;
+  private Integer product_amount;
+
+  /**
+   * 赠送的代金券金额
+   */
+  private BigDecimal coupon;
 
   /**
    * 开始时间

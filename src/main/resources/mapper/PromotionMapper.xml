@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.PromotionDao">
+
+  <insert id="saveUserStrategy">
+    insert into user_strategy(id, effect_level, product_id, product_amount, coupon, discount, begin_date, end_date)
+    values(#{id}, #{effect_level}, #{product_id}, #{product_amount}, #{coupon}, #{discount}, #{begin_date}, #{end_date})
+  </insert>
+
+  <insert id="savePriceStrategy">
+    insert into price_strategy(id, effect_price, product_id, product_amount, coupon, begin_date, end_date)
+    values(#{id}, #{effect_price}, #{product_id}, #{product_amount}, #{coupon}, #{begin_date}, #{end_date})
+  </insert>
+
+  <insert id="savePackageStrategy">
+    insert into package_strategy(id, product_id, product_amount, voucher_amount, begin_date, end_date)
+    values(#{id}, #{product_id}, #{product_amount}, #{voucher_amount}, #{begin_date}, #{end_date})
+  </insert>
+  
+  <select id="findAllUserStrategy" resultType="com.nju.edu.erp.model.po.promotion.UserStrategyPO">
+    select * from user_strategy;
+  </select>
+
+  <select id="findAllPackageStrategy" resultType="com.nju.edu.erp.model.po.promotion.PackageStrategyPO">
+    select * from package_strategy;
+  </select>
+
+  <select id="findAllPriceStrategy" resultType="com.nju.edu.erp.model.po.promotion.PriceStrategyPO">
+    select * from price_strategy;
+  </select>
+
+</mapper>

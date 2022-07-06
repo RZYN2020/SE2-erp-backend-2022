@@ -4,9 +4,10 @@ import com.nju.edu.erp.model.vo.CustomerVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetContentVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetVO;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
-public class PriceStrategy implements PromotionStrategy{
+public class PriceStrategy extends PromotionStrategy{
 
   private BigDecimal effect_price; //生效的总价
   private String product_id; //赠品id
@@ -14,11 +15,13 @@ public class PriceStrategy implements PromotionStrategy{
   private BigDecimal coupon; //赠送的代金券金额
 
   public PriceStrategy(BigDecimal effect_price, String product_id,
-      Integer product_amount, BigDecimal coupon) {
+      Integer product_amount, BigDecimal coupon, Date begin, Date end) {
     this.effect_price = effect_price;
     this.product_id = product_id;
     this.product_amount = product_amount;
     this.coupon = coupon;
+    this.begin_date = begin;
+    this.end_date = end;
   }
 
   @Override
