@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -25,4 +26,5 @@ public class SalaryGrantSheetPO {
     private BigDecimal realSalary; // 实发金额
 
     private SalaryGrantSheetState state; // 审批状态
+    private Date createTime;
 }

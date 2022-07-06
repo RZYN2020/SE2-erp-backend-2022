@@ -20,4 +20,8 @@ public interface SalaryGrantSheetDao {
     int updateState(String id, SalaryGrantSheetState state);
 
     int updateStateV2(String id, SalaryGrantSheetState state, SalaryGrantSheetState prevState);
+
+    SalaryGrantSheetPO getLatest();
+
+    int saveSheet(SalaryGrantSheetPO toSave);
 }

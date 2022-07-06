@@ -11,11 +11,11 @@ public interface CalculateMethod {
    * @param employeePO
    * @return
    */
-  BigDecimal doCalculate(EmployeePO employeePO);
+  BigDecimal doCalculate(EmployeePO employeePO); // 税后
 
   TaxVO calculate_tax(EmployeePO employeePO);
 
-  BigDecimal calculate_payable(EmployeePO employeePO);
+  BigDecimal calculate_payable(EmployeePO employeePO);  // 税前
 
   /**
    * 返回这种薪资计算方式对应的字符串标识，用于返回给前端. 比如"基本工资 + 岗位工资 - 税款"
