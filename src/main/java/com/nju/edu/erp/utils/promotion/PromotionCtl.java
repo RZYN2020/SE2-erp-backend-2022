@@ -17,7 +17,7 @@ public class PromotionCtl {
 
   public static void init(PromotionDao promotionDao) {
     PromotionCtl.promotionDao = promotionDao;
-
+    strategyList.clear();
     init_userStrategy();
     init_packageStrategy();
     init_priceStrategy();
