@@ -1,5 +1,6 @@
 package com.nju.edu.erp.utils.promotion;
 
+import com.nju.edu.erp.model.po.CustomerPO;
 import com.nju.edu.erp.model.vo.CustomerVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetContentVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetVO;
@@ -27,9 +28,9 @@ public class UserStrategy extends PromotionStrategy{
   }
 
   @Override
-  public boolean checkEffect(CustomerVO customerVO, List<SaleSheetContentVO> contentVOS) {
-    assert customerVO.getLevel() != null;
-    return this.effect_level == customerVO.getLevel();
+  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS) {
+    assert customerPO.getLevel() != null;
+    return this.effect_level == customerPO.getLevel();
   }
 
   @Override

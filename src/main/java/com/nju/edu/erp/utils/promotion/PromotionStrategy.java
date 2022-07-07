@@ -1,5 +1,6 @@
 package com.nju.edu.erp.utils.promotion;
 
+import com.nju.edu.erp.model.po.CustomerPO;
 import com.nju.edu.erp.model.po.User;
 import com.nju.edu.erp.model.vo.CustomerVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetContentVO;
@@ -19,12 +20,12 @@ public abstract class PromotionStrategy {
    * @param contentVOS 销售信息
    * @return
    */
-  abstract boolean checkEffect(CustomerVO customerVO, List<SaleSheetContentVO> contentVOS);
+  public abstract boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS);
 
   /**
    * 返回该促销策略生效后的产物
    * @return
    */
-  abstract PromotionInfo taskEffect();
+  public abstract PromotionInfo taskEffect();
 
 }
