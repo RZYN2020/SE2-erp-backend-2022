@@ -48,7 +48,7 @@ public class WarehouseGivenSheet implements Sheet{
     for (WarehouseGivenSheetContentVO vo : warehouseGivenSheetVO.getProducts()) {
       WarehouseGivenSheetContentPO po = new WarehouseGivenSheetContentPO();
       BeanUtils.copyProperties(vo, po);
-      po.setWareHouseGivenSheetId(warehouseGivenSheetPO.getId());
+      po.setWarehouse_given_sheet_id(warehouseGivenSheetPO.getId());
       pos.add(po);
     }
 

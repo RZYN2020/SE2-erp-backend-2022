@@ -2,6 +2,7 @@ package com.nju.edu.erp.service.Impl;
 
 import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.dao.JobDao;
+import com.nju.edu.erp.dao.SalaryGrantSheetDao;
 import com.nju.edu.erp.dao.SalarySheetDao;
 import com.nju.edu.erp.enums.sheetState.SalarySheetState;
 import com.nju.edu.erp.model.vo.Salary.SalarySheetVO;
@@ -20,29 +21,32 @@ public class SalaryServiceImpl implements SalaryService {
   private SalarySheetDao salarySheetDao;
   private EmployeeDao employeeDao;
   private JobDao jobDao;
+  private SalaryGrantSheetDao salaryGrantSheetDao;
 
-  public SalaryServiceImpl(SalarySheetDao salarySheetDao, EmployeeDao employeeDao, JobDao jobDao) {
+  public SalaryServiceImpl(SalarySheetDao salarySheetDao, EmployeeDao employeeDao, JobDao jobDao,
+      SalaryGrantSheetDao salaryGrantSheetDao) {
     this.salarySheetDao = salarySheetDao;
     this.employeeDao = employeeDao;
     this.jobDao = jobDao;
+    this.salaryGrantSheetDao = salaryGrantSheetDao;
   }
 
   @Override
   public void makeSalarySheet(UserVO userVO, SalarySheetVO salarySheetVO) {
-    Sheet sheet = new SalarySheet(salarySheetDao, employeeDao, jobDao);
+    Sheet sheet = new SalarySheet(salarySheetDao, employeeDao, jobDao, salaryGrantSheetDao);
     sheet.makeSheet(userVO, salarySheetVO);
   }
 
   @Override
   public List<SalarySheet> getSheetByState(SalarySheetState state) {
-    Sheet sheet = new SalarySheet(salarySheetDao, employeeDao, jobDao);
+    Sheet sheet = new SalarySheet(salarySheetDao, employeeDao, jobDao, salaryGrantSheetDao);
     List<SheetVO> temp_list = sheet.findSheetByState(state);
     return new ArrayList(temp_list);
   }
 
   @Override
   public void approval(String id, SalarySheetState state) {
-    Sheet sheet = new SalarySheet(salarySheetDao, employeeDao, jobDao);
+    Sheet sheet = new SalarySheet(salarySheetDao, employeeDao, jobDao, salaryGrantSheetDao);
     sheet.approval(id, state);
   }
 }
