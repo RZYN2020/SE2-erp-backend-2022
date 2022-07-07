@@ -29,7 +29,7 @@ public class PriceStrategy extends PromotionStrategy{
   public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS) {
     BigDecimal rawAmount = BigDecimal.ZERO;
     for (SaleSheetContentVO vo : contentVOS) {
-      rawAmount.add(vo.getTotalPrice());
+      rawAmount = rawAmount.add(vo.getTotalPrice());
     }
     return rawAmount.compareTo(this.effect_price) >= 0;
   }

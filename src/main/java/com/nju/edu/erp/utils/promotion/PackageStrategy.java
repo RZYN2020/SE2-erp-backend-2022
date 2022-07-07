@@ -35,7 +35,7 @@ public class PackageStrategy extends PromotionStrategy {
     }
 
     for (int i = 0; i < pid.size(); i++) {
-      if (pid2Amount.get(pid.get(i)) < amount.get(i)) {
+      if (!pid2Amount.containsKey(pid.get(i)) || pid2Amount.get(pid.get(i)) < amount.get(i)) {
         return false;
       }
     }

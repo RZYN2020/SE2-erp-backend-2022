@@ -8,7 +8,7 @@
   </insert>
 
   <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id">
-    insert into warehouse_given_sheet (warehouse_given_sheet_id, pid, amount) values
+    insert into warehouse_given_sheet_content (warehouse_given_sheet_id, pid, amount) values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.warehouse_given_sheet_id},#{item.pid},#{item.amount})
     </foreach>
@@ -34,13 +34,13 @@
     select * from warehouse_given_sheet where id = #{id}
   </select>
 
-  <update id="updateState">
+  <update id="update">
     update warehouse_given_sheet
     set state = #{state}
     where id = #{id}
   </update>
 
-  <update id="updateStateV2">
+  <update id="updateV2">
     update warehouse_given_sheet
     set state = #{state}
     where id = #{id} and state = #{prevState}
