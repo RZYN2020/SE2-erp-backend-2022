@@ -41,5 +41,5 @@ public class PurchaseReturnsSheetPO {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private Date create_time;
 }
