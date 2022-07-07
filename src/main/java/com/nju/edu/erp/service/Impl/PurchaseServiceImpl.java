@@ -169,7 +169,7 @@ public class PurchaseServiceImpl implements PurchaseService {
                 // 更新客户表(更新应付字段)
                     // 更新应付 payable
                 PurchaseSheetPO purchaseSheet = purchaseSheetDao.findOneById(purchaseSheetId);
-                purchaseSheet.setCreateTime(new Date());
+                purchaseSheet.setCreate_time(new Date());
                 purchaseSheetDao.save(purchaseSheet);
                 CustomerPO customerPO = customerService.findCustomerById(purchaseSheet.getSupplier());
                 customerPO.setPayable(customerPO.getPayable().add(purchaseSheet.getTotalAmount()));

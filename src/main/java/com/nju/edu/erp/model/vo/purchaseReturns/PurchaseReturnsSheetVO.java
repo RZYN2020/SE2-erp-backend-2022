@@ -43,7 +43,7 @@ public class PurchaseReturnsSheetVO {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private Date create_time;
     /**
      * 进货单具体内容
      */
