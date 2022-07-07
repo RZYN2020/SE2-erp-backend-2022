@@ -17,11 +17,11 @@
     values(#{id}, #{product_id}, #{product_amount}, #{voucher_amount}, #{begin_date}, #{end_date})
   </insert>
   
-  <select id="findAllUserStrategy" resultType="com.nju.edu.erp.model.po.promotion.UserStrategyPO">
+  <select id="findAllUserStrategy" resultMap="UserStrategyPO">
     select * from user_strategy;
   </select>
 
-  <select id="findAllPackageStrategy" resultType="com.nju.edu.erp.model.po.promotion.PackageStrategyPO">
+  <select id="findAllPackageStrategy" resultMap="PackageStrategyPO">
     select * from package_strategy;
   </select>
 
@@ -36,6 +36,25 @@
     <result column="product_amount" property="product_amount"></result>
     <result column="coupon" property="coupon"></result>
     <result column="discount" property="discount"></result>
+    <result column="begin_date" property="begin_date"></result>
+    <result column="end_date" property="end_date"></result>
+  </resultMap>
+
+  <resultMap id="PackageStrategyPO" type="com.nju.edu.erp.model.po.promotion.PackageStrategyPO">
+    <id column="id" property="id"></id>
+    <result column="product_id" property="product_id"></result>
+    <result column="product_amount" property="product_amount"></result>
+    <result column="voucher_amount" property="voucher_amount"></result>
+    <result column="begin_date" property="begin_date"></result>
+    <result column="end_date" property="end_date"></result>
+  </resultMap>
+
+  <resultMap id="PriceStrategyPO" type="com.nju.edu.erp.model.po.promotion.PriceStrategyPO">
+    <id column="id" property="id"></id>
+    <result column="effect_price" property="effect_price"></result>
+    <result column="product_id" property="product_id"></result>
+    <result column="product_amount" property="product_amount"></result>
+    <result column="coupon" property="coupon"></result>
     <result column="begin_date" property="begin_date"></result>
     <result column="end_date" property="end_date"></result>
   </resultMap>
