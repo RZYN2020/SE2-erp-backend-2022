@@ -17,16 +17,6 @@ public class PackageStrategyPO {
   private Integer id;
 
   /**
-   * 特价包内含的商品
-   */
-  private List<String> product_id;
-
-  /**
-   * 特价包商品数量，下标与上述列表一一对应
-   */
-  private List<Integer> product_amount;
-
-  /**
    * 该特价包折让的价格
    */
   private BigDecimal voucher_amount;

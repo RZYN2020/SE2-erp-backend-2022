@@ -14,6 +14,8 @@ public class SaleRecordVO {
   private String record_type;
   private String product_name;
   private String product_type;
+  private Integer customer_id;
+  private String operator;
   private Integer amount;
   private BigDecimal unit_price;
   private BigDecimal total_price;

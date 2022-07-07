@@ -1,6 +1,7 @@
 package com.nju.edu.erp.service.Impl;
 
 import com.nju.edu.erp.dao.PromotionDao;
+import com.nju.edu.erp.model.po.promotion.PackageStrategyContentPO;
 import com.nju.edu.erp.model.po.promotion.PackageStrategyPO;
 import com.nju.edu.erp.model.po.promotion.PriceStrategyPO;
 import com.nju.edu.erp.model.po.promotion.UserStrategyPO;
@@ -42,6 +43,17 @@ public class PromotionServiceImpl implements PromotionService {
   public void createPackageStrategy(PackageStrategyVO packageStrategyVO) {
     PackageStrategyPO packageStrategyPO = new PackageStrategyPO();
     BeanUtils.copyProperties(packageStrategyVO, packageStrategyPO);
+    PackageStrategyPO latest = promotionDao.findLatest();
+    Integer id = latest.getId() + 1;
+    List<PackageStrategyContentPO> pos = new ArrayList<>();
+    for (int i = 0; i < packageStrategyVO.getProduct_id().size(); i++) {
+      PackageStrategyContentPO po = new PackageStrategyContentPO();
+      po.setPackage_strategy_id(id);
+      po.setProduct_id(packageStrategyVO.getProduct_id().get(i));
+      po.setProduct_amount(packageStrategyVO.getProduct_amount().get(i));
+      pos.add(po);
+    }
+    promotionDao.savePackageContents(pos);
     promotionDao.savePackageStrategy(packageStrategyPO);
   }
 

@@ -1,5 +1,6 @@
 package com.nju.edu.erp.dao;
 
+import com.nju.edu.erp.model.po.promotion.PackageStrategyContentPO;
 import com.nju.edu.erp.model.po.promotion.PackageStrategyPO;
 import com.nju.edu.erp.model.po.promotion.PriceStrategyPO;
 import com.nju.edu.erp.model.po.promotion.UserStrategyPO;
@@ -16,10 +17,16 @@ public interface PromotionDao {
 
   int savePackageStrategy(PackageStrategyPO packageStrategyPO);
 
+  int savePackageContents(List<PackageStrategyContentPO> contentPOS);
+
   List<UserStrategyPO> findAllUserStrategy();
 
   List<PriceStrategyPO> findAllPriceStrategy();
 
   List<PackageStrategyPO> findAllPackageStrategy();
+
+  List<PackageStrategyContentPO> findPackageContentsById(Integer id);
+
+  PackageStrategyPO findLatest();
 
 }

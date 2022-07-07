@@ -54,6 +54,8 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setTotal_price(contentPO.getTotalPrice());
         recordVO.setSale_time(sheetPO.getCreate_time());
         recordVO.setAmount(contentPO.getQuantity());
+        recordVO.setOperator(sheetPO.getOperator());
+        recordVO.setCustomer_id(sheetPO.getSupplier());
         all.add(recordVO);
       }
     }
@@ -67,6 +69,7 @@ public class SaleDetailServiceImpl implements SaleDetailService {
 
     for (SaleReturnSheetPO sheetPO : all_saleReturn_sheets) {
       List<SaleReturnSheetContentPO> contentPOS = saleReturnSheetDao.findContentBySaleReturnSheetId(sheetPO.getId());
+      SaleSheetPO saleSheetPO = saleSheetDao.findSheetById(sheetPO.getSaleSheetID());
       for (SaleReturnSheetContentPO contentPO : contentPOS) {
         ProductPO productPO = productDao.findById(contentPO.getPid());
         SaleRecordVO recordVO = new SaleRecordVO();
@@ -77,7 +80,12 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setTotal_price(contentPO.getTotalPrice());
         recordVO.setSale_time(sheetPO.getCreate_time());
         recordVO.setAmount(contentPO.getQuantity());
+<<<<<<< HEAD
         System.out.println(recordVO.getAmount());
+=======
+        recordVO.setOperator(sheetPO.getOperator());
+        recordVO.setCustomer_id(saleSheetPO.getSupplier());
+>>>>>>> d2725400ce4c18421ee76a8f9505c002b0f4dd9f
         all.add(recordVO);
       }
     }
