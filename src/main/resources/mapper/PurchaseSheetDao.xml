@@ -39,6 +39,16 @@
         </foreach>
     </insert>
 
+    <!-- 7.5 经营情况表新增   -->
+    <select id="getTotalAmountByTime" resultType="java.math.BigDecimal">
+        select sum(total_amount)
+        from purchase_sheet
+        where state = '审批完成'
+        and create_time &lt;= #{endTime}
+        and create_time &gt;= #{beginTime};
+    </select>
+    <!-- 7.5 经营情况表新增   -->
+
     <resultMap id="PurchaseSheetPO" type="com.nju.edu.erp.model.po.PurchaseSheetPO">
         <id column="id" property="id"></id>
         <result column="supplier" property="supplier"></result>
