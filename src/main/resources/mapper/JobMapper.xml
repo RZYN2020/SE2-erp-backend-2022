@@ -13,14 +13,13 @@
     <update id="update" parameterType="JobPO">
         update job
         <set>
-            <if test = "jobLevel != null">`job_level` = #{jobLevel}, </if>
             <if test = "basicSalary != null">`basic_salary` = #{basicSalary}, </if>
             <if test = "jobSalary != null">`job_salary` = #{jobSalary}, </if>
             <if test = "calculateMethod != null">`calculate_method` = #{calculateMethod}, </if>
             <if test = "paymentMethod != null">`payment_method` = #{paymentMethod}, </if>
 <!--            <if test = "taxMethod != null">`tax_method` = #{taxMethod}, </if>-->
         </set>
-        where name = #{name}
+        where `name` = #{name} and job_level = #{jobLevel}
     </update>
 
     <select id="findJobByKey" resultType="com.nju.edu.erp.model.po.JobPO">
