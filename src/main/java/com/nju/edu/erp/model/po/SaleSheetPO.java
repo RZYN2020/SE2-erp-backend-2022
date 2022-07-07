@@ -58,4 +58,8 @@ public class SaleSheetPO {
      * 创建时间
      */
     private Date create_time;
+
+    public Date getCreateTime() {
+        return null;
+    }
 }

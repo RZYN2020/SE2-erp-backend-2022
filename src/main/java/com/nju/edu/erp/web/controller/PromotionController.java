@@ -22,6 +22,7 @@ public class PromotionController {
 
   private final PromotionService promotionService;
   private final CouponDao couponDao;
+
   @Autowired
   public PromotionController(PromotionService promotionService, CouponDao couponDao) {
     this.promotionService = promotionService;

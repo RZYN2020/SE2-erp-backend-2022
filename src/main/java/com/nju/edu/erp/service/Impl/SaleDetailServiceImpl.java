@@ -80,8 +80,12 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setTotal_price(contentPO.getTotalPrice());
         recordVO.setSale_time(sheetPO.getCreate_time());
         recordVO.setAmount(contentPO.getQuantity());
+<<<<<<< HEAD
+        System.out.println(recordVO.getAmount());
+=======
         recordVO.setOperator(sheetPO.getOperator());
         recordVO.setCustomer_id(saleSheetPO.getSupplier());
+>>>>>>> d2725400ce4c18421ee76a8f9505c002b0f4dd9f
         all.add(recordVO);
       }
     }

@@ -9,6 +9,7 @@ import com.nju.edu.erp.model.vo.promotion.PackageStrategyVO;
 import com.nju.edu.erp.model.vo.promotion.PriceStrategyVO;
 import com.nju.edu.erp.model.vo.promotion.UserStrategyVO;
 import com.nju.edu.erp.service.PromotionService;
+import com.nju.edu.erp.utils.promotion.PromotionCtl;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +24,7 @@ public class PromotionServiceImpl implements PromotionService {
   @Autowired
   public PromotionServiceImpl(PromotionDao promotionDao) {
     this.promotionDao = promotionDao;
+    PromotionCtl.init(promotionDao);
   }
 
   @Override
@@ -30,6 +32,7 @@ public class PromotionServiceImpl implements PromotionService {
     UserStrategyPO userStrategyPO = new UserStrategyPO();
     BeanUtils.copyProperties(userStrategyVO, userStrategyPO);
     promotionDao.saveUserStrategy(userStrategyPO);
+    PromotionCtl.init(promotionDao);
   }
 
   @Override
@@ -37,6 +40,7 @@ public class PromotionServiceImpl implements PromotionService {
     PriceStrategyPO priceStrategyPO = new PriceStrategyPO();
     BeanUtils.copyProperties(priceStrategyVO, priceStrategyPO);
     promotionDao.savePriceStrategy(priceStrategyPO);
+    PromotionCtl.init(promotionDao);
   }
 
   @Override
@@ -60,6 +64,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
     promotionDao.savePackageContents(pos);
     promotionDao.savePackageStrategy(packageStrategyPO);
+    PromotionCtl.init(promotionDao);
   }
 
   @Override
