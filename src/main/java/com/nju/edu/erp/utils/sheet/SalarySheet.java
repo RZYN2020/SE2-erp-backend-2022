@@ -2,14 +2,13 @@ package com.nju.edu.erp.utils.sheet;
 
 import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.dao.JobDao;
+import com.nju.edu.erp.dao.SalaryGrantSheetDao;
 import com.nju.edu.erp.dao.SalarySheetDao;
+import com.nju.edu.erp.enums.sheetState.SalaryGrantSheetState;
 import com.nju.edu.erp.enums.sheetState.SalarySheetState;
 import com.nju.edu.erp.enums.sheetState.SaleReturnSheetState;
 import com.nju.edu.erp.enums.sheetState.SheetState;
-import com.nju.edu.erp.model.po.JobPO;
-import com.nju.edu.erp.model.po.PurchaseReturnsSheetPO;
-import com.nju.edu.erp.model.po.SalarySheetPO;
-import com.nju.edu.erp.model.po.SaleReturnSheetPO;
+import com.nju.edu.erp.model.po.*;
 import com.nju.edu.erp.model.vo.Salary.SalarySheetVO;
 import com.nju.edu.erp.model.vo.SaleReturns.SaleReturnSheetVO;
 import com.nju.edu.erp.model.vo.SheetVO;
@@ -21,18 +20,22 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.nju.edu.erp.utils.salary.CalculateMethod;
 import org.springframework.beans.BeanUtils;
 
 public class SalarySheet implements Sheet {
 
-  private SalarySheetDao salarySheetDao;
-  private EmployeeDao employeeDao;
-  private JobDao jobDao;
+  private final SalarySheetDao salarySheetDao;
+  private final EmployeeDao employeeDao;
+  private final JobDao jobDao;
+  private final SalaryGrantSheetDao salaryGrantSheetDao;
 
-  public SalarySheet(SalarySheetDao salarySheetDao, EmployeeDao employeeDao, JobDao jobDao) {
+  public SalarySheet(SalarySheetDao salarySheetDao, EmployeeDao employeeDao, JobDao jobDao, SalaryGrantSheetDao salaryGrantSheetDao) {
     this.salarySheetDao = salarySheetDao;
     this.employeeDao = employeeDao;
     this.jobDao = jobDao;
+    this.salaryGrantSheetDao = salaryGrantSheetDao;
   }
 
   @Override
@@ -103,11 +106,45 @@ public class SalarySheet implements Sheet {
       }
       int effectLines = salarySheetDao.updateStateV2(sheetId, salarySheetState, prevState);
       if (effectLines == 0) throw new RuntimeException("状态更新失败");
-      //如果工资单审批成功，则生成工资发放单
 
       //修改时间
       salarySheetPO.setCreate_time(new Date());
       salarySheetDao.saveSheet(salarySheetPO);
+
+      //如果工资单审批成功，则生成工资发放单
+      createSalaryGrantSheet(salarySheetPO);
+
     }
+  }
+
+  private void createSalaryGrantSheet(SalarySheetPO salarySheetPO) {
+    SalaryGrantSheetPO salaryGrantSheetPO = new SalaryGrantSheetPO();
+
+    int employeeId = salarySheetPO.getEmployee_id();
+    EmployeePO employeePO = employeeDao.findOneById(employeeId);
+    JobPO jobPO = jobDao.findJobByEmployee(employeeId);
+    int calculateMethod = jobPO.getCalculateMethod();
+    CalMethods.get(calculateMethod).calculate_payable(employeePO); // 税前
+    CalMethods.get(calculateMethod).doCalculate(employeePO); // 税后
+
+    // 单据编号
+
+    SalaryGrantSheetPO latest = salaryGrantSheetDao.getLatest();
+    String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "GZFFD");
+    salaryGrantSheetPO.setId(id);
+
+    //
+    salaryGrantSheetPO.setEmployeeId(employeeId);
+    salaryGrantSheetPO.setEmployeeName(employeePO.getName());
+    salaryGrantSheetPO.setEmployeeAccount(employeePO.getAccount());
+    salaryGrantSheetPO.setSalaryBeforeTax(CalMethods.get(calculateMethod).calculate_payable(employeePO));
+    salaryGrantSheetPO.setIncomeTax(salarySheetPO.getIncome_tax());
+    salaryGrantSheetPO.setInsurance(salarySheetPO.getInsurance());
+    salaryGrantSheetPO.setFund(salarySheetPO.getFund());
+    salaryGrantSheetPO.setRealSalary(CalMethods.get(calculateMethod).doCalculate(employeePO));
+    salaryGrantSheetPO.setState(SalaryGrantSheetState.PENDING);
+    salaryGrantSheetPO.setCreateTime(new Date());
+
+    salaryGrantSheetDao.saveSheet(salaryGrantSheetPO);
   }
 }

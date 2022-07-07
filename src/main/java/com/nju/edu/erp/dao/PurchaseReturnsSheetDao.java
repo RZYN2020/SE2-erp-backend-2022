@@ -6,6 +6,8 @@ import com.nju.edu.erp.model.po.PurchaseReturnsSheetPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -80,4 +82,6 @@ public interface PurchaseReturnsSheetDao {
      * @return 批次号
      */
     Integer findBatchId(String purchaseReturnsSheetId);
+
+    BigDecimal getTotalAmountByTime(Date beginTime, Date endTime);
 }

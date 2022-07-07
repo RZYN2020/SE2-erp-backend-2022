@@ -10,6 +10,7 @@ import com.nju.edu.erp.model.po.CustomerPurchaseAmountPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -87,4 +88,8 @@ public interface SaleSheetDao {
      * @return
      */
     CustomerPurchaseAmountPO getMaxAmountCustomerOfSalesmanByTime(String salesman, Date beginTime,Date endTime);
+
+    BigDecimal getTotalRawAmountByTime(Date beginTime, Date endTime);
+
+    BigDecimal getTotalFinalAmountByTime(Date beginTime, Date endTime);
 }

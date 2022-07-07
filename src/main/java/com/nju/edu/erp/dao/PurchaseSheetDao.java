@@ -6,6 +6,8 @@ import com.nju.edu.erp.model.vo.purchase.PurchaseSheetVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -50,4 +52,6 @@ public interface PurchaseSheetDao {
     PurchaseSheetPO findOneById(String purchaseSheetId);
 
     List<PurchaseSheetContentPO> findContentByPurchaseSheetId(String purchaseSheetId);
+
+    BigDecimal getTotalAmountByTime(Date beginTime, Date endTime);
 }
