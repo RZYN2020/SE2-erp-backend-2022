@@ -44,7 +44,12 @@ public class PromotionServiceImpl implements PromotionService {
     PackageStrategyPO packageStrategyPO = new PackageStrategyPO();
     BeanUtils.copyProperties(packageStrategyVO, packageStrategyPO);
     PackageStrategyPO latest = promotionDao.findLatest();
-    Integer id = latest.getId() + 1;
+    Integer id;
+    if (latest == null) {
+      id = 1;
+    } else {
+      id = latest.getId() + 1;
+    }
     List<PackageStrategyContentPO> pos = new ArrayList<>();
     for (int i = 0; i < packageStrategyVO.getProduct_id().size(); i++) {
       PackageStrategyContentPO po = new PackageStrategyContentPO();
@@ -86,9 +91,18 @@ public class PromotionServiceImpl implements PromotionService {
     List<PackageStrategyPO> packageStrategyPOS = promotionDao.findAllPackageStrategy();
     List<PackageStrategyVO> packageStrategyVOS = new ArrayList<>();
     for (PackageStrategyPO po : packageStrategyPOS) {
-      PackageStrategyVO userStrategyVO = new PackageStrategyVO();
-      BeanUtils.copyProperties(po, userStrategyVO);
-      packageStrategyVOS.add(userStrategyVO);
+      PackageStrategyVO packageStrategyVO = new PackageStrategyVO();
+      BeanUtils.copyProperties(po, packageStrategyVO);
+      List<PackageStrategyContentPO> contentPOS = promotionDao.findPackageContentsById(po.getId());
+      List<String> pid = new ArrayList<>();
+      List<Integer> amount = new ArrayList<>();
+      for (PackageStrategyContentPO contentPO : contentPOS) {
+        pid.add(contentPO.getProduct_id());
+        amount.add(contentPO.getProduct_amount());
+      }
+      packageStrategyVO.setProduct_id(pid);
+      packageStrategyVO.setProduct_amount(amount);
+      packageStrategyVOS.add(packageStrategyVO);
     }
     return packageStrategyVOS;
   }

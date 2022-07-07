@@ -1,6 +1,7 @@
 package com.nju.edu.erp.web.controller;
 
 import com.nju.edu.erp.auth.Authorized;
+import com.nju.edu.erp.dao.CouponDao;
 import com.nju.edu.erp.enums.Role;
 import com.nju.edu.erp.model.vo.promotion.PackageStrategyVO;
 import com.nju.edu.erp.model.vo.promotion.PriceStrategyVO;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,10 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PromotionController {
 
   private final PromotionService promotionService;
-
+  private final CouponDao couponDao;
   @Autowired
-  public PromotionController(PromotionService promotionService) {
+  public PromotionController(PromotionService promotionService, CouponDao couponDao) {
     this.promotionService = promotionService;
+    this.couponDao = couponDao;
   }
 
   @Authorized(roles = {Role.GM, Role.ADMIN})
@@ -62,5 +65,11 @@ public class PromotionController {
   @GetMapping(value = "/price/show-all")
   public Response showPriceStrategy() {
     return Response.buildSuccess(promotionService.getAllPriceStrategy());
+  }
+
+  @Authorized(roles = {Role.GM, Role.ADMIN, Role.SALE_STAFF, Role.SALE_MANAGER})
+  @GetMapping(value = "/coupon/show")
+  public Response getCoupons(@RequestParam Integer customer_id) {
+    return Response.buildSuccess(couponDao.findByCustomer(customer_id));
   }
 }
