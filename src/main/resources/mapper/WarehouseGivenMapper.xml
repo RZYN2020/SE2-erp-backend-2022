@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.WarehouseGivenSheetDao">
+
+  <insert id="saveSheet">
+    insert into warehouse_given_sheet (id, sale_sheet_id, operator, create_time, `state`)
+    values (#{id}, #{saleSheetId}, #{operator}, #{create_time}, #{state}) ;
+  </insert>
+
+  <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id">
+    insert into warehouse_given_sheet (warehouse_given_sheet_id, pid, amount) values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.warehouse_given_sheet_id},#{item.pid},#{item.amount})
+    </foreach>
+  </insert>
+
+  <select id="getLatest" resultMap="WarehouseGivenSheetPO">
+    select * from warehouse_given_sheet order by id desc limit 0,1 ;
+  </select>
+
+  <select id="findAll" resultMap="WarehouseGivenSheetPO">
+    select * from warehouse_given_sheet;
+  </select>
+
+  <select id="findAllByState" resultMap="WarehouseGivenSheetPO">
+    select * from warehouse_given_sheet where `state` = #{state}
+  </select>
+
+  <select id="findContentById" resultMap="WarehouseGivenSheetContentPO">
+    select * from warehouse_given_sheet_content where warehouse_given_sheet_id = #{id}
+  </select>
+
+  <select id="getSheetById" resultMap="WarehouseGivenSheetPO">
+    select * from warehouse_given_sheet where id = #{id}
+  </select>
+
+  <update id="updateState">
+    update warehouse_given_sheet
+    set state = #{state}
+    where id = #{id}
+  </update>
+
+  <update id="updateStateV2">
+    update warehouse_given_sheet
+    set state = #{state}
+    where id = #{id} and state = #{prevState}
+  </update>
+
+  <resultMap id="WarehouseGivenSheetPO" type="com.nju.edu.erp.model.po.WarehouseGivenSheetPO">
+    <id column="id" property="id"></id>
+    <result column="operator" property="operator"></result>
+    <result column="sale_sheet_id" property="saleSheetId"></result>
+    <result column="create_time" property="create_time"></result>
+    <result column="state" property="state"></result>
+  </resultMap>
+
+  <resultMap id="WarehouseGivenSheetContentPO" type="com.nju.edu.erp.model.po.WarehouseGivenSheetContentPO">
+    <id column="id" property="id"></id>
+    <result column="warehouse_given_sheet_id" property="warehouse_given_sheet_id"></result>
+    <result column="pid" property="pid"></result>
+    <result column="amount" property="amount"></result>
+  </resultMap>
+
+</mapper>

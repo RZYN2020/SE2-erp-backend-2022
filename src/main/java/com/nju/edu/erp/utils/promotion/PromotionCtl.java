@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class PromotionCtl {
 
-  private static List<PromotionStrategy> strategyList;
+  public static List<PromotionStrategy> strategyList;
 
   private static PromotionDao promotionDao;
 

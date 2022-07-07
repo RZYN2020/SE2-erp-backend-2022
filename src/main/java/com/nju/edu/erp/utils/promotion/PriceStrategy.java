@@ -1,5 +1,6 @@
 package com.nju.edu.erp.utils.promotion;
 
+import com.nju.edu.erp.model.po.CustomerPO;
 import com.nju.edu.erp.model.vo.CustomerVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetContentVO;
 import com.nju.edu.erp.model.vo.Sale.SaleSheetVO;
@@ -25,7 +26,7 @@ public class PriceStrategy extends PromotionStrategy{
   }
 
   @Override
-  public boolean checkEffect(CustomerVO customerVO, List<SaleSheetContentVO> contentVOS) {
+  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS) {
     BigDecimal rawAmount = BigDecimal.ZERO;
     for (SaleSheetContentVO vo : contentVOS) {
       rawAmount.add(vo.getTotalPrice());
