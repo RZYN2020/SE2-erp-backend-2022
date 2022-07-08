@@ -1,6 +1,7 @@
 package com.nju.edu.erp.service;
 
 
+import com.nju.edu.erp.enums.Role;
 import com.nju.edu.erp.model.po.EmployeePO;
 import com.nju.edu.erp.model.vo.EmployeeVO;
 import com.nju.edu.erp.model.vo.UserVO;
@@ -45,8 +46,10 @@ public class EmployeeServiceTest {
         Assertions.assertEquals(employeeVO.getJobLevel(), target.getJobLevel());
         Assertions.assertEquals(employeeVO.getAccount(), target.getAccount());
 
-        UserVO userVO = employeeService.findUserByEmployeeId(2);
-        System.out.println("赵咣");
+        UserVO userVO = employeeService.findUserByEmployeeId(10);
+        Assertions.assertEquals("哈队", userVO.getName());
+        Assertions.assertEquals(Role.SALE_MANAGER, userVO.getRole());
+        Assertions.assertEquals("123456", userVO.getPassword());
     }
 
     @Test
