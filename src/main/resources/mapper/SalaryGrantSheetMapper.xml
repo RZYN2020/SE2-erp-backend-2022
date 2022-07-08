@@ -35,6 +35,16 @@
         values (#{id}, #{employeeId}, #{employeeName}, #{employeeAccount}, #{salaryBeforeTax}, #{incomeTax}, #{insurance}, #{fund}, #{realSalary}, #{state}, #{createTime}) ;
     </insert>
 
+    <select id="getSheetByEmployeeId" resultMap="SalaryGrantSheetPO">
+        select * from salary_grant_sheet where employee_id = #{employeeId};
+    </select>
+
+    <update id="addAwards">
+        update salary_grant_sheet
+        set real_salary = real_salary + addAwards
+        where id = #{id}
+    </update>
+
     <resultMap id="SalaryGrantSheetPO" type="com.nju.edu.erp.model.po.SalaryGrantSheetPO">
         <id column="id" property="id"></id>
         <result column="employee_id" property="employeeId"></result>
