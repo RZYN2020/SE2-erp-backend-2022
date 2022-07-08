@@ -23,6 +23,7 @@ public class SalaryServiceImpl implements SalaryService {
   private JobDao jobDao;
   private SalaryGrantSheetDao salaryGrantSheetDao;
 
+
   public SalaryServiceImpl(SalarySheetDao salarySheetDao, EmployeeDao employeeDao, JobDao jobDao,
       SalaryGrantSheetDao salaryGrantSheetDao) {
     this.salarySheetDao = salarySheetDao;
