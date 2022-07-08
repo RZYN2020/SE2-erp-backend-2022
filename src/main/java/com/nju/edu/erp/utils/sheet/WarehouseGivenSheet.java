@@ -51,7 +51,7 @@ public class WarehouseGivenSheet implements Sheet{
       po.setWarehouse_given_sheet_id(warehouseGivenSheetPO.getId());
       pos.add(po);
     }
-
+    warehouseGivenSheetDao.saveBatch(pos);
     warehouseGivenSheetDao.saveSheet(warehouseGivenSheetPO);
   }
 
@@ -74,6 +74,7 @@ public class WarehouseGivenSheet implements Sheet{
         BeanUtils.copyProperties(contentPO, contentVO);
         vos.add(contentVO);
       }
+      vo.setProducts(vos);
       res.add(vo);
     }
     return res;
@@ -96,14 +97,21 @@ public class WarehouseGivenSheet implements Sheet{
       int effectLines = warehouseGivenSheetDao.updateV2(sheetId, prevState, warehouseGivenSheetState);
       if (effectLines == 0) throw new RuntimeException("状态更新失败");
       //修改时间
-      warehouseGivenSheetPO.setCreate_time(new Date());
-      warehouseGivenSheetDao.saveSheet(warehouseGivenSheetPO);
+//      warehouseGivenSheetPO.setCreate_time(new Date());
+//      warehouseGivenSheetDao.saveSheet(warehouseGivenSheetPO);
       //减去库存
       for (WarehouseGivenSheetContentPO po : warehouseGivenSheetDao.findContentById(warehouseGivenSheetPO.getId())) {
         List<WarehousePO> warehousePOS = warehouseDao.findByPidOrderByPurchasePricePos(po.getPid());
         if (warehousePOS.size() == 0) throw new RuntimeException("库存不足");
-        WarehousePO warehousePO = warehousePOS.get(0);
-        warehousePO.setQuantity(warehousePO.getQuantity() - po.getAmount());
+        WarehousePO warehousePO = null;
+        for (WarehousePO item : warehousePOS) {
+          if (item.getQuantity() >= po.getAmount()) {
+            warehousePO = item;
+            break;
+          }
+        }
+        if (warehousePO == null) throw new RuntimeException("库存不足");
+        warehousePO.setQuantity(po.getAmount());
         warehouseDao.deductQuantity(warehousePO);
       }
     }

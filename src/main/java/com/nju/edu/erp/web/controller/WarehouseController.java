@@ -92,10 +92,10 @@ public class WarehouseController {
 
     @GetMapping("/givenSheet/approve")
     @Authorized(roles = {Role.ADMIN, Role.GM})
-    public Response warehouseGivenSheetApprove(UserVO userVO, @RequestParam(value = "sheetId") String sheetId,
+    public Response warehouseGivenSheetApprove(UserVO userVO, @RequestParam(value = "id") String id,
         @RequestParam(value = "state") WarehouseGivenSheetState state) {
         if (state.equals(WarehouseGivenSheetState.FAILURE) || state.equals(WarehouseGivenSheetState.SUCCESS.SUCCESS)) {
-            warehouseGivenService.approval(sheetId, state);
+            warehouseGivenService.approval(id, state);
         }
         else {
             throw new MyServiceException("C00001", "越权访问！");
@@ -105,7 +105,7 @@ public class WarehouseController {
 
     @GetMapping("/givenSheet/sheet-show")
     @Authorized(roles = {Role.ADMIN, Role.GM})
-    public Response warehouseGivenSheetShow(@RequestParam(value = "state" , required = false) WarehouseGivenSheetState state) {
+    public Response warehouseGivenSheetShow(@RequestParam(value = "state", required = false) WarehouseGivenSheetState state) {
        return Response.buildSuccess(warehouseGivenService.getSheetByState(state));
     }
 

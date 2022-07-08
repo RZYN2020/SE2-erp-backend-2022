@@ -11,7 +11,7 @@
   </delete>
 
   <insert id="addOne">
-    insert into coupon(customer_id, amount) values(#{customer_id}, #{amount})
+    insert into coupons(customer_id, amount) values(#{customer_id}, #{amount})
   </insert>
 
   <resultMap id="CouponPO" type="com.nju.edu.erp.model.po.promotion.CouponPO">

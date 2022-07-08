@@ -1,5 +1,6 @@
 package com.nju.edu.erp.model.vo.warehouse;
 
+import com.nju.edu.erp.enums.sheetState.WarehouseGivenSheetState;
 import com.nju.edu.erp.model.vo.SheetVO;
 import java.util.Date;
 import java.util.List;
@@ -17,5 +18,6 @@ public class WarehouseGivenSheetVO implements SheetVO {
   private String operator;
   private String saleSheetId;
   private Date create_time;
+  private WarehouseGivenSheetState state;
   private List<WarehouseGivenSheetContentVO> products;
 }

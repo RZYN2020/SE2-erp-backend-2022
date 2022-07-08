@@ -8,7 +8,6 @@ import com.nju.edu.erp.model.vo.promotion.PriceStrategyVO;
 import com.nju.edu.erp.model.vo.promotion.UserStrategyVO;
 import com.nju.edu.erp.service.PromotionService;
 import com.nju.edu.erp.web.Response;
-import org.junit.runners.Parameterized.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class PromotionController {
 
   private final PromotionService promotionService;
-
   private final CouponDao couponDao;
 
   @Autowired
