@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.PromotionDao">
+
+  <insert id="saveUserStrategy">
+    insert into user_strategy(id, effect_level, product_id, product_amount, coupon, discount, begin_date, end_date)
+    values(#{id}, #{effect_level}, #{product_id}, #{product_amount}, #{coupon}, #{discount}, #{begin_date}, #{end_date})
+  </insert>
+
+  <insert id="savePriceStrategy">
+    insert into price_strategy(id, effect_price, product_id, product_amount, coupon, begin_date, end_date)
+    values(#{id}, #{effect_price}, #{product_id}, #{product_amount}, #{coupon}, #{begin_date}, #{end_date})
+  </insert>
+
+  <insert id="savePackageStrategy" >
+    insert into package_strategy(id, voucher_amount, begin_date, end_date)
+    values(#{id}, #{voucher_amount}, #{begin_date}, #{end_date})
+  </insert>
+
+  <insert id="savePackageContents" useGeneratedKeys="true" keyProperty="id">
+    insert into package_strategy_content (package_strategy_id, product_id, product_amount) values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.package_strategy_id},#{item.product_id},#{item.product_amount})
+    </foreach>
+  </insert>
+
+  <select id="findAllUserStrategy" resultMap="UserStrategyPO">
+    select * from user_strategy;
+  </select>
+
+  <select id="findAllPackageStrategy" resultMap="PackageStrategyPO">
+    select * from package_strategy;
+  </select>
+
+  <select id="findAllPriceStrategy" resultMap="PriceStrategyPO">
+    select * from price_strategy;
+  </select>
+
+  <select id="findPackageContentsById" resultMap="PackageStrategyContentPO">
+    select * from package_strategy_content where package_strategy_id = #{id}
+  </select>
+  <select id="findLatest" resultMap="PackageStrategyPO">
+    select * from package_strategy order by id desc limit 0,1
+  </select>
+
+  <resultMap id="UserStrategyPO" type="com.nju.edu.erp.model.po.promotion.UserStrategyPO">
+    <id column="id" property="id"></id>
+    <result column="effect_level" property="effect_level"></result>
+    <result column="product_id" property="product_id"></result>
+    <result column="product_amount" property="product_amount"></result>
+    <result column="coupon" property="coupon"></result>
+    <result column="discount" property="discount"></result>
+    <result column="begin_date" property="begin_date"></result>
+    <result column="end_date" property="end_date"></result>
+  </resultMap>
+
+  <resultMap id="PackageStrategyPO" type="com.nju.edu.erp.model.po.promotion.PackageStrategyPO">
+    <id column="id" property="id"></id>
+    <result column="voucher_amount" property="voucher_amount"></result>
+    <result column="begin_date" property="begin_date"></result>
+    <result column="end_date" property="end_date"></result>
+  </resultMap>
+
+  <resultMap id="PackageStrategyContentPO" type="com.nju.edu.erp.model.po.promotion.PackageStrategyContentPO">
+    <id column="id" property="id"></id>
+    <result column="package_strategy_id" property="package_strategy_id"></result>
+    <result column="product_id" property="product_id"></result>
+    <result column="product_amount" property="product_amount"></result>
+  </resultMap>
+
+  <resultMap id="PriceStrategyPO" type="com.nju.edu.erp.model.po.promotion.PriceStrategyPO">
+    <id column="id" property="id"></id>
+    <result column="effect_price" property="effect_price"></result>
+    <result column="product_id" property="product_id"></result>
+    <result column="product_amount" property="product_amount"></result>
+    <result column="coupon" property="coupon"></result>
+    <result column="begin_date" property="begin_date"></result>
+    <result column="end_date" property="end_date"></result>
+  </resultMap>
+
+</mapper>

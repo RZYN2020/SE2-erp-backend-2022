@@ -2,12 +2,14 @@ package com.nju.edu.erp.web.controller;
 
 import com.nju.edu.erp.auth.Authorized;
 import com.nju.edu.erp.enums.Role;
+import com.nju.edu.erp.enums.sheetState.WarehouseGivenSheetState;
 import com.nju.edu.erp.enums.sheetState.WarehouseInputSheetState;
 import com.nju.edu.erp.enums.sheetState.WarehouseOutputSheetState;
 import com.nju.edu.erp.exception.MyServiceException;
 import com.nju.edu.erp.model.po.*;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.model.vo.warehouse.GetWareProductInfoParamsVO;
+import com.nju.edu.erp.service.WarehouseGivenService;
 import com.nju.edu.erp.service.WarehouseService;
 import com.nju.edu.erp.utils.ExcelService;
 import com.nju.edu.erp.web.Response;
@@ -28,10 +30,12 @@ import java.util.List;
 public class WarehouseController {
 
     public WarehouseService warehouseService;
+    public WarehouseGivenService warehouseGivenService;
 
     @Autowired
-    public WarehouseController(WarehouseService warehouseService) {
+    public WarehouseController(WarehouseService warehouseService, WarehouseGivenService warehouseGivenService) {
         this.warehouseService = warehouseService;
+        this.warehouseGivenService = warehouseGivenService;
     }
 
 //    // 已废弃, 出库入库现在与销售进货关联
@@ -84,6 +88,25 @@ public class WarehouseController {
             throw new MyServiceException("C00001", "越权访问！");
         }
         return Response.buildSuccess();
+    }
+
+    @GetMapping("/givenSheet/approve")
+    @Authorized(roles = {Role.ADMIN, Role.GM})
+    public Response warehouseGivenSheetApprove(UserVO userVO, @RequestParam(value = "id") String id,
+        @RequestParam(value = "state") WarehouseGivenSheetState state) {
+        if (state.equals(WarehouseGivenSheetState.FAILURE) || state.equals(WarehouseGivenSheetState.SUCCESS.SUCCESS)) {
+            warehouseGivenService.approval(id, state);
+        }
+        else {
+            throw new MyServiceException("C00001", "越权访问！");
+        }
+        return Response.buildSuccess();
+    }
+
+    @GetMapping("/givenSheet/sheet-show")
+    @Authorized(roles = {Role.ADMIN, Role.GM})
+    public Response warehouseGivenSheetShow(@RequestParam(value = "state", required = false) WarehouseGivenSheetState state) {
+       return Response.buildSuccess(warehouseGivenService.getSheetByState(state));
     }
 
     @GetMapping("/inputSheet/state")
