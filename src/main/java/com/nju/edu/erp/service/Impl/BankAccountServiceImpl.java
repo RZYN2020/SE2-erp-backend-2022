@@ -22,6 +22,11 @@ public class BankAccountServiceImpl implements BankAccountService {
         this.bankAccountDao = bankAccountDao;
     }
 
+    /**
+     * 创建公司银行账户
+     * @param inputVO
+     * @return BankAccountVO
+     */
     @Override
     public BankAccountVO createBankAccount(BankAccountVO inputVO) {
         BankAccountPO savePO = new BankAccountPO();
@@ -35,9 +40,13 @@ public class BankAccountServiceImpl implements BankAccountService {
         return ans;
     }
 
+    /**
+     * 根据账户名删除公司银行账户
+     * @param accountName
+     * @return
+     */
     @Override
     public void delete(String accountName) {
-
         BankAccountPO bankAccountPOToDelete = bankAccountDao.findOneByAccountName(accountName);
         if (bankAccountPOToDelete == null) {
             throw new MyServiceException("F0000", "不存在该账户 删除失败！");
@@ -48,6 +57,9 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     }
 
+    /**
+     * 查询所有公司银行账户
+     */
     @Override
     public List<BankAccountVO> findAll() {
         List<BankAccountPO> bankAccountPOList = bankAccountDao.findAll();

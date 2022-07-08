@@ -1,8 +1,8 @@
 package com.nju.edu.erp.enums;
 
 public enum PaymentMethod implements BaseEnum<CustomerType, String>{
-  Yearly("月薪制"),
-  Monthly("年薪制");
+  Yearly("年薪制"),
+  Monthly("月薪制");
 
   private final String value;
 

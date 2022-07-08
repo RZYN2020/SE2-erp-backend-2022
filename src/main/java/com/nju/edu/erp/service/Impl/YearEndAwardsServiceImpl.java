@@ -32,6 +32,10 @@ public class YearEndAwardsServiceImpl implements YearEndAwardsService {
         this.employeeDao = employeeDao;
     }
 
+    /**
+     * 获取全部员工年终奖信息
+     * @return List<YearEndAwardsVO>
+     */
     @Override
     public List<YearEndAwardsVO> findAllYearEndSalary() {
         List<EmployeePO> employeePOList = employeeDao.findAll();
@@ -69,6 +73,10 @@ public class YearEndAwardsServiceImpl implements YearEndAwardsService {
         return sum;
     }
 
+    /**
+     * 给指定员工发放指定金额年终奖
+     * @param employeeId, awards
+     */
     @Override
     public void establishYearEndAwards(Integer employeeId, BigDecimal awards) {
         int thisYear = getYear(new Date());
@@ -84,11 +92,19 @@ public class YearEndAwardsServiceImpl implements YearEndAwardsService {
         }
     }
 
+    /**
+     * 获取给定Date年份
+     * @return 年份
+     */
     private int getYear(Date date) {
         String[] tmp = date.toString().split(" ");
         return Integer.parseInt(tmp[tmp.length - 1]);
     }
 
+    /**
+     * 判断给定的Date是不是12月（关系到年终奖制定）
+     * @return true or false
+     */
     private boolean isDec(Date date) {
         String[] tmp = date.toString().split(" ");
         return tmp[1].equals("Dec");
