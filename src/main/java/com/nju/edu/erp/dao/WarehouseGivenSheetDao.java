@@ -5,6 +5,7 @@ import com.nju.edu.erp.model.po.SaleSheetContentPO;
 import com.nju.edu.erp.model.po.WarehouseGivenSheetContentPO;
 import com.nju.edu.erp.model.po.WarehouseGivenSheetPO;
 import com.nju.edu.erp.utils.sheet.WarehouseGivenSheet;
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -30,4 +31,6 @@ public interface WarehouseGivenSheetDao {
   int update(String id, WarehouseGivenSheetState state);
 
   int updateV2(String id, WarehouseGivenSheetState prevState, WarehouseGivenSheetState state);
+
+  int updateDate(String id, Date create_time);
 }

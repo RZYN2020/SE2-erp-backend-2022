@@ -20,6 +20,12 @@
         where id = #{id}
     </update>
 
+    <update id="updateDate">
+        update salary_grant_sheet
+        set create_time = #{create_time}
+        where id = #{id}
+    </update>
+
     <update id="updateStateV2">
         update salary_grant_sheet
         set state = #{state}
@@ -34,6 +40,16 @@
         insert into salary_grant_sheet (`id`, employee_id, `employee_name`, `employee_account`, salary_before_tax, income_tax, insurance, fund, real_salary, `state`, create_time)
         values (#{id}, #{employeeId}, #{employeeName}, #{employeeAccount}, #{salaryBeforeTax}, #{incomeTax}, #{insurance}, #{fund}, #{realSalary}, #{state}, #{createTime}) ;
     </insert>
+
+    <select id="getSheetByEmployeeId" resultMap="SalaryGrantSheetPO">
+        select * from salary_grant_sheet where employee_id = #{employeeId};
+    </select>
+
+    <update id="addAwards">
+        update salary_grant_sheet
+        set real_salary = real_salary + addAwards
+        where id = #{id}
+    </update>
 
     <resultMap id="SalaryGrantSheetPO" type="com.nju.edu.erp.model.po.SalaryGrantSheetPO">
         <id column="id" property="id"></id>

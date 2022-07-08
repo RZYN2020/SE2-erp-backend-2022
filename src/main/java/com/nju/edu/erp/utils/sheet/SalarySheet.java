@@ -4,9 +4,11 @@ import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.dao.JobDao;
 import com.nju.edu.erp.dao.SalaryGrantSheetDao;
 import com.nju.edu.erp.dao.SalarySheetDao;
+import com.nju.edu.erp.dao.SaleSheetDao;
 import com.nju.edu.erp.enums.sheetState.SalaryGrantSheetState;
 import com.nju.edu.erp.enums.sheetState.SalarySheetState;
 import com.nju.edu.erp.enums.sheetState.SaleReturnSheetState;
+import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.enums.sheetState.SheetState;
 import com.nju.edu.erp.model.po.*;
 import com.nju.edu.erp.model.vo.Salary.SalarySheetVO;
@@ -15,6 +17,7 @@ import com.nju.edu.erp.model.vo.SheetVO;
 import com.nju.edu.erp.model.vo.TaxVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.utils.IdGenerator;
+import com.nju.edu.erp.utils.ObjectUtils;
 import com.nju.edu.erp.utils.salary.CalMethods;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,18 +33,28 @@ public class SalarySheet implements Sheet {
   private final EmployeeDao employeeDao;
   private final JobDao jobDao;
   private final SalaryGrantSheetDao salaryGrantSheetDao;
+  private final SaleSheetDao saleSheetDao;
+  private static final BigDecimal ratio = new BigDecimal(0.01);
 
-  public SalarySheet(SalarySheetDao salarySheetDao, EmployeeDao employeeDao, JobDao jobDao, SalaryGrantSheetDao salaryGrantSheetDao) {
+  public SalarySheet(SalarySheetDao salarySheetDao, EmployeeDao employeeDao,
+      JobDao jobDao, SalaryGrantSheetDao salaryGrantSheetDao
+  , SaleSheetDao saleSheetDao) {
     this.salarySheetDao = salarySheetDao;
     this.employeeDao = employeeDao;
     this.jobDao = jobDao;
     this.salaryGrantSheetDao = salaryGrantSheetDao;
+    this.saleSheetDao = saleSheetDao;
   }
 
   @Override
   public void makeSheet(UserVO userVO, SheetVO sheetVO) {
-    assert sheetVO instanceof SalarySheetVO;
+    assert sheetVO instanceof SalarySheetVO; //保证类型转换的正确性
     SalarySheetVO salarySheetVO = (SalarySheetVO) sheetVO;
+    /************前置条件***************/
+    assert salarySheetVO.getOperator() != null && salarySheetVO.getEmployee_id() != null &&
+        salarySheetVO.getEmployee_name() != null;
+    /*********保证外部资源可靠性************/
+
     SalarySheetPO salarySheetPO = new SalarySheetPO();
     BeanUtils.copyProperties(salarySheetVO, salarySheetPO);
 
@@ -53,13 +66,29 @@ public class SalarySheet implements Sheet {
     JobPO jobPO = jobDao.findJobByEmployee(salarySheetPO.getEmployee_id());
     salarySheetPO.setBasic_salary(jobPO.getBasicSalary());
     salarySheetPO.setJob_salary(jobPO.getJobSalary());
-    salarySheetPO.setCommission(new BigDecimal(0)); //TODO:提成策略
+    //计算提成, 规则:该销售员在过去30天内参与的所有销售单金额 * ratio
+    List<SaleSheetPO> saleSheetPOList = saleSheetDao.findAllByState(SaleSheetState.SUCCESS);
+    BigDecimal totalSaleAmount = BigDecimal.ZERO;
+    Date monthBefore = new Date(System.currentTimeMillis() - 30 * 24 * 60 * 60 * 1000);
+    for (SaleSheetPO saleSheetPO : saleSheetPOList) {
+      assert saleSheetPO.getCreate_time() != null; //已经审批完成，应该具有日期
+      if (saleSheetPO.getCreate_time().after(monthBefore)) {
+        totalSaleAmount = totalSaleAmount.add(saleSheetPO.getFinalAmount());
+      }
+    }
+    salarySheetPO.setCommission(totalSaleAmount.multiply(ratio));
     TaxVO taxVO = CalMethods.get(jobPO.getCalculateMethod()).calculate_tax(employeeDao.findOneById(salarySheetPO.getEmployee_id()));
     salarySheetPO.setFund(taxVO.getFund());
     salarySheetPO.setIncome_tax(taxVO.getIncome_tax());
     salarySheetPO.setInsurance(taxVO.getInsurance());
 
-    salarySheetDao.saveSheet(salarySheetPO);
+    int effectLine = salarySheetDao.saveSheet(salarySheetPO);
+
+    /************后置条件***************/
+    assert effectLine > 0; //确保持久化成功
+    assert salarySheetPO.getBasic_salary() != null && salarySheetPO.getJob_salary() != null
+        && salarySheetPO.getFund() != null && salarySheetPO.getInsurance() != null && salarySheetPO.getIncome_tax() != null;
+    /*********保证生效************/
   }
 
   @Override
@@ -76,6 +105,8 @@ public class SalarySheet implements Sheet {
       JobPO jobPO = jobDao.findJobByEmployee(po.getEmployee_id());
       SalarySheetVO vo = new SalarySheetVO();
       BeanUtils.copyProperties(po, vo);
+      EmployeePO employeePO = employeeDao.findOneById(po.getEmployee_id());
+      vo.setEmployee_name(employeePO.getName());
       TaxVO taxVO = new TaxVO();
       taxVO.setFund(po.getFund());
       taxVO.setIncome_tax(po.getIncome_tax());
@@ -83,6 +114,11 @@ public class SalarySheet implements Sheet {
       vo.setTax(taxVO);
       vo.setActual_paid(CalMethods.get(jobPO.getCalculateMethod()).doCalculate(employeeDao.findOneById(po.getEmployee_id())));
       res.add(vo);
+
+      /************后置条件***************/
+      assert vo.getOperator() != null && vo.getBasic_salary() != null && vo.getActual_paid() != null && vo.getEmployee_name() != null && vo.getState() != null &&
+          vo.getJob_salary() != null;
+      /*********保证生效************/
     }
 
     return res;
@@ -109,7 +145,8 @@ public class SalarySheet implements Sheet {
 
       //修改时间
       salarySheetPO.setCreate_time(new Date());
-      salarySheetDao.saveSheet(salarySheetPO);
+      effectLines = salarySheetDao.updateDate(salarySheetPO.getId(), new Date());
+      assert effectLines > 0;
 
       //如果工资单审批成功，则生成工资发放单
       createSalaryGrantSheet(salarySheetPO);
@@ -143,7 +180,6 @@ public class SalarySheet implements Sheet {
     salaryGrantSheetPO.setFund(salarySheetPO.getFund());
     salaryGrantSheetPO.setRealSalary(CalMethods.get(calculateMethod).doCalculate(employeePO));
     salaryGrantSheetPO.setState(SalaryGrantSheetState.PENDING);
-    salaryGrantSheetPO.setCreateTime(new Date());
 
     salaryGrantSheetDao.saveSheet(salaryGrantSheetPO);
   }

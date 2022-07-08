@@ -12,6 +12,11 @@ public class TaxMethod {
   private final static BigDecimal[] insurance_step = {new BigDecimal(100), new BigDecimal(200), new BigDecimal(300)};
   private final static BigDecimal[] fund_step = {new BigDecimal(100), new BigDecimal(200), new BigDecimal(300)};
 
+  /**
+   * 表驱动方式计算扣税信息，按应发工资梯度进行扣税
+   * @param payable
+   * @return
+   */
   public static TaxVO calculateTax(BigDecimal payable) {
     TaxVO ret = new TaxVO();
     int maxLevel = payable_step.length - 1;

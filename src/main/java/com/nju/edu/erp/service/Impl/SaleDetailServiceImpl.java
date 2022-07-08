@@ -3,6 +3,8 @@ package com.nju.edu.erp.service.Impl;
 import com.nju.edu.erp.dao.ProductDao;
 import com.nju.edu.erp.dao.SaleReturnSheetDao;
 import com.nju.edu.erp.dao.SaleSheetDao;
+import com.nju.edu.erp.enums.sheetState.SaleReturnSheetState;
+import com.nju.edu.erp.enums.sheetState.SaleSheetState;
 import com.nju.edu.erp.model.po.ProductPO;
 import com.nju.edu.erp.model.po.SaleReturnSheetContentPO;
 import com.nju.edu.erp.model.po.SaleReturnSheetPO;
@@ -40,7 +42,7 @@ public class SaleDetailServiceImpl implements SaleDetailService {
 
   private List<SaleRecordVO> findSaleRecords() {
     List<SaleRecordVO> all = new ArrayList<>();
-    List<SaleSheetPO> all_sale_sheets = saleSheetDao.findAllSheet();
+    List<SaleSheetPO> all_sale_sheets = saleSheetDao.findAllByState(SaleSheetState.SUCCESS);
 
     for (SaleSheetPO sheetPO : all_sale_sheets) {
       List<SaleSheetContentPO> contentPOS = saleSheetDao.findContentBySheetId(sheetPO.getId());
@@ -57,6 +59,8 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setOperator(sheetPO.getOperator());
         recordVO.setCustomer_id(sheetPO.getSupplier());
         all.add(recordVO);
+        assert recordVO.getRecord_type() != null && recordVO.getProduct_name() != null && recordVO.getProduct_type() != null &&
+            recordVO.getOperator() != null && recordVO.getSale_time() != null && recordVO.getAmount() != null;
       }
     }
 
@@ -65,7 +69,8 @@ public class SaleDetailServiceImpl implements SaleDetailService {
 
   private List<SaleRecordVO> findSaleReturnRecords() {
     List<SaleRecordVO> all = new ArrayList<>();
-    List<SaleReturnSheetPO> all_saleReturn_sheets = saleReturnSheetDao.findAllSheet();
+    List<SaleReturnSheetPO> all_saleReturn_sheets = saleReturnSheetDao.findAllByState(
+        SaleReturnSheetState.SUCCESS);
 
     for (SaleReturnSheetPO sheetPO : all_saleReturn_sheets) {
       List<SaleReturnSheetContentPO> contentPOS = saleReturnSheetDao.findContentBySaleReturnSheetId(sheetPO.getId());
@@ -83,6 +88,8 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setOperator(sheetPO.getOperator());
         recordVO.setCustomer_id(saleSheetPO.getSupplier());
         all.add(recordVO);
+        assert recordVO.getRecord_type() != null && recordVO.getProduct_name() != null && recordVO.getProduct_type() != null &&
+            recordVO.getOperator() != null && recordVO.getSale_time() != null && recordVO.getAmount() != null;
       }
     }
 

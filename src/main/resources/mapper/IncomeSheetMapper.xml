@@ -46,6 +46,12 @@
     where id = #{id} and state = #{prevState}
   </update>
 
+  <update id="updateDate">
+    update income_sheet
+    set create_time = #{create_time}
+    where id = #{id}
+  </update>
+
   <resultMap id="IncomeSheetPO" type="com.nju.edu.erp.model.po.IncomeSheetPO">
     <id column="id" property="id"></id>
     <result column="operator" property="operator"></result>

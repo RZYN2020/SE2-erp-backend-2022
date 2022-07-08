@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class JobPO {
-    private String name; // 员工姓名
+    private String name; // 职位姓名
     private BigDecimal basicSalary; // 基本工资
     private BigDecimal jobSalary; // 岗位工资
     private Integer jobLevel; // 岗位级别

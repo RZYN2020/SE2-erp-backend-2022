@@ -7,14 +7,24 @@ import java.math.BigDecimal;
 public interface CalculateMethod {
 
   /**
-   * 计算employeePO的实发工资
+   * 计算employeePO的实发工资, 涉及应发工资、扣税和缺勤扣除等
    * @param employeePO
    * @return
    */
   BigDecimal doCalculate(EmployeePO employeePO); // 税后
 
+  /**
+   * 计算税款
+   * @param employeePO
+   * @return
+   */
   TaxVO calculate_tax(EmployeePO employeePO);
 
+  /**
+   * 计算应发工资
+   * @param employeePO
+   * @return
+   */
   BigDecimal calculate_payable(EmployeePO employeePO);  // 税前
 
   /**

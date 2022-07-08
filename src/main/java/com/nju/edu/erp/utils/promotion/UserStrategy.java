@@ -28,9 +28,9 @@ public class UserStrategy extends PromotionStrategy{
   }
 
   @Override
-  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS) {
+  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS, Date date) {
     assert customerPO.getLevel() != null;
-    return this.effect_level == customerPO.getLevel();
+    return this.effect_level == customerPO.getLevel() && date.before(this.end_date) && date.after(this.begin_date);
   }
 
   @Override

@@ -26,12 +26,12 @@ public class PriceStrategy extends PromotionStrategy{
   }
 
   @Override
-  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS) {
+  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS, Date date) {
     BigDecimal rawAmount = BigDecimal.ZERO;
     for (SaleSheetContentVO vo : contentVOS) {
       rawAmount = rawAmount.add(vo.getTotalPrice());
     }
-    return rawAmount.compareTo(this.effect_price) >= 0;
+    return rawAmount.compareTo(this.effect_price) >= 0 && date.after(this.begin_date) && date.before(this.end_date);
   }
 
   @Override

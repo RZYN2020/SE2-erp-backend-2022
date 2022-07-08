@@ -3,6 +3,7 @@ package com.nju.edu.erp.dao;
 import com.nju.edu.erp.enums.sheetState.OutcomeSheetState;
 import com.nju.edu.erp.model.po.OutcomeSheetContentPO;
 import com.nju.edu.erp.model.po.OutcomeSheetPO;
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -27,4 +28,6 @@ public interface OutcomeSheetDao {
   int updateState(String id, OutcomeSheetState incomeSheetState);
 
   int updateStateV2(String id, OutcomeSheetState state, OutcomeSheetState prevState);
+
+  int updateDate(String id, Date create_time);
 }
