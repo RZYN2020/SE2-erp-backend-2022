@@ -62,6 +62,8 @@ public interface PurchaseReturnsSheetDao {
      */
     int updateStateV2(String purchaseReturnsSheetId, PurchaseReturnsSheetState prevState, PurchaseReturnsSheetState state);
 
+    int updateDate(String id, Date create_time);
+
     /**
      * 通过purchaseReturnsSheetId找到对应条目
      * @param purchaseReturnsSheetId 进货退货单id

@@ -49,6 +49,8 @@ public interface PurchaseSheetDao {
 
     int updateStateV2(String purchaseSheetId, PurchaseSheetState prevState, PurchaseSheetState state);
 
+    int updateDate(String id, Date create_time);
+
     PurchaseSheetPO findOneById(String purchaseSheetId);
 
     List<PurchaseSheetContentPO> findContentByPurchaseSheetId(String purchaseSheetId);

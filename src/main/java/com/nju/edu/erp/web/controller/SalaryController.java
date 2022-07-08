@@ -40,4 +40,42 @@ public class SalaryController {
     return Response.buildSuccess(salaryService.getSheetByState(salarySheetState));
   }
 
+  /**
+   * 人力资源人员审批
+   * @param id 工资单id
+   * @param state 修改后的状态("审批失败"/"待二级审批")
+   */
+  @GetMapping(value = "/first-approval")
+  @Authorized (roles = {Role.HR, Role.ADMIN})
+  public Response firstApproval(@RequestParam("id") String id,
+      @RequestParam("state") SalarySheetState state)  {
+    if(state.equals(SalarySheetState.FAILURE) || state.equals(SalarySheetState.PENDING_LEVEL_2)) {
+      salaryService.approval(id, state);
+      return Response.buildSuccess();
+    } else {
+      return Response.buildFailed("000000","操作失败"); // code可能得改一个其他的
+    }
+  }
+
+  /**
+   * 总经理审批
+   * @param id 工资单id
+   * @param state 修改后的状态("审批失败"/"审批完成")
+   */
+  @Authorized (roles = {Role.GM, Role.ADMIN})
+  @GetMapping(value = "/second-approval")
+  public Response secondApproval(@RequestParam("id") String id,
+      @RequestParam("state") SalarySheetState state)  {
+    if(state.equals(SaleSheetState.FAILURE) || state.equals(SaleSheetState.SUCCESS)) {
+      salaryService.approval(id, state);
+      return Response.buildSuccess();
+    } else {
+      return Response.buildFailed("000000","操作失败"); // code可能得改一个其他的
+    }
+  }
+
+
+
+
+
 }
