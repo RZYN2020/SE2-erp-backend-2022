@@ -1,6 +1,7 @@
 package com.nju.edu.erp.utils.salary;
 
 import com.nju.edu.erp.dao.JobDao;
+import com.nju.edu.erp.enums.PaymentMethod;
 import com.nju.edu.erp.model.po.EmployeePO;
 import com.nju.edu.erp.model.po.JobPO;
 import com.nju.edu.erp.model.vo.TaxVO;
@@ -23,7 +24,18 @@ public class CM1 implements CalculateMethod{
     BigDecimal total_tax = taxVO.getIncome_tax().add(taxVO.getInsurance()).add(taxVO.getFund());
     BigDecimal actually_paid = payable.subtract(total_tax);
     BigDecimal absence = new BigDecimal(SignIn.findAbsence(employeePO.getUsername()));
-    BigDecimal deduction = actually_paid.multiply(absence).divide(new BigDecimal((30)));
+
+    //计算打卡扣除的款项,总经理不参与扣款
+    if (jobPO.getName().equals("GM")) {
+      return actually_paid;
+    }
+    BigDecimal radix;
+    if (jobPO.getPaymentMethod().equals(PaymentMethod.Yearly)) {
+      radix = new BigDecimal(365);
+    } else {
+      radix = new BigDecimal(30);
+    }
+    BigDecimal deduction = actually_paid.multiply(absence).divide(radix);
     return actually_paid.subtract(deduction);
   }
 
