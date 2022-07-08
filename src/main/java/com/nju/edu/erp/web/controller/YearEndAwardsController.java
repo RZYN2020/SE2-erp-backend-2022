@@ -4,10 +4,7 @@ package com.nju.edu.erp.web.controller;
 import com.nju.edu.erp.service.YearEndAwardsService;
 import com.nju.edu.erp.web.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
@@ -22,9 +19,9 @@ public class YearEndAwardsController {
         this.yearEndAwardsService = yearEndAwardsService;
     }
 
-    @GetMapping("/getTotalSalaryExceptDecember")
-    public Response getTotalSalaryExceptDecember(@RequestParam Integer employeeId) {
-        return Response.buildSuccess(yearEndAwardsService.getTotalSalaryExceptDecember(employeeId));
+    @GetMapping("/findAllYearEndSalary")
+    public Response findAllYearEndSalary() {
+        return Response.buildSuccess(yearEndAwardsService.findAllYearEndSalary());
     }
 
     @GetMapping("/establishYearEndAwards")

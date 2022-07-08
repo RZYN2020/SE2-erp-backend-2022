@@ -1,14 +1,20 @@
 package com.nju.edu.erp.service.Impl;
 
+import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.dao.SalaryGrantSheetDao;
 import com.nju.edu.erp.dao.SalarySheetDao;
+import com.nju.edu.erp.dao.YearEndAwardsDao;
+import com.nju.edu.erp.model.po.EmployeePO;
 import com.nju.edu.erp.model.po.SalaryGrantSheetPO;
-import com.nju.edu.erp.model.po.SalarySheetPO;
+import com.nju.edu.erp.model.po.YearEndAwardsPO;
+import com.nju.edu.erp.model.vo.YearEndAwardsVO;
 import com.nju.edu.erp.service.YearEndAwardsService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,16 +22,40 @@ import java.util.List;
 public class YearEndAwardsServiceImpl implements YearEndAwardsService {
 
     private final SalaryGrantSheetDao salaryGrantSheetDao;
-    private final SalarySheetDao salarySheetDao;
+    private final YearEndAwardsDao yearEndAwardsDao;
+    private final EmployeeDao employeeDao;
 
     @Autowired
-    public YearEndAwardsServiceImpl(SalaryGrantSheetDao salaryGrantSheetDao, SalarySheetDao salarySheetDao) {
+    public YearEndAwardsServiceImpl(SalaryGrantSheetDao salaryGrantSheetDao, YearEndAwardsDao yearEndAwardsDao, EmployeeDao employeeDao) {
         this.salaryGrantSheetDao = salaryGrantSheetDao;
-        this.salarySheetDao = salarySheetDao;
+        this.yearEndAwardsDao = yearEndAwardsDao;
+        this.employeeDao = employeeDao;
     }
 
     @Override
-    public BigDecimal getTotalSalaryExceptDecember(Integer employeeId) {
+    public List<YearEndAwardsVO> findAllYearEndSalary() {
+        List<EmployeePO> employeePOList = employeeDao.findAll();
+        for(EmployeePO po : employeePOList) {
+            if (yearEndAwardsDao.findById(po.getId()) == null) {
+                YearEndAwardsPO yearEndAwardsPO = YearEndAwardsPO.builder()
+                        .employeeId(po.getId())
+                        .employeeName(po.getName())
+                        .yearEndAwards(new BigDecimal(0))
+                        .build();
+                yearEndAwardsDao.create(yearEndAwardsPO);
+            }
+        }
+        List<YearEndAwardsPO> yearEndSalaryPOList = yearEndAwardsDao.findAll();
+        List<YearEndAwardsVO> ans = new ArrayList<>();
+        for (YearEndAwardsPO po : yearEndSalaryPOList) {
+            YearEndAwardsVO vo = new YearEndAwardsVO();
+            BeanUtils.copyProperties(po, vo);
+            vo.setTotalSalaryExceptDecember(getTotalSalaryExceptDecember(po.getEmployeeId()));
+        }
+        return ans;
+    }
+
+    private BigDecimal getTotalSalaryExceptDecember(Integer employeeId) {
         BigDecimal sum = new BigDecimal(0);
         List<SalaryGrantSheetPO> list = salaryGrantSheetDao.getSheetByEmployeeId(employeeId);
         int thisYear = getYear(new Date());
