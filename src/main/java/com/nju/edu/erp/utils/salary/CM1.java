@@ -7,6 +7,7 @@ import com.nju.edu.erp.model.po.JobPO;
 import com.nju.edu.erp.model.vo.TaxVO;
 import com.nju.edu.erp.service.Impl.JobServiceImpl;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CM1 implements CalculateMethod{
   private final String identifier = "基本工资 + 岗位工资 - 税款";
@@ -35,7 +36,7 @@ public class CM1 implements CalculateMethod{
     } else {
       radix = new BigDecimal(30);
     }
-    BigDecimal deduction = jobPO.getBasicSalary().multiply(absence).divide(radix);
+    BigDecimal deduction = jobPO.getBasicSalary().multiply(absence).divide(radix, 10, RoundingMode.HALF_UP);
     return actually_paid.subtract(deduction);
   }
 
