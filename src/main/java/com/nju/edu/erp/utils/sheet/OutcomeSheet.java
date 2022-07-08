@@ -109,8 +109,7 @@ public class OutcomeSheet implements Sheet {
       customerService.updateCustomer(customerPO);
 
       //设置时间
-      outcomeSheetPO.setCreate_time(new Date());
-      outcomeSheetDao.saveSheet(outcomeSheetPO);
+      outcomeSheetDao.updateDate(outcomeSheetPO.getId(), new Date());
     }
   }
 

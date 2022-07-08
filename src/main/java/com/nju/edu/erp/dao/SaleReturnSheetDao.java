@@ -6,6 +6,7 @@ import com.nju.edu.erp.model.po.PurchaseReturnsSheetContentPO;
 import com.nju.edu.erp.model.po.PurchaseReturnsSheetPO;
 import com.nju.edu.erp.model.po.SaleReturnSheetContentPO;
 import com.nju.edu.erp.model.po.SaleReturnSheetPO;
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,8 @@ public interface SaleReturnSheetDao {
   int updateState(String saleReturnSheetId, SaleReturnSheetState state);
 
   int updateStateV2(String saleReturnSheetId, SaleReturnSheetState prevState, SaleReturnSheetState state);
+
+  int updateDate(String id, Date create_time);
 
   SaleReturnSheetPO findSheetById(String saleReturnSheetId);
 

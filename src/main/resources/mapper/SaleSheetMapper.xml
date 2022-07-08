@@ -25,6 +25,12 @@
         where id = #{sheetId} and state = #{prev}
     </update>
 
+    <update id="updateDate">
+        update sale_sheet
+        set create_time = #{create_time}
+        where id = #{id}
+    </update>
+
     <select id="getLatestSheet" resultType="com.nju.edu.erp.model.po.SaleSheetPO">
         select * from sale_sheet order by id desc limit 0,1 ;
     </select>

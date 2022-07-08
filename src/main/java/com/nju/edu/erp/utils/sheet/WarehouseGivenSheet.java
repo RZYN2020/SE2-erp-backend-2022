@@ -97,9 +97,9 @@ public class WarehouseGivenSheet implements Sheet{
       int effectLines = warehouseGivenSheetDao.updateV2(sheetId, prevState, warehouseGivenSheetState);
       if (effectLines == 0) throw new RuntimeException("状态更新失败");
       //修改时间
-//      warehouseGivenSheetPO.setCreate_time(new Date());
-//      warehouseGivenSheetDao.saveSheet(warehouseGivenSheetPO);
-      //减去库存
+      warehouseGivenSheetDao.updateDate(warehouseGivenSheetPO.getId(), new Date());
+
+//      减去库存
       for (WarehouseGivenSheetContentPO po : warehouseGivenSheetDao.findContentById(warehouseGivenSheetPO.getId())) {
         List<WarehousePO> warehousePOS = warehouseDao.findByPidOrderByPurchasePricePos(po.getPid());
         if (warehousePOS.size() == 0) throw new RuntimeException("库存不足");

@@ -25,6 +25,6 @@ public class SalarySheetVO implements SheetVO {
   private TaxVO tax; // null
   private BigDecimal actual_paid;//实发工资 null
   private String remark;
-  private SalarySheetState state;
+  private SalarySheetState state; //null
   private Date create_time;
 }

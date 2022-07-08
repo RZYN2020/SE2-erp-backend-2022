@@ -237,8 +237,7 @@ public class SaleServiceImpl implements SaleService {
                 warehouseService.productOutOfWarehouse(warehouseOutputFormVO);
 
                 //修改时间
-                saleSheet.setCreate_time(new Date());
-                saleSheetDao.saveSheet(saleSheet);
+                saleSheetDao.updateDate(saleSheetId, new Date());
 
                 //赠品、赠送代金券生效
                 WarehouseGivenSheetVO warehouseGivenSheetVO = new WarehouseGivenSheetVO();

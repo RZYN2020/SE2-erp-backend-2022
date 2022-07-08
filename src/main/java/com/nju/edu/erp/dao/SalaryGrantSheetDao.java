@@ -2,6 +2,7 @@ package com.nju.edu.erp.dao;
 
 import com.nju.edu.erp.enums.sheetState.SalaryGrantSheetState;
 import com.nju.edu.erp.model.po.SalaryGrantSheetPO;
+import java.util.Date;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,8 @@ public interface SalaryGrantSheetDao {
     int updateState(String id, SalaryGrantSheetState state);
 
     int updateStateV2(String id, SalaryGrantSheetState state, SalaryGrantSheetState prevState);
+
+    int updateDate(String id, Date create_time);
 
     SalaryGrantSheetPO getLatest();
 

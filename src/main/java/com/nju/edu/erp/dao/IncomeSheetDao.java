@@ -7,6 +7,7 @@ import com.nju.edu.erp.model.po.IncomeSheetPO;
 import com.nju.edu.erp.model.po.SalarySheetPO;
 import com.nju.edu.erp.model.po.SaleReturnSheetContentPO;
 import com.nju.edu.erp.service.IncomeService;
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -31,4 +32,6 @@ public interface IncomeSheetDao {
   int updateState(String id, IncomeSheetState state);
 
   int updateStateV2(String id, IncomeSheetState state, IncomeSheetState prevState);
+
+  int updateDate(String id, Date create_time);
 }

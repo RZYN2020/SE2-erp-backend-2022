@@ -29,6 +29,12 @@
     where id = #{id}
   </update>
 
+  <update id="updateDate">
+    update salary_sheet
+    set create_time = #{create_time}
+    where id = #{id}
+  </update>
+
   <update id="updateStateV2">
     update salary_sheet
     set state = #{state}

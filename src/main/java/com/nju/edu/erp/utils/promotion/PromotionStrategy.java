@@ -16,7 +16,7 @@ public abstract class PromotionStrategy {
   protected Date end_date;
   /**
    * 判断该促销策略能否应用在这次销售中
-   * @param customerVO 客户信息
+   * @param customerPO 客户信息
    * @param contentVOS 销售信息
    * @return
    */
