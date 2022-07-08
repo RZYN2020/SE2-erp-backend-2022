@@ -35,7 +35,7 @@ public class CM1 implements CalculateMethod{
     } else {
       radix = new BigDecimal(30);
     }
-    BigDecimal deduction = actually_paid.multiply(absence).divide(radix);
+    BigDecimal deduction = jobPO.getBasicSalary().multiply(absence).divide(radix);
     return actually_paid.subtract(deduction);
   }
 
