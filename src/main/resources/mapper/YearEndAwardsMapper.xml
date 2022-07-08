@@ -6,14 +6,18 @@
         select * from year_end_awards
     </select>
 
-    <insert id = "createEmployee" parameterType="com.nju.edu.erp.model.po.YearEndAwardsPO">
+    <insert id = "create" parameterType="com.nju.edu.erp.model.po.YearEndAwardsPO">
         insert into year_end_awards (employee_id, `employee_name`, year_end_awards)
-        values (#{employeeId}, #{employeeName}, #{yearEndAwards}l})
+        values (#{employeeId}, #{employeeName}, #{yearEndAwards})
     </insert>
 
-    <select id="findOneById" resultType="com.nju.edu.erp.model.po.YearEndAwardsPO">
+    <select id="findById" resultType="com.nju.edu.erp.model.po.YearEndAwardsPO">
         select * from year_end_awards where employee_id = #{employeeId}
     </select>
+
+    <update id="addAwards">
+        update year_end_awards set year_end_awards = year_end_awards + #{awards} where employee_id = #{employeeId}
+    </update>
 
     <resultMap id="YearEndAwardsPO" type="com.nju.edu.erp.model.po.YearEndAwardsPO">
         <result column="employee_id" property="employeeId"></result>

@@ -51,6 +51,7 @@ public class YearEndAwardsServiceImpl implements YearEndAwardsService {
             YearEndAwardsVO vo = new YearEndAwardsVO();
             BeanUtils.copyProperties(po, vo);
             vo.setTotalSalaryExceptDecember(getTotalSalaryExceptDecember(po.getEmployeeId()));
+            ans.add(vo);
         }
         return ans;
     }
@@ -71,6 +72,8 @@ public class YearEndAwardsServiceImpl implements YearEndAwardsService {
     @Override
     public void establishYearEndAwards(Integer employeeId, BigDecimal awards) {
         int thisYear = getYear(new Date());
+        // year_end_awards
+        yearEndAwardsDao.addAwards(employeeId, awards);
         // 工资发放单
         List<SalaryGrantSheetPO> salaryGrantSheetPOList = salaryGrantSheetDao.getSheetByEmployeeId(employeeId);
         for (SalaryGrantSheetPO po : salaryGrantSheetPOList) {
