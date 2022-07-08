@@ -1,5 +1,6 @@
 package com.nju.edu.erp.service.Impl;
 
+import com.nju.edu.erp.dao.CouponDao;
 import com.nju.edu.erp.dao.CustomerDao;
 import com.nju.edu.erp.dao.ProductDao;
 import com.nju.edu.erp.dao.SaleSheetDao;
@@ -14,6 +15,8 @@ import com.nju.edu.erp.model.vo.Sale.SaleSheetVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.model.vo.purchase.PurchaseSheetContentVO;
 import com.nju.edu.erp.model.vo.purchase.PurchaseSheetVO;
+import com.nju.edu.erp.model.vo.warehouse.WarehouseGivenSheetContentVO;
+import com.nju.edu.erp.model.vo.warehouse.WarehouseGivenSheetVO;
 import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormContentVO;
 import com.nju.edu.erp.model.vo.warehouse.WarehouseInputFormVO;
 import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormContentVO;
@@ -21,8 +24,12 @@ import com.nju.edu.erp.model.vo.warehouse.WarehouseOutputFormVO;
 import com.nju.edu.erp.service.CustomerService;
 import com.nju.edu.erp.service.ProductService;
 import com.nju.edu.erp.service.SaleService;
+import com.nju.edu.erp.service.WarehouseGivenService;
 import com.nju.edu.erp.service.WarehouseService;
 import com.nju.edu.erp.utils.IdGenerator;
+import com.nju.edu.erp.utils.promotion.PromotionCtl;
+import com.nju.edu.erp.utils.promotion.PromotionInfo;
+import com.nju.edu.erp.utils.promotion.PromotionStrategy;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,10 +60,15 @@ public class SaleServiceImpl implements SaleService {
 
     private final WarehouseService warehouseService;
 
+    private final CouponDao couponDao;
+
+    private final WarehouseGivenService warehouseGivenService;
+
     @Autowired
     public SaleServiceImpl(SaleSheetDao saleSheetDao, ProductDao productDao, CustomerDao customerDao,
         ProductService productService, CustomerService customerService,
-        WarehouseDao warehouseDao, WarehouseService warehouseService) {
+        WarehouseDao warehouseDao, WarehouseService warehouseService,
+        CouponDao couponDao, WarehouseGivenService warehouseGivenService) {
         this.saleSheetDao = saleSheetDao;
         this.productDao = productDao;
         this.customerDao = customerDao;
@@ -64,6 +76,8 @@ public class SaleServiceImpl implements SaleService {
         this.customerService = customerService;
         this.warehouseService = warehouseService;
         this.warehouseDao = warehouseDao;
+        this.couponDao = couponDao;
+        this.warehouseGivenService = warehouseGivenService;
     }
 
     @Override
@@ -75,7 +89,7 @@ public class SaleServiceImpl implements SaleService {
         BeanUtils.copyProperties(saleSheetVO, saleSheetPO);
         // 此处根据制定单据人员确定操作员
         saleSheetPO.setOperator(userVO.getName());
-        saleSheetPO.setCreateTime(new Date());
+        saleSheetPO.setCreate_time(new Date());
         SaleSheetPO latest = saleSheetDao.getLatestSheet();
         String id = IdGenerator.generateSheetId(latest == null ? null : latest.getId(), "XSD");
         saleSheetPO.setId(id);
@@ -98,7 +112,34 @@ public class SaleServiceImpl implements SaleService {
         }
         saleSheetDao.saveBatchSheetContent(pContentPOList);
         saleSheetPO.setRawTotalAmount(totalAmount);
-        BigDecimal finalAmount = totalAmount.multiply(saleSheetVO.getDiscount()).subtract(saleSheetVO.getVoucherAmount());
+
+        CustomerPO customerPO = customerDao.findOneById(saleSheetPO.getSupplier());
+        BigDecimal discount = BigDecimal.ONE;
+        BigDecimal voucher_amount = BigDecimal.ZERO;
+        if (saleSheetVO.getVoucherAmount() != null) voucher_amount = voucher_amount.add(saleSheetVO.getVoucherAmount());
+        WarehouseGivenSheetVO warehouseGivenSheetVO = new WarehouseGivenSheetVO();
+        warehouseGivenSheetVO.setSaleSheetId(saleSheetPO.getId());
+        List<WarehouseGivenSheetContentVO> contentVOS = new ArrayList<>();
+        for (PromotionStrategy strategy: PromotionCtl.strategyList) {
+            if (strategy.checkEffect(customerPO, saleSheetVO.getSaleSheetContent())) {
+                PromotionInfo info = strategy.taskEffect();
+                if (info.getDiscount() != null) discount = info.getDiscount();
+                if (info.getVoucher_amount() != null) voucher_amount = voucher_amount.add(info.getVoucher_amount());
+                if (info.getCoupon() != null) couponDao.addOne(customerPO.getId(), info.getCoupon());
+                if (info.getPid() != null) {
+                    WarehouseGivenSheetContentVO vo = new WarehouseGivenSheetContentVO();
+                    vo.setPid(info.getPid());
+                    vo.setAmount(info.getAmount());
+                    contentVOS.add(vo);
+                }
+            }
+        }
+        warehouseGivenSheetVO.setProducts(contentVOS);
+        warehouseGivenService.makeSheet(userVO, warehouseGivenSheetVO);
+
+        BigDecimal finalAmount = totalAmount.multiply(discount).subtract(voucher_amount);
+        saleSheetPO.setDiscount(discount);
+        saleSheetPO.setVoucherAmount(voucher_amount);
         saleSheetPO.setFinalAmount(finalAmount);
         saleSheetDao.saveSheet(saleSheetPO);
     }
@@ -196,8 +237,36 @@ public class SaleServiceImpl implements SaleService {
                 warehouseService.productOutOfWarehouse(warehouseOutputFormVO);
 
                 //修改时间
-                saleSheet.setCreateTime(new Date());
+                saleSheet.setCreate_time(new Date());
                 saleSheetDao.saveSheet(saleSheet);
+
+                //赠品、赠送代金券生效
+                WarehouseGivenSheetVO warehouseGivenSheetVO = new WarehouseGivenSheetVO();
+                warehouseGivenSheetVO.setSaleSheetId(saleSheet.getId());
+                List<WarehouseGivenSheetContentVO> contentVOS = new ArrayList<>();
+                for (PromotionStrategy strategy: PromotionCtl.strategyList) {
+                    List<SaleSheetContentVO> saleSheetContentVOList = new ArrayList<>();
+                    List<SaleSheetContentPO> saleSheetContentPOS = saleSheetDao.findContentBySheetId(saleSheetId);
+                    for (SaleSheetContentPO contentPO : saleSheetContentPOS) {
+                        SaleSheetContentVO contentVO = new SaleSheetContentVO();
+                        BeanUtils.copyProperties(contentPO, contentVO);
+                        saleSheetContentVOList.add(contentVO);
+                    }
+                    if (strategy.checkEffect(customerPO, saleSheetContentVOList)) {
+                        PromotionInfo info = strategy.taskEffect();
+                        if (info.getCoupon() != null) couponDao.addOne(customerPO.getId(), info.getCoupon());
+                        if (info.getPid() != null) {
+                            WarehouseGivenSheetContentVO vo = new WarehouseGivenSheetContentVO();
+                            vo.setPid(info.getPid());
+                            vo.setAmount(info.getAmount());
+                            contentVOS.add(vo);
+                        }
+                    }
+                }
+                warehouseGivenSheetVO.setProducts(contentVOS);
+                UserVO userVO = new UserVO();
+                userVO.setName(saleSheet.getOperator());
+                warehouseGivenService.makeSheet(userVO, warehouseGivenSheetVO);
             }
         }
     }

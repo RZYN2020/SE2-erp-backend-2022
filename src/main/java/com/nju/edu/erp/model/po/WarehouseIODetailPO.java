@@ -53,6 +53,6 @@ public class WarehouseIODetailPO {
     /**
      * 出库单/入库单创建时间
      */
-    private Date createTime;
+    private Date create_time;
 
 }

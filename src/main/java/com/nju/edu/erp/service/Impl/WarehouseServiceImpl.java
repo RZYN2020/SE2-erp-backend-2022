@@ -61,7 +61,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         toSave.setId(generateWarehouseInputId(warehouseInputSheetPO.getId(), warehouseInputSheetPO.getBatchId()));
         toSave.setBatchId(generateBatchId(warehouseInputSheetPO.getBatchId()));
 //        toSave.setOperator(warehouseInputFormVO.getOperator());
-        toSave.setCreateTime(new Date());
+        toSave.setCreate_time(new Date());
         toSave.setPurchaseSheetId(warehouseInputFormVO.getPurchaseSheetId());
         toSave.setState(WarehouseInputSheetState.DRAFT);
 
@@ -117,7 +117,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         WarehouseOutputSheetPO toSave = new WarehouseOutputSheetPO();
         toSave.setId(generateWarehouseOutputId(warehouseOutputSheetPO == null ? null : warehouseOutputSheetPO.getId()));
         // toSave.setOperator(warehouseOutputFormVO.getOperator());
-        toSave.setCreateTime(new Date());
+        toSave.setCreate_time(new Date());
         toSave.setSaleSheetId(warehouseOutputFormVO.getSaleSheetId());
         toSave.setState(WarehouseOutputSheetState.DRAFT);
 

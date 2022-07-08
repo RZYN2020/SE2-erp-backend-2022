@@ -67,7 +67,7 @@ public class IncomeServiceTest {
     Assertions.assertNotNull(latestSheet);
     Assertions.assertEquals(realSheetId, latestSheet.getId());
     Assertions.assertEquals(0, latestSheet.getTotal_amount().compareTo(BigDecimal.valueOf(11000.00)));
-    Assertions.assertEquals(IncomeSheetState.PENDING_LEVEL_1, latestSheet.getState());
+    Assertions.assertEquals(IncomeSheetState.PENDING, latestSheet.getState());
 
     String sheetId = latestSheet.getId();
     Assertions.assertNotNull(sheetId);

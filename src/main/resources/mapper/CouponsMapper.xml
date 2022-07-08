@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.CouponDao">
+
+  <select id="findByCustomer" resultMap="CouponPO">
+    select * from coupons where customer_id = #{customer_id}
+  </select>
+
+  <delete id="deleteOne">
+    delete from coupons c1 where not exists (select * from coupon c2 where c1.id > c2.id )
+  </delete>
+
+  <insert id="addOne">
+    insert into coupons(customer_id, amount) values(#{customer_id}, #{amount})
+  </insert>
+
+  <resultMap id="CouponPO" type="com.nju.edu.erp.model.po.promotion.CouponPO">
+    <id column="id" property="id"></id>
+    <result column="customer_id" property="customer_id"></result>
+    <result column="amount" property="amount"></result>
+  </resultMap>
+</mapper>
