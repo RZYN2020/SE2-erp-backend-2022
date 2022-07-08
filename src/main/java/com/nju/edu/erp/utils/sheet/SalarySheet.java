@@ -15,6 +15,7 @@ import com.nju.edu.erp.model.vo.SheetVO;
 import com.nju.edu.erp.model.vo.TaxVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.utils.IdGenerator;
+import com.nju.edu.erp.utils.ObjectUtils;
 import com.nju.edu.erp.utils.salary.CalMethods;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -76,6 +77,8 @@ public class SalarySheet implements Sheet {
       JobPO jobPO = jobDao.findJobByEmployee(po.getEmployee_id());
       SalarySheetVO vo = new SalarySheetVO();
       BeanUtils.copyProperties(po, vo);
+      EmployeePO employeePO = employeeDao.findOneById(po.getEmployee_id());
+      vo.setEmployee_name(employeePO.getName());
       TaxVO taxVO = new TaxVO();
       taxVO.setFund(po.getFund());
       taxVO.setIncome_tax(po.getIncome_tax());
@@ -83,6 +86,10 @@ public class SalarySheet implements Sheet {
       vo.setTax(taxVO);
       vo.setActual_paid(CalMethods.get(jobPO.getCalculateMethod()).doCalculate(employeeDao.findOneById(po.getEmployee_id())));
       res.add(vo);
+
+      //后置条件, 返回的VO所有字段均有值
+      assert vo.getOperator() != null && vo.getBasic_salary() != null && vo.getActual_paid() != null && vo.getEmployee_name() != null && vo.getState() != null &&
+          vo.getJob_salary() != null;
     }
 
     return res;

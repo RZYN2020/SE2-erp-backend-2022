@@ -17,14 +17,14 @@ public class CM1 implements CalculateMethod{
   }
 
   public BigDecimal doCalculate(EmployeePO employeePO) {
-    JobPO jobPO = jobDao.findJobByKey(employeePO.getName(), employeePO.getJobLevel());
+    JobPO jobPO = jobDao.findJobByKey(employeePO.getJob(), employeePO.getJobLevel());
     BigDecimal payable = jobPO.getBasicSalary().add(jobPO.getJobSalary());
     TaxVO taxVO = TaxMethod.calculateTax(payable);
     BigDecimal total_tax = taxVO.getIncome_tax().add(taxVO.getInsurance()).add(taxVO.getFund());
     BigDecimal actually_paid = payable.subtract(total_tax);
     BigDecimal absence = new BigDecimal(SignIn.findAbsence(employeePO.getUsername()));
-    actually_paid = actually_paid.multiply(absence).divide(new BigDecimal((30)));
-    return actually_paid;
+    BigDecimal deduction = actually_paid.multiply(absence).divide(new BigDecimal((30)));
+    return actually_paid.subtract(deduction);
   }
 
   public TaxVO calculate_tax(EmployeePO employeePO) {

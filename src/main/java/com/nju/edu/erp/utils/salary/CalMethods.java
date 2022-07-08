@@ -23,7 +23,7 @@ public class CalMethods {
   }
 
   public static CalculateMethod get(Integer idx) {
-    return calculateMethods.get(idx);
+    return calculateMethods.get(idx - 1);
   }
 
   public static int getSize() {
