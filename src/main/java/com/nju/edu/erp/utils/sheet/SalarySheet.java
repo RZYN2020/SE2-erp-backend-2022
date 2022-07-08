@@ -175,6 +175,7 @@ public class SalarySheet implements Sheet {
     salaryGrantSheetPO.setEmployeeName(employeePO.getName());
     salaryGrantSheetPO.setEmployeeAccount(employeePO.getAccount());
     salaryGrantSheetPO.setSalaryBeforeTax(CalMethods.get(calculateMethod).calculate_payable(employeePO));
+    salaryGrantSheetPO.setCommission(salarySheetPO.getCommission());
     salaryGrantSheetPO.setIncomeTax(salarySheetPO.getIncome_tax());
     salaryGrantSheetPO.setInsurance(salarySheetPO.getInsurance());
     salaryGrantSheetPO.setFund(salarySheetPO.getFund());
