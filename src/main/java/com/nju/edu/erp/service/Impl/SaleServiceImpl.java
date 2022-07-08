@@ -237,6 +237,8 @@ public class SaleServiceImpl implements SaleService {
                 //修改时间
                 saleSheet.setCreate_time(new Date());
                 saleSheetDao.saveSheet(saleSheet);
+
+                //促销策略生效
             }
         }
     }
