@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class SalarySheetVO implements SheetVO {
   private String id;
   private String operator;
-  private int employee_id;
+  private Integer employee_id;
   private String employee_name;
   private BigDecimal basic_salary;//基本工资 null
   private BigDecimal job_salary;//岗位工资 null

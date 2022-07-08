@@ -59,7 +59,4 @@ public class SaleSheetPO {
      */
     private Date create_time;
 
-    public Date getCreateTime() {
-        return null;
-    }
 }

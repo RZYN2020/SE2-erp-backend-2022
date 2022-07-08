@@ -126,7 +126,6 @@ public class SaleServiceImpl implements SaleService {
                 if (info.getDiscount() != null) discount = info.getDiscount();
                 if (info.getVoucher_amount() != null) voucher_amount = voucher_amount.add(info.getVoucher_amount());
                 if (info.getCoupon() != null) couponDao.addOne(customerPO.getId(), info.getCoupon());
-                //生成库存赠送单
                 if (info.getPid() != null) {
                     WarehouseGivenSheetContentVO vo = new WarehouseGivenSheetContentVO();
                     vo.setPid(info.getPid());
@@ -240,6 +239,34 @@ public class SaleServiceImpl implements SaleService {
                 //修改时间
                 saleSheet.setCreate_time(new Date());
                 saleSheetDao.saveSheet(saleSheet);
+
+                //赠品、赠送代金券生效
+                WarehouseGivenSheetVO warehouseGivenSheetVO = new WarehouseGivenSheetVO();
+                warehouseGivenSheetVO.setSaleSheetId(saleSheet.getId());
+                List<WarehouseGivenSheetContentVO> contentVOS = new ArrayList<>();
+                for (PromotionStrategy strategy: PromotionCtl.strategyList) {
+                    List<SaleSheetContentVO> saleSheetContentVOList = new ArrayList<>();
+                    List<SaleSheetContentPO> saleSheetContentPOS = saleSheetDao.findContentBySheetId(saleSheetId);
+                    for (SaleSheetContentPO contentPO : saleSheetContentPOS) {
+                        SaleSheetContentVO contentVO = new SaleSheetContentVO();
+                        BeanUtils.copyProperties(contentPO, contentVO);
+                        saleSheetContentVOList.add(contentVO);
+                    }
+                    if (strategy.checkEffect(customerPO, saleSheetContentVOList)) {
+                        PromotionInfo info = strategy.taskEffect();
+                        if (info.getCoupon() != null) couponDao.addOne(customerPO.getId(), info.getCoupon());
+                        if (info.getPid() != null) {
+                            WarehouseGivenSheetContentVO vo = new WarehouseGivenSheetContentVO();
+                            vo.setPid(info.getPid());
+                            vo.setAmount(info.getAmount());
+                            contentVOS.add(vo);
+                        }
+                    }
+                }
+                warehouseGivenSheetVO.setProducts(contentVOS);
+                UserVO userVO = new UserVO();
+                userVO.setName(saleSheet.getOperator());
+                warehouseGivenService.makeSheet(userVO, warehouseGivenSheetVO);
             }
         }
     }

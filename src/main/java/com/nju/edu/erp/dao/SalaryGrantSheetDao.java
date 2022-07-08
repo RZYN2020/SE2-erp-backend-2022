@@ -5,6 +5,7 @@ import com.nju.edu.erp.model.po.SalaryGrantSheetPO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -24,4 +25,8 @@ public interface SalaryGrantSheetDao {
     SalaryGrantSheetPO getLatest();
 
     int saveSheet(SalaryGrantSheetPO toSave);
+
+    List<SalaryGrantSheetPO> getSheetByEmployeeId(Integer employeeId);
+
+    void addAwards(String id, BigDecimal awards);
 }

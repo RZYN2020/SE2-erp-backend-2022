@@ -2,6 +2,7 @@ package com.nju.edu.erp.service.Impl;
 
 import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.dao.JobDao;
+import com.nju.edu.erp.dao.SaleSheetDao;
 import com.nju.edu.erp.enums.PaymentMethod;
 import com.nju.edu.erp.model.po.JobPO;
 import com.nju.edu.erp.model.vo.JobVO;
@@ -24,9 +25,9 @@ public class JobServiceImpl implements JobService {
     private final JobDao jobDao;
 
     @Autowired
-    public JobServiceImpl(JobDao jobDao, EmployeeDao employeeDao) {
+    public JobServiceImpl(JobDao jobDao, SaleSheetDao saleSheetDao) {
         this.jobDao = jobDao;
-        CalMethods.init(jobDao);
+        CalMethods.init(jobDao, saleSheetDao);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<String> findAllCalculateMethod() {
         List<String> ans = new ArrayList<>();
-        for (int i = 0; i < CalMethods.getSize(); i++) {
+        for (int i = 1; i <= CalMethods.getSize(); i++) {
             ans.add(CalMethods.get(i).display());
         }
         return ans;
