@@ -20,6 +20,7 @@ public class SalaryGrantSheetPO {
     private String employeeName; // 员工姓名
     private String employeeAccount; // 银行账户信息, 对应employee中的工资卡账户
     private BigDecimal salaryBeforeTax; // 应发工资
+    private BigDecimal commission; //提成
     private BigDecimal incomeTax;
     private BigDecimal insurance;
     private BigDecimal fund;
