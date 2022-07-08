@@ -26,7 +26,7 @@ public class PackageStrategy extends PromotionStrategy {
   }
 
   @Override
-  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS) {
+  public boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS, Date date) {
     Map<String, Integer> pid2Amount = new HashMap<>();
 
     for (SaleSheetContentVO vo : contentVOS) {
@@ -39,7 +39,7 @@ public class PackageStrategy extends PromotionStrategy {
         return false;
       }
     }
-    return true;
+    return date.after(this.begin_date) && date.before(this.end_date);
   }
 
   @Override

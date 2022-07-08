@@ -20,7 +20,7 @@ public abstract class PromotionStrategy {
    * @param contentVOS 销售信息
    * @return
    */
-  public abstract boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS);
+  public abstract boolean checkEffect(CustomerPO customerPO, List<SaleSheetContentVO> contentVOS, Date date);
 
   /**
    * 返回该促销策略生效后的产物

@@ -121,7 +121,7 @@ public class SaleServiceImpl implements SaleService {
         warehouseGivenSheetVO.setSaleSheetId(saleSheetPO.getId());
         List<WarehouseGivenSheetContentVO> contentVOS = new ArrayList<>();
         for (PromotionStrategy strategy: PromotionCtl.strategyList) {
-            if (strategy.checkEffect(customerPO, saleSheetVO.getSaleSheetContent())) {
+            if (strategy.checkEffect(customerPO, saleSheetVO.getSaleSheetContent(), new Date())) {
                 PromotionInfo info = strategy.taskEffect();
                 if (info.getDiscount() != null) discount = info.getDiscount();
                 if (info.getVoucher_amount() != null) voucher_amount = voucher_amount.add(info.getVoucher_amount());
@@ -251,7 +251,7 @@ public class SaleServiceImpl implements SaleService {
                         BeanUtils.copyProperties(contentPO, contentVO);
                         saleSheetContentVOList.add(contentVO);
                     }
-                    if (strategy.checkEffect(customerPO, saleSheetContentVOList)) {
+                    if (strategy.checkEffect(customerPO, saleSheetContentVOList, new Date())) {
                         PromotionInfo info = strategy.taskEffect();
                         if (info.getCoupon() != null) couponDao.addOne(customerPO.getId(), info.getCoupon());
                         if (info.getPid() != null) {
