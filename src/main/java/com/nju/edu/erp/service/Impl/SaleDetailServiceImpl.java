@@ -59,6 +59,8 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setOperator(sheetPO.getOperator());
         recordVO.setCustomer_id(sheetPO.getSupplier());
         all.add(recordVO);
+        assert recordVO.getRecord_type() != null && recordVO.getProduct_name() != null && recordVO.getProduct_type() != null &&
+            recordVO.getOperator() != null && recordVO.getSale_time() != null && recordVO.getAmount() != null;
       }
     }
 
@@ -86,6 +88,8 @@ public class SaleDetailServiceImpl implements SaleDetailService {
         recordVO.setOperator(sheetPO.getOperator());
         recordVO.setCustomer_id(saleSheetPO.getSupplier());
         all.add(recordVO);
+        assert recordVO.getRecord_type() != null && recordVO.getProduct_name() != null && recordVO.getProduct_type() != null &&
+            recordVO.getOperator() != null && recordVO.getSale_time() != null && recordVO.getAmount() != null;
       }
     }
 

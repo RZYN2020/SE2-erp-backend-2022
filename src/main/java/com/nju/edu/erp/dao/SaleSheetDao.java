@@ -92,4 +92,6 @@ public interface SaleSheetDao {
     BigDecimal getTotalRawAmountByTime(Date beginTime, Date endTime);
 
     BigDecimal getTotalFinalAmountByTime(Date beginTime, Date endTime);
+
+    int updateDate(String id, Date create_time);
 }

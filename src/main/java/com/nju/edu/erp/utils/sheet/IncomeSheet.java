@@ -109,8 +109,7 @@ public class IncomeSheet implements Sheet {
       customerService.updateCustomer(customerPO);
 
       //设置时间
-      incomeSheetPO.setCreate_time(new Date());
-      incomeSheetDao.saveSheet(incomeSheetPO);
+      incomeSheetDao.updateDate(incomeSheetPO.getId(), new Date());
     }
   }
 

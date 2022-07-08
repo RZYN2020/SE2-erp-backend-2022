@@ -121,7 +121,7 @@ public class SaleServiceImpl implements SaleService {
         warehouseGivenSheetVO.setSaleSheetId(saleSheetPO.getId());
         List<WarehouseGivenSheetContentVO> contentVOS = new ArrayList<>();
         for (PromotionStrategy strategy: PromotionCtl.strategyList) {
-            if (strategy.checkEffect(customerPO, saleSheetVO.getSaleSheetContent())) {
+            if (strategy.checkEffect(customerPO, saleSheetVO.getSaleSheetContent(), new Date())) {
                 PromotionInfo info = strategy.taskEffect();
                 if (info.getDiscount() != null) discount = info.getDiscount();
                 if (info.getVoucher_amount() != null) voucher_amount = voucher_amount.add(info.getVoucher_amount());
@@ -237,8 +237,7 @@ public class SaleServiceImpl implements SaleService {
                 warehouseService.productOutOfWarehouse(warehouseOutputFormVO);
 
                 //修改时间
-                saleSheet.setCreate_time(new Date());
-                saleSheetDao.saveSheet(saleSheet);
+                saleSheetDao.updateDate(saleSheetId, new Date());
 
                 //赠品、赠送代金券生效
                 WarehouseGivenSheetVO warehouseGivenSheetVO = new WarehouseGivenSheetVO();
@@ -252,7 +251,7 @@ public class SaleServiceImpl implements SaleService {
                         BeanUtils.copyProperties(contentPO, contentVO);
                         saleSheetContentVOList.add(contentVO);
                     }
-                    if (strategy.checkEffect(customerPO, saleSheetContentVOList)) {
+                    if (strategy.checkEffect(customerPO, saleSheetContentVOList, new Date())) {
                         PromotionInfo info = strategy.taskEffect();
                         if (info.getCoupon() != null) couponDao.addOne(customerPO.getId(), info.getCoupon());
                         if (info.getPid() != null) {

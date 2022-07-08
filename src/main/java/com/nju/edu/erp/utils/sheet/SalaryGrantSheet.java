@@ -11,6 +11,7 @@ import com.nju.edu.erp.model.vo.SheetVO;
 import com.nju.edu.erp.model.vo.UserVO;
 import com.nju.edu.erp.model.vo.income.IncomeSheetContentVO;
 import com.nju.edu.erp.model.vo.income.IncomeSheetVO;
+import java.util.Date;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -67,6 +68,10 @@ public class SalaryGrantSheet implements Sheet{
             }
             int effectLines = salaryGrantSheetDao.updateStateV2(sheetId, salaryGrantSheetState, prevState);
             if (effectLines == 0) throw new RuntimeException("状态更新失败");
+
+            effectLines = salaryGrantSheetDao.updateDate(sheetId, new Date());
+            assert effectLines > 0;
+
         }
     }
 }

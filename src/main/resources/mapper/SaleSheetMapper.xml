@@ -25,15 +25,21 @@
         where id = #{sheetId} and state = #{prev}
     </update>
 
-    <select id="getLatestSheet" resultType="com.nju.edu.erp.model.po.SaleSheetPO">
+    <update id="updateDate">
+        update sale_sheet
+        set create_time = #{create_time}
+        where id = #{id}
+    </update>
+
+    <select id="getLatestSheet" resultMap="SaleSheetPO">
         select * from sale_sheet order by id desc limit 0,1 ;
     </select>
 
-    <select id="findAllSheet" resultType="com.nju.edu.erp.model.po.SaleSheetPO">
+    <select id="findAllSheet" resultMap="SaleSheetPO">
         select * from sale_sheet;
     </select>
 
-    <select id="findAllByState" resultType="com.nju.edu.erp.model.po.SaleSheetPO">
+    <select id="findAllByState" resultMap="SaleSheetPO">
         select * from sale_sheet where state = #{state}
     </select>
 
@@ -41,7 +47,7 @@
         select * from sale_sheet_content where sale_sheet_id = #{sheetId};
     </select>
 
-    <select id="findSheetById" resultType="com.nju.edu.erp.model.po.SaleSheetPO">
+    <select id="findSheetById" resultMap="SaleSheetPO">
         select * from sale_sheet where id = #{id};
     </select>
 
@@ -88,6 +94,20 @@
             <result column="receivable" property="receivable"></result>
             <result column="operator" property="operator"></result>
         </association>
+    </resultMap>
+
+    <resultMap id="SaleSheetPO" type="com.nju.edu.erp.model.po.SaleSheetPO">
+        <id column="id" property="id"></id>
+        <result column="supplier" property="supplier"></result>
+        <result column="operator" property="operator"></result>
+        <result column="remark" property="remark"></result>
+        <result column="state" property="state"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="salesman" property="salesman"></result>
+        <result column="raw_total_amount" property="rawTotalAmount"></result>
+        <result column="discount" property="discount"></result>
+        <result column="final_amount" property="finalAmount"></result>
+        <result column="voucher_amount" property="voucherAmount"></result>
     </resultMap>
 
 </mapper>

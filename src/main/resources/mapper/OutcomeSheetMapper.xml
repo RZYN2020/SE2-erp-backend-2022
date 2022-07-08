@@ -46,6 +46,12 @@
     where id = #{id} and state = #{prevState}
   </update>
 
+  <update id="updateDate">
+    update outcome_sheet
+    set create_time = #{create_time}
+    where id = #{id}
+  </update>
+
   <resultMap id="OutcomeSheetPO" type="com.nju.edu.erp.model.po.OutcomeSheetPO">
     <id column="id" property="id"></id>
     <result column="operator" property="operator"></result>
