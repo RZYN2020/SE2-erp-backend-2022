@@ -22,7 +22,7 @@ public interface EmployeeDao {
 
     User findUserByEmployeeId(Integer id);
 
-    void signIn(String username);
+    void signIn(String username, Date lastSignTime);
 
     int findSignInTimes(String username);
 

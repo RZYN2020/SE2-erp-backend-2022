@@ -25,7 +25,7 @@
     </select>
 
     <update id="signIn">
-        update employee set sign_times = sign_times + 1 where username = #{username}
+        update employee set sign_times = sign_times + 1, last_sign_time = #{lastSignTime} where username = #{username};
     </update>
 
     <select id="findSignInTimes" resultType="java.lang.Integer">

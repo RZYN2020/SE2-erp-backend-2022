@@ -96,7 +96,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void signIn(String username) {
         Date lastSignTime = employeeDao.getLastSignTimeByUsername(username);
         if (SignIn.canSignIn(lastSignTime)) {
-            employeeDao.signIn(username);
+            employeeDao.signIn(username, new Date());
         }
         else throw new MyServiceException("E0000", "今日已打卡，不可重复打卡！");
     }
