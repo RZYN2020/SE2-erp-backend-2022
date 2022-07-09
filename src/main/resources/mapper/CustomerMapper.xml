@@ -66,10 +66,14 @@
         select max(id) from customer
     </select>
 
-    <insert id = "createCustomer" parameterType="CustomerPO">
+    <insert id = "createCustomer" parameterType="com.nju.edu.erp.model.po.CustomerPO">
         insert into customer (id, `type`, level, `name`, `phone`, `address`, zipcode, `email`, line_of_credit, receivable, payable, `operator`)
         values (#{id}, #{type}, #{level}, #{name}, #{phone}, #{address}, #{zipcode}, #{email}, #{lineOfCredit}, #{receivable}, #{payable}, #{operator})
     </insert>
+
+    <select id="findAll" resultType="com.nju.edu.erp.model.po.CustomerPO">
+        select * from customer
+    </select>
 
     <!--  three new method by Doom Graham   -->
 

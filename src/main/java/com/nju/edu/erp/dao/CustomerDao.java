@@ -22,4 +22,6 @@ public interface CustomerDao {
     int findMaxCustomerId();
 
     void createCustomer(CustomerPO customerPO);
+
+    List<CustomerPO> findAll();
 }
