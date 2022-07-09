@@ -110,7 +110,7 @@
         <id column="id" property="id"></id>
         <result column="batch_id" property="batchId"></result>
         <result column="operator" property="operator"></result>
-        <result column="create_time" property="createTime"></result>
+        <result column="create_time" property="create_time"></result>
         <result column="purchase_sheet_id" property="purchaseSheetId"></result>
         <result column="state" property="state"></result>
     </resultMap>
