@@ -3,7 +3,7 @@
 <mapper namespace="com.nju.edu.erp.dao.SaleSheetDao">
     <insert id="saveSheet">
         insert into sale_sheet (id, supplier, operator, remark, `state`, create_time, salesman, raw_total_amount, discount, final_amount, voucher_amount)
-        values (#{id},#{supplier},#{operator},#{remark}, #{state}, #{createTime}, #{salesman}, #{rawTotalAmount}, #{discount}, #{finalAmount}, #{voucherAmount}) ;
+        values (#{id},#{supplier},#{operator},#{remark}, #{state}, #{create_time}, #{salesman}, #{rawTotalAmount}, #{discount}, #{finalAmount}, #{voucherAmount}) ;
     </insert>
 
     <insert id="saveBatchSheetContent" useGeneratedKeys="true" keyProperty="id">
