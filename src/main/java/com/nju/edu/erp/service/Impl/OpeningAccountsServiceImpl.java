@@ -43,16 +43,17 @@ public class OpeningAccountsServiceImpl implements OpeningAccountsService {
     @Override
     public void open() {
         String standard = getYearAndMonth();
-        if (openingAccountsDao.findBankAccountPOsByTime(standard) == null) {
+        if (openingAccountsDao.findBankAccountPOsByTime(standard).isEmpty()) {
             List<BankAccountPO> poList = bankAccountDao.findAll();
             for (BankAccountPO po : poList) {
                 OpeningAccountsBankAccountPO openingAccountsBankAccountPO = new OpeningAccountsBankAccountPO();
                 BeanUtils.copyProperties(po, openingAccountsBankAccountPO);
+                openingAccountsBankAccountPO.setName(po.getAccountName());
                 openingAccountsBankAccountPO.setDate(standard);
                 openingAccountsDao.createBankAccount(openingAccountsBankAccountPO);
             }
         }
-        if (openingAccountsDao.findCustomerPOsByTime(standard) == null) {
+        if (openingAccountsDao.findCustomerPOsByTime(standard).isEmpty()) {
             List<CustomerPO> poList = customerDao.findAll();
             for (CustomerPO po : poList) {
                 OpeningAccountsCustomerPO openingAccountsCustomerPO = new OpeningAccountsCustomerPO();
@@ -61,7 +62,7 @@ public class OpeningAccountsServiceImpl implements OpeningAccountsService {
                 openingAccountsDao.createCustomer(openingAccountsCustomerPO);
             }
         }
-        if (openingAccountsDao.findProductPOsByTime(standard) == null) {
+        if (openingAccountsDao.findProductPOsByTime(standard).isEmpty()) {
             List<ProductPO> poList = productDao.findAll();
             for (ProductPO po : poList) {
                 OpeningAccountsProductPO openingAccountsProductPO = new OpeningAccountsProductPO();
