@@ -66,7 +66,7 @@ public class SalaryController {
   @GetMapping(value = "/second-approval")
   public Response secondApproval(@RequestParam("id") String id,
       @RequestParam("state") SalarySheetState state)  {
-    if(state.equals(SaleSheetState.FAILURE) || state.equals(SaleSheetState.SUCCESS)) {
+    if(state.equals(SalarySheetState.FAILURE) || state.equals(SalarySheetState.SUCCESS)) {
       salaryService.approval(id, state);
       return Response.buildSuccess();
     } else {
