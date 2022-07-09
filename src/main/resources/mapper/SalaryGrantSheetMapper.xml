@@ -38,7 +38,7 @@
 
     <insert id="saveSheet">
         insert into salary_grant_sheet (`id`, employee_id, `employee_name`, `employee_account`, salary_before_tax, commission, income_tax, insurance, fund, real_salary, `state`, create_time)
-        values (#{id}, #{employeeId}, #{employeeName}, #{employeeAccount}, #{salaryBeforeTax}, #{commission},#{incomeTax}, #{insurance}, #{fund}, #{realSalary}, #{state}, #{createTime}) ;
+        values (#{id}, #{employeeId}, #{employeeName}, #{employeeAccount}, #{salaryBeforeTax}, #{commission},#{incomeTax}, #{insurance}, #{fund}, #{realSalary}, #{state}, #{create_time}) ;
     </insert>
 
     <select id="getSheetByEmployeeId" resultMap="SalaryGrantSheetPO">
