@@ -23,8 +23,6 @@ public class BusinessSituationServiceTest {
     @Rollback
     public void AllTest() {
         BusinessSituationVO vo = businessSituationService.getBusinessSituationByTime("2022-01-12 11:38:30", "2022-12-12 11:38:30");
-        BusinessIncomeVO businessIncomeVO = vo.getBusinessIncomeVO();
-        BusinessOutcomeVO businessOutcomeVO = vo.getBusinessOutcomeVO();
-        Assertions.assertEquals(0, new BigDecimal(-2068600).compareTo(vo.getProfit()));
+        Assertions.assertEquals(0, new BigDecimal(5610400).compareTo(vo.getProfit()));
     }
 }

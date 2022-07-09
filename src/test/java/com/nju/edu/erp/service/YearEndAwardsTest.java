@@ -19,9 +19,11 @@ public class YearEndAwardsTest {
     @Test
     @Transactional
     @Rollback
-    public void Test1() {
+    public void AllTest() {
         List<YearEndAwardsVO> list = yearEndAwardsService.findAllYearEndSalary();
-        Assertions.assertEquals("DTA", list.get(0).getEmployeeName());
-        Assertions.assertEquals(0, new BigDecimal(550).compareTo(list.get(0).getYearEndAwards()));
+        yearEndAwardsService.establishYearEndAwards(1,new BigDecimal(1500));
+        list = yearEndAwardsService.findAllYearEndSalary();
+        Assertions.assertEquals("一级库存管理人员A", list.get(0).getEmployeeName());
+        Assertions.assertEquals(0, new BigDecimal(1500).compareTo(list.get(0).getYearEndAwards()));
     }
 }
