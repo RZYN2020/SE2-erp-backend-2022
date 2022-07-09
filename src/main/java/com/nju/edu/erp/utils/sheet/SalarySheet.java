@@ -178,6 +178,7 @@ public class SalarySheet implements Sheet {
     salaryGrantSheetPO.setFund(salarySheetPO.getFund());
     salaryGrantSheetPO.setRealSalary(CalMethods.doCalculate(employeePO, idx));
     salaryGrantSheetPO.setState(SalaryGrantSheetState.PENDING);
+    salaryGrantSheetPO.setCreateTime(new Date());
 
     salaryGrantSheetDao.saveSheet(salaryGrantSheetPO);
   }
