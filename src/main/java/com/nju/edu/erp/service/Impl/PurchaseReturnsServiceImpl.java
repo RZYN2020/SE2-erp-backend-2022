@@ -186,8 +186,7 @@ public class PurchaseReturnsServiceImpl implements PurchaseReturnsService {
                 customerService.updateCustomer(customer);
 
                 PurchaseReturnsSheetPO purchaseReturnsSheetPO = purchaseReturnsSheetDao.findOneById(purchaseReturnsSheetId);
-                purchaseReturnsSheetPO.setCreate_time(new Date());
-                purchaseReturnsSheetDao.save(purchaseReturnsSheetPO);
+                purchaseReturnsSheetDao.updateDate(purchaseReturnsSheetId, new Date());
             }
         }
     }
