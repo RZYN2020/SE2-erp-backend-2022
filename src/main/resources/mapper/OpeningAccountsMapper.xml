@@ -25,7 +25,7 @@
     </insert>
 
     <insert id = "createProduct" parameterType="com.nju.edu.erp.model.po.OpeningAccounts.OpeningAccountsProductPO">
-        insert into product (id, `name`, category_id, `type`, quantity, purchase_price, retail_price, date)
+        insert into opening_accounts_product (id, `name`, category_id, `type`, quantity, purchase_price, retail_price, date)
         values (#{id}, #{name}, #{categoryId}, #{type}, 0, #{purchasePrice}, #{retailPrice}, #{date})
     </insert>
 

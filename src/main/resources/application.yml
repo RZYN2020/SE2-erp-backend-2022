@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: zyx
+    active: dev
 server:
   port: 8080
 

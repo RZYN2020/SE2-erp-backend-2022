@@ -17,7 +17,7 @@ public class promotionTest {
 
   private final String DELL = "0000000000400000";
   private final Integer MONTH = 30 * 24 * 60 * 60 * 1000;
-  private final Integer WEEK = 7 * 24 * 60 * 60 * 1000
+  private final Integer WEEK = 7 * 24 * 60 * 60 * 1000;
 
 
   @Test
