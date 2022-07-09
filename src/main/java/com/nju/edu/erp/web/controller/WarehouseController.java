@@ -91,7 +91,7 @@ public class WarehouseController {
     }
 
     @GetMapping("/givenSheet/approve")
-    @Authorized(roles = {Role.ADMIN, Role.GM})
+    @Authorized(roles = {Role.ADMIN, Role.GM, Role.INVENTORY_MANAGER})
     public Response warehouseGivenSheetApprove(UserVO userVO, @RequestParam(value = "id") String id,
         @RequestParam(value = "state") WarehouseGivenSheetState state) {
         if (state.equals(WarehouseGivenSheetState.FAILURE) || state.equals(WarehouseGivenSheetState.SUCCESS.SUCCESS)) {
@@ -104,7 +104,7 @@ public class WarehouseController {
     }
 
     @GetMapping("/givenSheet/sheet-show")
-    @Authorized(roles = {Role.ADMIN, Role.GM})
+    @Authorized(roles = {Role.ADMIN, Role.GM, Role.INVENTORY_MANAGER})
     public Response warehouseGivenSheetShow(@RequestParam(value = "state", required = false) WarehouseGivenSheetState state) {
        return Response.buildSuccess(warehouseGivenService.getSheetByState(state));
     }
