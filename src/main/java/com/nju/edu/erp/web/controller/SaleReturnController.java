@@ -68,7 +68,7 @@ public class SaleReturnController {
 
   /**
    * 总经理审批
-   * @param saleSheetId 进货单id
+   * @param id 进货单id
    * @param state 修改后的状态("审批失败"/"审批完成")
    */
   @Authorized (roles = {Role.GM, Role.ADMIN})
