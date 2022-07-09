@@ -95,7 +95,7 @@ public class OutcomeSheet implements Sheet {
       if(effectLines == 0) throw new RuntimeException("状态更新失败");
     } else {
       OutcomeSheetState prevState;
-      if (outcomeSheetState.equals(SalarySheetState.SUCCESS)) {
+      if (outcomeSheetState.equals(OutcomeSheetState.SUCCESS)) {
         prevState = OutcomeSheetState.PENDING;
       } else {
         throw new RuntimeException("状态更新失败");
