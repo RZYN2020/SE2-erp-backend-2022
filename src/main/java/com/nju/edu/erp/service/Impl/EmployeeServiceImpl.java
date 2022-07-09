@@ -3,6 +3,7 @@ package com.nju.edu.erp.service.Impl;
 
 import com.nju.edu.erp.dao.EmployeeDao;
 import com.nju.edu.erp.enums.Role;
+import com.nju.edu.erp.exception.MyServiceException;
 import com.nju.edu.erp.model.po.EmployeePO;
 import com.nju.edu.erp.model.po.User;
 import com.nju.edu.erp.model.vo.EmployeeVO;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -45,6 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         savePO.setId(employeeId);
         savePO.setUsername(inputVO.getName());
         savePO.setSignTimes(SignIn.getToday());
+        savePO.setLastSignTime(new Date());
 
         employeeDao.createEmployee(savePO);
 
@@ -91,7 +94,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void signIn(String username) {
-        employeeDao.signIn(username);
+        Date lastSignTime = employeeDao.getLastSignTimeByUsername(username);
+        if (SignIn.canSignIn(lastSignTime)) {
+            employeeDao.signIn(username);
+        }
+        else throw new MyServiceException("E0000", "今日已打卡，不可重复打卡！");
     }
 
     @Override
