@@ -67,6 +67,6 @@
         <result column="remark" property="remark"></result>
         <result column="total_amount" property="totalAmount"></result>
         <result column="state" property="state"></result>
-        <result column="create_time" property="createTime"></result>
+        <result column="create_time" property="create_time"></result>
     </resultMap>
 </mapper>
