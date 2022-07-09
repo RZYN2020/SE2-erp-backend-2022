@@ -43,7 +43,7 @@
     select * from sale_return_sheet;
   </select>
 
-  <select id="findContentBySaleReturnSheetId" resultMap="SaleReturnSheetPO">
+  <select id="findContentBySaleReturnSheetId" resultMap="SaleReturnSheetContentPO">
     select * from sale_return_sheet_content where sale_return_sheet_id = #{saleReturnsheetId};
   </select>
 
