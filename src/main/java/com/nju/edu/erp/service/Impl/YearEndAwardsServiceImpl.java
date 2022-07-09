@@ -65,7 +65,7 @@ public class YearEndAwardsServiceImpl implements YearEndAwardsService {
         List<SalaryGrantSheetPO> list = salaryGrantSheetDao.getSheetByEmployeeId(employeeId);
         int thisYear = getYear(new Date());
         for (SalaryGrantSheetPO po : list) {
-            Date date = po.getCreateTime();
+            Date date = po.getCreate_time();
             if (getYear(date) == thisYear && !isDec(date)) {
                 sum = sum.add(po.getRealSalary());
             }
@@ -85,7 +85,7 @@ public class YearEndAwardsServiceImpl implements YearEndAwardsService {
         // 工资发放单
         List<SalaryGrantSheetPO> salaryGrantSheetPOList = salaryGrantSheetDao.getSheetByEmployeeId(employeeId);
         for (SalaryGrantSheetPO po : salaryGrantSheetPOList) {
-            Date date = po.getCreateTime();
+            Date date = po.getCreate_time();
             if (getYear(date) == thisYear && isDec(date)) {
                 salaryGrantSheetDao.addAwards(po.getId(), awards);
             }
