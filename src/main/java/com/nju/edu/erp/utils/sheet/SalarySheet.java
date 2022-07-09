@@ -136,6 +136,8 @@ public class SalarySheet implements Sheet {
       //建立正确的状态迁移
       SalarySheetState prevState;
       if (salarySheetState.equals(SalarySheetState.SUCCESS)) {
+        prevState = SalarySheetState.PENDING_LEVEL_2;
+      } else if (salarySheetState.equals(SalarySheetState.PENDING_LEVEL_2)){ 
         prevState = SalarySheetState.PENDING_LEVEL_1;
       } else {
         throw new RuntimeException("状态更新失败");
