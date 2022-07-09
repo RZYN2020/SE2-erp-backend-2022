@@ -43,7 +43,7 @@ public class IncomeController {
 
   @GetMapping(value = "/approval")
   @Authorized (roles = {Role.ADMIN, Role.GM})
-  public Response approval(@RequestParam("saleSheetId") String id,
+  public Response approval(@RequestParam("id") String id,
       @RequestParam("state") IncomeSheetState state)  {
     if(state.equals(IncomeSheetState.FAILURE) || state.equals(IncomeSheetState.SUCCESS)) {
       incomeService.approval(id, state);

@@ -39,7 +39,7 @@ public class OutcomeController {
 
   @GetMapping(value = "/approval")
   @Authorized (roles = {Role.ADMIN, Role.GM})
-  public Response approval(@RequestParam("saleSheetId") String id,
+  public Response approval(@RequestParam("id") String id,
       @RequestParam("state") OutcomeSheetState state)  {
     if(state.equals(OutcomeSheetState.FAILURE) || state.equals(OutcomeSheetState.SUCCESS)) {
       outcomeService.approval(id, state);
