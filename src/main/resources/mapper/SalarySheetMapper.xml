@@ -53,6 +53,7 @@
     <result column="income_tax" property="income_tax"></result>
     <result column="insurance" property="insurance"></result>
     <result column="fund" property="fund"></result>
+    <result column="create_time" property="create_time"></result>
   </resultMap>
 
 </mapper>

@@ -26,13 +26,13 @@
     <select id="getLatest" resultMap="PurchaseReturnsSheetPO">
         select * from purchase_returns_sheet order by id desc limit 0,1 ;
     </select>
-    <select id="findAll" resultType="com.nju.edu.erp.model.po.PurchaseReturnsSheetPO">
+    <select id="findAll" resultMap="PurchaseReturnsSheetPO">
         select * from purchase_returns_sheet;
     </select>
-    <select id="findAllByState" resultType="com.nju.edu.erp.model.po.PurchaseReturnsSheetPO">
+    <select id="findAllByState" resultMap="PurchaseReturnsSheetPO">
         select * from purchase_returns_sheet where state = #{state}
     </select>
-    <select id="findOneById" resultType="com.nju.edu.erp.model.po.PurchaseReturnsSheetPO">
+    <select id="findOneById" resultMap="PurchaseReturnsSheetPO">
         select * from purchase_returns_sheet where id=#{purchaseReturnsSheetId}
     </select>
     <select id="findContentByPurchaseReturnsSheetId" resultType="com.nju.edu.erp.model.po.PurchaseReturnsSheetContentPO">
@@ -55,8 +55,8 @@
         select sum(total_amount)
         from purchase_returns_sheet
         where state = '审批完成'
-        and create_time &lt;= #{endTime}
-        and create_time &gt;= #{beginTime};
+          and create_time &lt;= #{endTime}
+          and create_time &gt;= #{beginTime};
     </select>
     <!-- 7.5 经营情况表新增   -->
 

@@ -25,13 +25,13 @@
     <select id="getLatest" resultMap="PurchaseSheetPO">
         select * from purchase_sheet order by id desc limit 0,1 ;
     </select>
-    <select id="findAll" resultType="com.nju.edu.erp.model.po.PurchaseSheetPO">
+    <select id="findAll" resultMap="PurchaseSheetPO">
         select * from purchase_sheet;
     </select>
-    <select id="findAllByState" resultType="com.nju.edu.erp.model.po.PurchaseSheetPO">
+    <select id="findAllByState" resultMap="PurchaseSheetPO">
         select * from purchase_sheet where state = #{state}
     </select>
-    <select id="findOneById" resultType="com.nju.edu.erp.model.po.PurchaseSheetPO">
+    <select id="findOneById" resultMap="PurchaseSheetPO">
         select * from purchase_sheet where id=#{purchaseSheetId}
     </select>
     <select id="findContentByPurchaseSheetId" resultType="com.nju.edu.erp.model.po.PurchaseSheetContentPO">
@@ -50,8 +50,8 @@
         select sum(total_amount)
         from purchase_sheet
         where state = '审批完成'
-        and create_time &lt;= #{endTime}
-        and create_time &gt;= #{beginTime};
+          and create_time &lt;= #{endTime}
+          and create_time &gt;= #{beginTime};
     </select>
     <!-- 7.5 经营情况表新增   -->
 
