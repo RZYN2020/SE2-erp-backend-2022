@@ -24,7 +24,7 @@ public class PurchaseController {
     /**
      * 销售人员制定进货单
      */
-    @Authorized (roles = {Role.SALE_STAFF, Role.SALE_MANAGER, Role.GM, Role.ADMIN})
+    @Authorized (roles = {Role.FINANCIAL_STAFF, Role.SALE_STAFF, Role.SALE_MANAGER, Role.GM, Role.ADMIN})
     @PostMapping(value = "/sheet-make")
     public Response makePurchaseOrder(UserVO userVO, @RequestBody PurchaseSheetVO purchaseSheetVO)  {
         purchaseService.makePurchaseSheet(userVO, purchaseSheetVO);
