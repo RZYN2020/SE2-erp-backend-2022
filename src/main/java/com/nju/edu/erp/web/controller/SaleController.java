@@ -29,7 +29,7 @@ public class SaleController {
     /**
      * 销售人员制定销售单
      */
-    @Authorized (roles = {Role.SALE_STAFF, Role.SALE_MANAGER, Role.GM, Role.ADMIN})
+    @Authorized (roles = {Role.FINANCIAL_STAFF, Role.SALE_STAFF, Role.SALE_MANAGER, Role.GM, Role.ADMIN})
     @PostMapping(value = "/sheet-make")
     public Response makeSaleOrder(UserVO userVO, @RequestBody SaleSheetVO saleSheetVO)  {
         saleService.makeSaleSheet(userVO, saleSheetVO);

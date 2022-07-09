@@ -48,6 +48,7 @@ public class SalarySheet implements Sheet {
 
   @Override
   public void makeSheet(UserVO userVO, SheetVO sheetVO) {
+    if (sheetVO == null) return;
     assert sheetVO instanceof SalarySheetVO; //保证类型转换的正确性
     SalarySheetVO salarySheetVO = (SalarySheetVO) sheetVO;
     /************前置条件***************/

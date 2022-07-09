@@ -33,10 +33,14 @@ public class IncomeSheet implements Sheet {
   }
 
   public void makeSheet(UserVO userVO, SheetVO sheetVO) {
+    if (sheetVO == null) return;
     assert sheetVO instanceof IncomeSheetVO;
     IncomeSheetVO incomeSheetVO = (IncomeSheetVO) sheetVO;
     IncomeSheetPO incomeSheetPO = new IncomeSheetPO();
     BeanUtils.copyProperties(incomeSheetVO, incomeSheetPO);
+    if (incomeSheetVO.getIncome_sheet_content().size() == 0) {
+      return;
+    }
 
     incomeSheetPO.setOperator(userVO.getName());
     IncomeSheetPO latest = incomeSheetDao.getLatest();

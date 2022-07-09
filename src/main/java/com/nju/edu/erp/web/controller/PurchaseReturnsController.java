@@ -24,7 +24,7 @@ public class PurchaseReturnsController {
     /**
      * 销售人员制定进货退货单
      */
-    @Authorized (roles = {Role.SALE_STAFF, Role.SALE_MANAGER, Role.GM, Role.ADMIN})
+    @Authorized (roles = {Role.FINANCIAL_STAFF, Role.SALE_STAFF, Role.SALE_MANAGER, Role.GM, Role.ADMIN})
     @PostMapping(value = "/sheet-make")
     public Response makePurchaseOrder(UserVO userVO, @RequestBody PurchaseReturnsSheetVO purchaseReturnsSheetVO)  {
         purchaseReturnsService.makePurchaseReturnsSheet(userVO, purchaseReturnsSheetVO);

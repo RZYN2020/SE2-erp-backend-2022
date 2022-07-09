@@ -32,10 +32,14 @@ public class OutcomeSheet implements Sheet {
   }
 
   public void makeSheet(UserVO userVO, SheetVO sheetVO) {
+    if (sheetVO == null) return;
     assert sheetVO instanceof OutcomeSheetVO;
     OutcomeSheetVO outcomeSheetVO = (OutcomeSheetVO) sheetVO;
     OutcomeSheetPO outcomeSheetPO = new OutcomeSheetPO();
     BeanUtils.copyProperties(outcomeSheetVO, outcomeSheetPO);
+    if (outcomeSheetVO.getOutcome_sheet_content().size() == 0) {
+      return;
+    }
 
     outcomeSheetPO.setOperator(userVO.getName());
     OutcomeSheetPO latest = outcomeSheetDao.getLatest();

@@ -28,7 +28,7 @@ public class SalaryController {
     this.salaryService = salaryService;
   }
 
-  @Authorized(roles = {Role.HR, Role.GM, Role.ADMIN})
+  @Authorized(roles = {Role.FINANCIAL_STAFF, Role.HR, Role.GM, Role.ADMIN})
   @PostMapping(value = "/sheet-make")
   public Response makeSaleOrder(UserVO userVO, @RequestBody SalarySheetVO salarySheetVO)  {
     salaryService.makeSalarySheet(userVO, salarySheetVO);

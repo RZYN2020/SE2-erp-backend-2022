@@ -83,6 +83,8 @@ public class SaleServiceImpl implements SaleService {
     @Override
     @Transactional
     public void makeSaleSheet(UserVO userVO, SaleSheetVO saleSheetVO) {
+        if (saleSheetVO == null) return;
+        if (saleSheetVO.getSaleSheetContent().size() == 0) return;
         // 需要持久化销售单（SaleSheet）和销售单content（SaleSheetContent），其中总价或者折后价格的计算需要在后端进行
         // 需要的service和dao层相关方法均已提供，可以不用自己再实现一遍
         SaleSheetPO saleSheetPO = new SaleSheetPO();
@@ -107,6 +109,7 @@ public class SaleServiceImpl implements SaleService {
                 pContentPO.setUnitPrice(unitPrice);
             }
             pContentPO.setTotalPrice(unitPrice.multiply(BigDecimal.valueOf(pContentPO.getQuantity())));
+            content.setTotalPrice(unitPrice.multiply(BigDecimal.valueOf(pContentPO.getQuantity())));
             pContentPOList.add(pContentPO);
             totalAmount = totalAmount.add(pContentPO.getTotalPrice());
         }
