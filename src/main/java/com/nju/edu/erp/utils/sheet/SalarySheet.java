@@ -144,7 +144,7 @@ public class SalarySheet implements Sheet {
         throw new RuntimeException("状态更新失败");
       }
       int effectLines = salarySheetDao.updateStateV2(sheetId, salarySheetState, prevState);
-      if (effectLines == 0) throw new RuntimeException("状态更新失败");
+//      if (effectLines == 0) throw new RuntimeException("状态更新失败");
 
       //修改时间
       salarySheetPO.setCreate_time(new Date());
