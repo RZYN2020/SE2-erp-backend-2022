@@ -2,7 +2,7 @@
 
 ## 1. 引言
 
-> 最后一次修改: 赵勇臻
+> 最后一次修改: 杨峥
 >
 > 最后一次修改日期: 2022/7/9
 
@@ -838,7 +838,598 @@ GET /outcomeSheet/sheet-show
 
 * 同上
 
+#### 2.1.3 API测试/人力资源模块
 
+> 最后一次修改: 杨峥
+>
+> 最后一次修改日期: 2022/07/09
+
+##### GET 查询所有员工信息
+
+GET /employee/findAllEmployee
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| Authorization | header | string | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": [
+        {
+            "id": 1,
+            "name": "DTA",
+            "gender": "男",
+            "birthDate": "2022-06-30T15:17:42.000+00:00",
+            "phoneNumber": "18168100075",
+            "job": "INVENTORY_MANAGER",
+            "jobLevel": 1,
+            "account": "doomgrahamismyfather"
+        },
+        {
+            "id": 2,
+            "name": "刘钦老师",
+            "gender": "男",
+            "birthDate": "1986-06-30T14:17:42.000+00:00",
+            "phoneNumber": "110",
+            "job": "GM",
+            "jobLevel": 1,
+            "account": "seec67"
+        },
+        {
+            "id": 3,
+            "name": "赵锁子",
+            "gender": "男",
+            "birthDate": "1800-04-01T15:17:42.000+00:00",
+            "phoneNumber": "201250178",
+            "job": "INVENTORY_MANAGER",
+            "jobLevel": 1,
+            "account": "lockson"
+        },
+        {
+            "id": 4,
+            "name": "袜子socket",
+            "gender": "男",
+            "birthDate": "2008-06-30T15:17:42.000+00:00",
+            "phoneNumber": "12306",
+            "job": "INVENTORY_MANAGER",
+            "jobLevel": 2,
+            "account": "hahaVO"
+        },
+        {
+            "id": 5,
+            "name": "seecoder平台",
+            "gender": "男",
+            "birthDate": "2015-06-30T15:17:42.000+00:00",
+            "phoneNumber": "123456789",
+            "job": "INVENTORY_MANAGER",
+            "jobLevel": 3,
+            "account": "seecoder"
+        },
+        {
+            "id": 6,
+            "name": "兆星锐",
+            "gender": "男",
+            "birthDate": "1998-06-30T15:17:42.000+00:00",
+            "phoneNumber": "4008823823",
+            "job": "SALE_MANAGER",
+            "jobLevel": 1,
+            "account": "zxrhandsomeboy"
+        },
+        {
+            "id": 7,
+            "name": "赵如雷",
+            "gender": "女",
+            "birthDate": "2020-12-30T15:17:42.000+00:00",
+            "phoneNumber": "20220708",
+            "job": "SALE_STAFF",
+            "jobLevel": 3,
+            "account": "Thunder"
+        },
+        {
+            "id": 8,
+            "name": "大洞王爷",
+            "gender": "男",
+            "birthDate": "2022-02-24T15:17:42.000+00:00",
+            "phoneNumber": "114514",
+            "job": "GM",
+            "jobLevel": 1,
+            "account": "BigHoleShoes"
+        },
+        {
+            "id": 9,
+            "name": "勇哥大三加油",
+            "gender": "男",
+            "birthDate": "2022-07-08T15:17:42.000+00:00",
+            "phoneNumber": "666",
+            "job": "SALE_MANAGER",
+            "jobLevel": 1,
+            "account": "bravebrothergogogo"
+        }
+    ]
+}
+```
+
+###### 预期结果
+
+同上
+
+##### POST 创建新员工
+
+POST /employee/createEmployee
+
+> Body 请求参数
+
+```json
+{
+  "name": "Test_man",
+  "gender": "男",
+  "birthDate": "2022-07-08T15:17:42.000+00:00",
+  "phoneNumber": "666",
+  "job": "SALE_MANAGER",
+  "jobLevel": 1,
+  "account": "test"
+}
+```
+
+###### 请求参数
+
+| 名称 | 位置 | 类型   | 必选 | 说明 |
+| ---- | ---- | ------ | ---- | ---- |
+| body | body | object | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": {
+        "id": 10,
+        "name": "Test_man",
+        "gender": "男",
+        "birthDate": "2022-07-08T15:17:42.000+00:00",
+        "phoneNumber": "666",
+        "job": "SALE_MANAGER",
+        "jobLevel": 1,
+        "account": "test"
+    }
+}
+```
+
+###### 预期结果
+
+同上
+
+##### GET 根据员工id查询其账户
+
+GET /employee/findUser
+
+###### 请求参数
+
+| 名称          | 位置   | 类型    | 必选 | 说明 |
+| ------------- | ------ | ------- | ---- | ---- |
+| id            | query  | integer | 否   | none |
+| Authorization | header | string  | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": {
+        "name": "lock",
+        "role": "INVENTORY_MANAGER",
+        "password": "123456"
+    }
+}
+```
+
+###### 预期结果
+
+同上
+
+##### GET 根据员工id查询缺勤天数
+
+GET /employee/findAbsence
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| username      | query  | string | 否   | none |
+| Authorization | header | string | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": 8
+}
+```
+
+###### 预期结果
+
+同上
+
+##### POST 更新岗位信息
+
+POST /job/updateJob
+
+> Body 请求参数
+
+```json
+{
+  "name": "SALE_STAFF",
+  "basicSalary": 5000,
+  "jobSalary": 6000,
+  "jobLevel": 3,
+  "calculateMethod": 2,
+  "paymentMethod": "月薪制"
+}
+```
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| Authorization | header | string | 否   | none |
+| body          | body   | object | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": "操作成功"
+}
+```
+
+###### 预期结果
+
+同上
+
+##### GET 获取全部薪资计算方式
+
+GET /job/findAllCalculateMethod
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| Authorization | header | string | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": [
+        "基本工资 + 岗位工资 - 税款",
+        "基本工资 + 提成 + 岗位工资 - 税款"
+    ]
+}
+```
+
+###### 预期结果
+
+同上
+
+##### GET 查询所有岗位信息
+
+GET /job/findAllJob
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| Authorization | header | string | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": [
+        {
+            "name": "FINANCIAL_STAFF",
+            "basicSalary": 1500,
+            "jobSalary": 2500,
+            "jobLevel": 1,
+            "calculateMethod": 1,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "FINANCIAL_STAFF",
+            "basicSalary": 2000,
+            "jobSalary": 3000,
+            "jobLevel": 2,
+            "calculateMethod": 1,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "GM",
+            "basicSalary": 100000,
+            "jobSalary": 100000,
+            "jobLevel": 1,
+            "calculateMethod": 2,
+            "paymentMethod": "年薪制"
+        },
+        {
+            "name": "HR",
+            "basicSalary": 1500,
+            "jobSalary": 2500,
+            "jobLevel": 1,
+            "calculateMethod": 1,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "HR",
+            "basicSalary": 2000,
+            "jobSalary": 3000,
+            "jobLevel": 2,
+            "calculateMethod": 1,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "HR",
+            "basicSalary": 3000,
+            "jobSalary": 4000,
+            "jobLevel": 3,
+            "calculateMethod": 1,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "INVENTORY_MANAGER",
+            "basicSalary": 1000,
+            "jobSalary": 2000,
+            "jobLevel": 1,
+            "calculateMethod": 1,
+            "paymentMethod": "年薪制"
+        },
+        {
+            "name": "INVENTORY_MANAGER",
+            "basicSalary": 1500,
+            "jobSalary": 2500,
+            "jobLevel": 2,
+            "calculateMethod": 1,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "INVENTORY_MANAGER",
+            "basicSalary": 2000,
+            "jobSalary": 3000,
+            "jobLevel": 3,
+            "calculateMethod": 1,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "SALE_MANAGER",
+            "basicSalary": 6000,
+            "jobSalary": 6000,
+            "jobLevel": 1,
+            "calculateMethod": 2,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "SALE_STAFF",
+            "basicSalary": 2000,
+            "jobSalary": 3000,
+            "jobLevel": 1,
+            "calculateMethod": 2,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "SALE_STAFF",
+            "basicSalary": 3000,
+            "jobSalary": 4000,
+            "jobLevel": 2,
+            "calculateMethod": 2,
+            "paymentMethod": "月薪制"
+        },
+        {
+            "name": "SALE_STAFF",
+            "basicSalary": 5000,
+            "jobSalary": 6000,
+            "jobLevel": 3,
+            "calculateMethod": 2,
+            "paymentMethod": "月薪制"
+        }
+    ]
+}
+```
+
+###### 预期结果
+
+同上
+
+##### GET 获取全部薪资发放方式
+
+GET /job/findAllPaymentMethod
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| Authorization | header | string | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": [
+        "月薪制",
+        "年薪制"
+    ]
+}
+```
+
+###### 预期结果
+
+同上
+
+##### GET 制定年终奖
+
+GET /yearEndAwards/establishYearEndAwards
+
+###### 请求参数
+
+| 名称       | 位置  | 类型    | 必选 | 说明 |
+| ---------- | ----- | ------- | ---- | ---- |
+| employeeId | query | integer | 否   | none |
+| awards     | query | integer | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": "操作成功"
+}
+```
+
+###### 预期结果
+
+同上
+
+##### GET 查看全部员工年终奖情况
+
+GET /yearEndAwards/findAllYearEndSalary
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| Authorization | header | string | 否   | none |
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": [
+        {
+            "employeeId": 1,
+            "employeeName": "DTA",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 550
+        },
+        {
+            "employeeId": 2,
+            "employeeName": "刘钦老师",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 3,
+            "employeeName": "赵锁子",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 4,
+            "employeeName": "袜子socket",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 5,
+            "employeeName": "seecoder平台",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 6,
+            "employeeName": "兆星锐",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 7,
+            "employeeName": "赵如雷",
+            "totalSalaryExceptDecember": 8100,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 8,
+            "employeeName": "大洞王爷",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 9,
+            "employeeName": "勇哥大三加油",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        },
+        {
+            "employeeId": 10,
+            "employeeName": "Test_man",
+            "totalSalaryExceptDecember": 0,
+            "yearEndAwards": 0
+        }
+    ]
+}
+```
+
+###### 预期结果
+
+同上
 
 ## 3. 系统测试
 
