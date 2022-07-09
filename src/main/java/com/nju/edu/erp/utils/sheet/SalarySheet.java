@@ -77,7 +77,7 @@ public class SalarySheet implements Sheet {
       }
     }
     salarySheetPO.setCommission(totalSaleAmount.multiply(ratio));
-    TaxVO taxVO = CalMethods.get(jobPO.getCalculateMethod()).calculate_tax(employeeDao.findOneById(salarySheetPO.getEmployee_id()));
+    TaxVO taxVO = CalMethods.calculate_tax(employeeDao.findOneById(salarySheetPO.getEmployee_id()), jobPO.getCalculateMethod());
     salarySheetPO.setFund(taxVO.getFund());
     salarySheetPO.setIncome_tax(taxVO.getIncome_tax());
     salarySheetPO.setInsurance(taxVO.getInsurance());
@@ -112,7 +112,7 @@ public class SalarySheet implements Sheet {
       taxVO.setIncome_tax(po.getIncome_tax());
       taxVO.setInsurance(po.getInsurance());
       vo.setTax(taxVO);
-      vo.setActual_paid(CalMethods.get(jobPO.getCalculateMethod()).doCalculate(employeeDao.findOneById(po.getEmployee_id())));
+      vo.setActual_paid(CalMethods.doCalculate(employeeDao.findOneById(po.getEmployee_id()), jobPO.getCalculateMethod()));
       res.add(vo);
 
       /************后置条件***************/
@@ -160,9 +160,7 @@ public class SalarySheet implements Sheet {
     int employeeId = salarySheetPO.getEmployee_id();
     EmployeePO employeePO = employeeDao.findOneById(employeeId);
     JobPO jobPO = jobDao.findJobByEmployee(employeeId);
-    int calculateMethod = jobPO.getCalculateMethod();
-    CalMethods.get(calculateMethod).calculate_payable(employeePO); // 税前
-    CalMethods.get(calculateMethod).doCalculate(employeePO); // 税后
+    int idx = jobPO.getCalculateMethod();
 
     // 单据编号
 
@@ -174,11 +172,11 @@ public class SalarySheet implements Sheet {
     salaryGrantSheetPO.setEmployeeId(employeeId);
     salaryGrantSheetPO.setEmployeeName(employeePO.getName());
     salaryGrantSheetPO.setEmployeeAccount(employeePO.getAccount());
-    salaryGrantSheetPO.setSalaryBeforeTax(CalMethods.get(calculateMethod).calculate_payable(employeePO));
+    salaryGrantSheetPO.setSalaryBeforeTax(CalMethods.calculate_payable(employeePO, idx));
     salaryGrantSheetPO.setIncomeTax(salarySheetPO.getIncome_tax());
     salaryGrantSheetPO.setInsurance(salarySheetPO.getInsurance());
     salaryGrantSheetPO.setFund(salarySheetPO.getFund());
-    salaryGrantSheetPO.setRealSalary(CalMethods.get(calculateMethod).doCalculate(employeePO));
+    salaryGrantSheetPO.setRealSalary(CalMethods.doCalculate(employeePO, idx));
     salaryGrantSheetPO.setState(SalaryGrantSheetState.PENDING);
 
     salaryGrantSheetDao.saveSheet(salaryGrantSheetPO);

@@ -9,6 +9,7 @@ import com.nju.edu.erp.model.po.JobPO;
 import com.nju.edu.erp.model.po.SaleSheetPO;
 import com.nju.edu.erp.model.vo.TaxVO;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,7 +57,7 @@ public class CM2 implements CalculateMethod{
     } else {
       radix = new BigDecimal(30);
     }
-    BigDecimal deduction = jobPO.getBasicSalary().multiply(absence).divide(radix);
+    BigDecimal deduction = jobPO.getBasicSalary().multiply(absence).divide(radix, 10, RoundingMode.HALF_UP);
     return actually_paid.subtract(deduction);
   }
 

@@ -51,7 +51,7 @@ public class JobServiceImpl implements JobService {
     public List<String> findAllCalculateMethod() {
         List<String> ans = new ArrayList<>();
         for (int i = 1; i <= CalMethods.getSize(); i++) {
-            ans.add(CalMethods.get(i).display());
+            ans.add(CalMethods.display(i));
         }
         return ans;
     }

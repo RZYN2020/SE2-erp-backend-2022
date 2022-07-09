@@ -2,6 +2,9 @@ package com.nju.edu.erp.utils.salary;
 
 import com.nju.edu.erp.dao.JobDao;
 import com.nju.edu.erp.dao.SaleSheetDao;
+import com.nju.edu.erp.model.po.EmployeePO;
+import com.nju.edu.erp.model.vo.TaxVO;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class CalMethods {
@@ -25,8 +28,20 @@ public class CalMethods {
     calculateMethods.add(cm);
   }
 
-  public static CalculateMethod get(Integer idx) {
-    return calculateMethods.get(idx - 1);
+  public static BigDecimal doCalculate(EmployeePO employeePO, Integer idx) {
+    return calculateMethods.get(idx - 1).doCalculate(employeePO);
+  }
+
+  public static TaxVO calculate_tax(EmployeePO employeePO, Integer idx) {
+    return calculateMethods.get(idx - 1).calculate_tax(employeePO);
+  }
+
+  public static BigDecimal calculate_payable(EmployeePO employeePO, Integer idx) {
+    return calculateMethods.get(idx - 1).calculate_payable(employeePO);
+  }
+
+  public static String display(Integer idx) {
+    return calculateMethods.get(idx - 1).display();
   }
 
   public static int getSize() {
