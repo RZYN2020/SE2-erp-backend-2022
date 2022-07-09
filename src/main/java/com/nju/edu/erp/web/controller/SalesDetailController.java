@@ -24,7 +24,7 @@ public class SalesDetailController {
     this.saleDetailService = saleDetailService;
   }
 
-  @Authorized(roles = {Role.SALE_STAFF, Role.SALE_MANAGER, Role.GM, Role.ADMIN})
+  @Authorized(roles = {Role.FINANCIAL_STAFF, Role.GM, Role.ADMIN})
   @GetMapping(value = "/show-all")
   public Response makeSaleReturnOrder() {
     return Response.buildSuccess(saleDetailService.findAllRecords());

@@ -28,7 +28,7 @@ public class SalaryController {
     this.salaryService = salaryService;
   }
 
-  @Authorized(roles = {Role.HR, Role.GM, Role.ADMIN})
+  @Authorized(roles = {Role.FINANCIAL_STAFF, Role.HR, Role.GM, Role.ADMIN})
   @PostMapping(value = "/sheet-make")
   public Response makeSaleOrder(UserVO userVO, @RequestBody SalarySheetVO salarySheetVO)  {
     salaryService.makeSalarySheet(userVO, salarySheetVO);
@@ -66,7 +66,7 @@ public class SalaryController {
   @GetMapping(value = "/second-approval")
   public Response secondApproval(@RequestParam("id") String id,
       @RequestParam("state") SalarySheetState state)  {
-    if(state.equals(SaleSheetState.FAILURE) || state.equals(SaleSheetState.SUCCESS)) {
+    if(state.equals(SalarySheetState.FAILURE) || state.equals(SalarySheetState.SUCCESS)) {
       salaryService.approval(id, state);
       return Response.buildSuccess();
     } else {

@@ -3,8 +3,8 @@
 <mapper namespace="com.nju.edu.erp.dao.WarehouseGivenSheetDao">
 
   <insert id="saveSheet">
-    insert into warehouse_given_sheet (id, sale_sheet_id, operator, create_time, `state`)
-    values (#{id}, #{saleSheetId}, #{operator}, #{create_time}, #{state}) ;
+    insert into warehouse_given_sheet (id, sale_sheet_id, operator, create_time, state)
+    values (#{id}, #{saleSheetId}, #{operator}, #{create_time}, #{state})
   </insert>
 
   <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id">

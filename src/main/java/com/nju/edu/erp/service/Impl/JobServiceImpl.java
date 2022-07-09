@@ -58,6 +58,9 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<PaymentMethod> findAllPaymentMethod() {
-        return jobDao.findAllPaymentMethod();
+        List<PaymentMethod> ret = new ArrayList<>();
+        ret.add(PaymentMethod.Monthly);
+        ret.add(PaymentMethod.Yearly);
+        return ret;
     }
 }

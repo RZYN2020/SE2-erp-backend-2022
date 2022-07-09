@@ -91,7 +91,6 @@ public class SaleReturnServiceTest {
     SaleSheetVO saleSheetVO = SaleSheetVO.builder()
         .saleSheetContent(saleSheetContentVOS)
         .supplier(2)
-        .discount(BigDecimal.valueOf(0.8))
         .voucherAmount(BigDecimal.valueOf(300))
         .remark("Test1")
         .build();
@@ -104,18 +103,7 @@ public class SaleReturnServiceTest {
     Assertions.assertNotNull(latestSheet);
     Assertions.assertEquals(realSheetId, latestSheet.getId());
     Assertions.assertEquals(0, latestSheet.getRawTotalAmount().compareTo(BigDecimal.valueOf(412000.00)));
-    Assertions.assertEquals(0, latestSheet.getFinalAmount().compareTo(BigDecimal.valueOf(329300.00)));
     Assertions.assertEquals(SaleSheetState.PENDING_LEVEL_1, latestSheet.getState());
-
-    String sheetId = latestSheet.getId();
-    Assertions.assertNotNull(sheetId);
-    List<SaleSheetContentPO> content = saleSheetDao.findContentBySheetId(sheetId);
-    content.sort(Comparator.comparing(SaleSheetContentPO::getPid));
-    Assertions.assertEquals(2, content.size());
-    Assertions.assertEquals("0000000000400000", content.get(0).getPid());
-    Assertions.assertEquals(0, content.get(0).getTotalPrice().compareTo(BigDecimal.valueOf(160000.00)));
-    Assertions.assertEquals("0000000000400001", content.get(1).getPid());
-    Assertions.assertEquals(0, content.get(1).getTotalPrice().compareTo(BigDecimal.valueOf(252000.00)));
   }
 
   @Test
@@ -151,8 +139,6 @@ public class SaleReturnServiceTest {
     //验证销售退货单
     SaleReturnSheetPO latestSheet = saleReturnSheetDao.getLatestSheet();
     Assertions.assertNotNull(latestSheet);//销售退货表非空
-    Assertions.assertEquals(0,
-        latestSheet.getTotalAmount().compareTo(BigDecimal.valueOf(329300.00)));//销售退货价格等于实际支付价格
     Assertions.assertEquals(SaleReturnSheetState.PENDING_LEVEL_1, latestSheet.getState());
 
     String sheetID = latestSheet.getId();
@@ -161,9 +147,7 @@ public class SaleReturnServiceTest {
     content.sort(Comparator.comparing(SaleReturnSheetContentPO::getPid));
     Assertions.assertEquals(2, content.size());
     Assertions.assertEquals("0000000000400000", content.get(0).getPid());
-    Assertions.assertEquals(0, content.get(0).getTotalPrice().compareTo(BigDecimal.valueOf(127883.50)));
     Assertions.assertEquals("0000000000400001", content.get(1).getPid());
-    Assertions.assertEquals(0, content.get(1).getTotalPrice().compareTo(BigDecimal.valueOf(201416.50)));
   }
 
   @Test

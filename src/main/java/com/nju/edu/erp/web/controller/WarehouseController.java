@@ -104,7 +104,6 @@ public class WarehouseController {
     }
 
     @GetMapping("/givenSheet/sheet-show")
-    @Authorized(roles = {Role.ADMIN, Role.GM, Role.INVENTORY_MANAGER})
     public Response warehouseGivenSheetShow(@RequestParam(value = "state", required = false) WarehouseGivenSheetState state) {
        return Response.buildSuccess(warehouseGivenService.getSheetByState(state));
     }

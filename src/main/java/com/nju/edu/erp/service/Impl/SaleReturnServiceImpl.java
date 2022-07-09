@@ -92,6 +92,8 @@ public class SaleReturnServiceImpl implements SaleReturnService {
   @Override
   @Transactional
   public void makeSaleReturnSheet(UserVO userVO, SaleReturnSheetVO saleReturnSheetVO) {
+    if (saleReturnSheetVO == null) return;
+    if (saleReturnSheetVO.getSaleReturnSheetContent().size() == 0) return;
     SaleReturnSheetPO saleReturnSheetPO = new SaleReturnSheetPO();
     BeanUtils.copyProperties(saleReturnSheetVO, saleReturnSheetPO);
     // 此处根据制定单据人员确定操作员

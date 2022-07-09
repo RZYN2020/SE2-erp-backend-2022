@@ -33,10 +33,14 @@ public class WarehouseGivenSheet implements Sheet{
   }
 
   public void makeSheet(UserVO userVO, SheetVO sheetVO) {
+    if (sheetVO == null) return;
     assert sheetVO instanceof WarehouseGivenSheetVO;
     WarehouseGivenSheetVO warehouseGivenSheetVO = (WarehouseGivenSheetVO) sheetVO;
     WarehouseGivenSheetPO warehouseGivenSheetPO = new WarehouseGivenSheetPO();
     BeanUtils.copyProperties(warehouseGivenSheetVO, warehouseGivenSheetPO);
+    if (warehouseGivenSheetVO.getProducts().size() == 0) {
+      return;
+    }
 
     warehouseGivenSheetPO.setOperator(userVO.getName());
     WarehouseGivenSheetPO latest = warehouseGivenSheetDao.getLatest();
