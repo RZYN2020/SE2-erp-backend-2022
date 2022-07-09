@@ -3,7 +3,7 @@
 <mapper namespace="com.nju.edu.erp.dao.BankAccountDao">
 
     <insert id = "createBankAccount" parameterType="com.nju.edu.erp.model.po.BankAccountPO">
-        insert into bank_account (name, amount)
+        insert into bank_account (account_name, amount)
         values (#{accountName}, #{amount})
     </insert>
 
