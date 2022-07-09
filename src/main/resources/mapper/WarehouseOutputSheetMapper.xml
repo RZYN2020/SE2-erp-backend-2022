@@ -60,6 +60,10 @@
         select * from warehouse_output_sheet_content where wo_id = #{sheetId};
     </select>
 
+    <select id="getAllContentBySHD" resultType="com.nju.edu.erp.model.po.WarehouseOutputSheetContentPO">
+        select * from warehouse_output_sheet_content, warehouse_output_sheet where wo_id = warehouse_output_sheet.id and warehouse_output_sheet.sale_sheet_id = #{saleSheetID};
+    </select>
+
     <resultMap id="WarehouseOutputSheetPO" type="com.nju.edu.erp.model.po.WarehouseOutputSheetPO">
         <id column="id" property="id"></id>
         <result column="operator" property="operator"></result>

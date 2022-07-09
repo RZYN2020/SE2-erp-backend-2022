@@ -5,6 +5,7 @@ import com.nju.edu.erp.model.po.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -21,11 +22,13 @@ public interface EmployeeDao {
 
     User findUserByEmployeeId(Integer id);
 
-    void signIn(String username);
+    void signIn(String username, Date lastSignTime);
 
     int findSignInTimes(String username);
 
     void createUser(User user);
 
     int findMaxUserId();
+
+    Date getLastSignTimeByUsername(String username);
 }

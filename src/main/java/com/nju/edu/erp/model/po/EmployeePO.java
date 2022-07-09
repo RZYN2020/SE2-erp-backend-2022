@@ -22,4 +22,5 @@ public class EmployeePO {
     private Integer signTimes; // 员工每月打卡次数
     private String username; // 该员工的账户(User)的name
     private String account; // 工资卡账户
+    private Date lastSignTime; // 最后打卡时间
 }

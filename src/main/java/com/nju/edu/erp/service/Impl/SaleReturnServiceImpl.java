@@ -194,7 +194,7 @@ public class SaleReturnServiceImpl implements SaleReturnService {
           feedProducts(map.get(content.getPid()), content);
         }
 
-        SaleSheetPO saleSheet = saleSheetDao.findSheetById(saleReturnSheetId);
+        SaleSheetPO saleSheet = saleSheetDao.findSheetById(saleReturnSheet.getSaleSheetID());
         CustomerPO customerPO = customerService.findCustomerById(saleSheet.getSupplier());
         customerPO.setPayable(customerPO.getPayable().add(saleReturnSheet.getTotalAmount()));
         customerService.updateCustomer(customerPO);

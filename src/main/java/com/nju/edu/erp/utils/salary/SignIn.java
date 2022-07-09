@@ -28,4 +28,15 @@ public class SignIn {
     Date now = new Date();
     return Integer.parseInt(now.toString().split(" ")[2]);
   }
+
+    /**
+     * 返回今天是本月的第几天
+     * @return
+     */
+    public static boolean canSignIn(Date lastSignDate) {
+        Date now = new Date();
+        String[] nowArray = now.toString().split(" ");
+        String[] tarArray = lastSignDate.toString().split(" ");
+        return !(nowArray[1].equals(tarArray[1]) && nowArray[2].equals(tarArray[2]));
+    }
 }

@@ -8,8 +8,8 @@
 
     <!--  birth_date 是否需要 ` ` 可能会出错   -->
     <insert id = "createEmployee" parameterType="EmployeePO">
-        insert into employee (id, `name`, `gender`, birth_date , `phone_number`, `job`, job_level, sign_times, `username`, `account`)
-        values (#{id}, #{name}, #{gender}, #{birthDate}, #{phoneNumber}, #{job}, #{jobLevel}, #{signTimes}, #{username}, #{account})
+        insert into employee (id, `name`, `gender`, birth_date , `phone_number`, `job`, job_level, sign_times, `username`, `account`, `last_sign_time`)
+        values (#{id}, #{name}, #{gender}, #{birthDate}, #{phoneNumber}, #{job}, #{jobLevel}, #{signTimes}, #{username}, #{account}, #{lastSignTime})
     </insert>
 
     <select id="findOneById" resultType="com.nju.edu.erp.model.po.EmployeePO">
@@ -25,7 +25,7 @@
     </select>
 
     <update id="signIn">
-        update employee set sign_times = sign_times + 1 where username = #{username}
+        update employee set sign_times = sign_times + 1, last_sign_time = #{lastSignTime} where username = #{username};
     </update>
 
     <select id="findSignInTimes" resultType="java.lang.Integer">
@@ -40,6 +40,10 @@
         insert into user (id, `name`, `password`, `role`)
         values (#{id}, #{name}, #{password}, #{role})
     </insert>
+
+    <select id="getLastSignTimeByUsername" resultType="java.util.Date">
+        select last_sign_time from employee where username = #{username};
+    </select>
 
     <resultMap id="User" type="com.nju.edu.erp.model.po.User">
         <id column="id" property="id"></id>
@@ -59,6 +63,7 @@
         <result column="sign_times" property="signTimes"></result>
         <result column="username" property="username"></result>
         <result column="account" property="account"></result>
+        <result column="last_sign_time" property="lastSignTime"></result>
     </resultMap>
 
 </mapper>
