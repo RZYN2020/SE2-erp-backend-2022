@@ -152,7 +152,9 @@ public class SalarySheet implements Sheet {
       assert effectLines > 0;
 
       //如果工资单审批成功，则生成工资发放单
-      createSalaryGrantSheet(salarySheetPO);
+      if (salarySheetState.equals(SalarySheetState.SUCCESS)) {
+        createSalaryGrantSheet(salarySheetPO);
+      }
 
     }
   }
