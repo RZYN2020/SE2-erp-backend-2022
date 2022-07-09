@@ -63,7 +63,7 @@
         <result column="fund" property="fund"></result>
         <result column="real_salary" property="realSalary"></result>
         <result column="state" property="state"></result>
-        <result column="create_time" property="createTime"></result>
+        <result column="create_time" property="create_time"></result>
     </resultMap>
 
 </mapper>

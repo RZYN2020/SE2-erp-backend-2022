@@ -27,5 +27,5 @@ public class SalaryGrantSheetPO {
     private BigDecimal realSalary; // 实发金额
 
     private SalaryGrantSheetState state; // 审批状态
-    private Date createTime;
+    private Date create_time;
 }
