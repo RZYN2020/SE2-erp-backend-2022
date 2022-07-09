@@ -31,24 +31,34 @@
     where id = #{id}
   </update>
 
-  <select id="getLatestSheet" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+  <select id="getLatestSheet" resultMap="SaleReturnSheetPO">
     select * from sale_return_sheet order by id desc limit 0,1 ;
   </select>
 
-  <select id="findAllByState" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+  <select id="findAllByState" resultMap="SaleReturnSheetPO">
     select * from sale_return_sheet where state = #{state}
   </select>
 
-  <select id="findAllSheet" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+  <select id="findAllSheet" resultMap="SaleReturnSheetPO">
     select * from sale_return_sheet;
   </select>
 
-  <select id="findContentBySaleReturnSheetId" resultType="com.nju.edu.erp.model.po.SaleReturnSheetContentPO">
+  <select id="findContentBySaleReturnSheetId" resultMap="SaleReturnSheetPO">
     select * from sale_return_sheet_content where sale_return_sheet_id = #{saleReturnsheetId};
   </select>
 
-  <select id="findSheetById" resultType="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+  <select id="findSheetById" resultMap="SaleReturnSheetPO">
     select * from sale_return_sheet where id = #{saleReturnSheetId};
   </select>
+
+  <resultMap id="SaleReturnSheetPO" type="com.nju.edu.erp.model.po.SaleReturnSheetPO">
+    <id column="id" property="id"></id>
+    <result column="sale_sheet_id" property="saleSheetID"></result>
+    <result column="operator" property="operator"></result>
+    <result column="remark" property="remark"></result>
+    <result column="total_amount" property="totalAmount"></result>
+    <result column="create_time" property="create_time"></result>
+    <result column="state" property="state"></result>
+  </resultMap>
 
 </mapper>
