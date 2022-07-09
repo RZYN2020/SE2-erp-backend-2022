@@ -3,7 +3,7 @@
 <mapper namespace="com.nju.edu.erp.dao.PurchaseReturnsSheetDao">
     <insert id="save" parameterType="PurchaseReturnsSheetPO">
         insert into purchase_returns_sheet (id, purchase_sheet_id, operator, remark, total_amount, state, create_time)
-        values (#{id},#{purchaseSheetId},#{operator},#{remark},#{totalAmount},#{state}, #{createTime})
+        values (#{id},#{purchaseSheetId},#{operator},#{remark},#{totalAmount},#{state}, #{create_time})
     </insert>
     <update id="updateState">
         update purchase_returns_sheet
@@ -67,6 +67,6 @@
         <result column="remark" property="remark"></result>
         <result column="total_amount" property="totalAmount"></result>
         <result column="state" property="state"></result>
-        <result column="create_time" property="createTime"></result>
+        <result column="create_time" property="create_time"></result>
     </resultMap>
 </mapper>

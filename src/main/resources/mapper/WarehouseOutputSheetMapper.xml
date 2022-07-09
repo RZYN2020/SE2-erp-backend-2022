@@ -3,7 +3,7 @@
 <mapper namespace="com.nju.edu.erp.dao.WarehouseOutputSheetDao">
     <insert id="save" parameterType="WarehouseOutputSheetPO">
         insert into warehouse_output_sheet (id, operator, create_time, `state`, sale_sheet_id)
-        values (#{id},#{operator},#{createTime},#{state},#{saleSheetId})
+        values (#{id},#{operator},#{create_time},#{state},#{saleSheetId})
     </insert>
 
     <delete id="deleteContent">

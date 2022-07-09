@@ -838,6 +838,159 @@ GET /outcomeSheet/sheet-show
 
 * 同上
 
+##### GET 查看销售明细表
+
+GET /salesDetail/show-all
+
+查看销售明细表
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| Authorization | header | string | 否   | none |
+
+> 返回示例
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": [
+        {
+            "sale_time": "2022-05-23T16:04:37.000+00:00",
+            "record_type": "销售",
+            "product_name": "戴尔电脑",
+            "product_type": "戴尔(DELL)Vostro笔记本电脑5410 123色 戴尔成就3500Vostro1625D",
+            "customer_id": 2,
+            "operator": "xiaoshoujingli",
+            "amount": 600,
+            "unit_price": 3500.00,
+            "total_price": 2100000.00
+        },
+        {
+            "sale_time": "2022-05-23T16:04:37.000+00:00",
+            "record_type": "销售",
+            "product_name": "小米手机",
+            "product_type": "lalalalala",
+            "customer_id": 2,
+            "operator": "xiaoshoujingli",
+            "amount": 600,
+            "unit_price": 3500.00,
+            "total_price": 2100000.00
+        },
+        {
+            "sale_time": "2022-05-23T16:32:41.000+00:00",
+            "record_type": "销售",
+            "product_name": "戴尔电脑",
+            "product_type": "戴尔(DELL)Vostro笔记本电脑5410 123色 戴尔成就3500Vostro1625D",
+            "customer_id": 2,
+            "operator": "xiaoshoujingli",
+            "amount": 100,
+            "unit_price": 2200.00,
+            "total_price": 220000.00
+        },
+        {
+            "sale_time": "2022-05-23T16:32:41.000+00:00",
+            "record_type": "销售",
+            "product_name": "小米手机",
+            "product_type": "lalalalala",
+            "customer_id": 2,
+            "operator": "xiaoshoujingli",
+            "amount": 100,
+            "unit_price": 4000.00,
+            "total_price": 400000.00
+        },
+        {
+            "sale_time": "2022-05-23T16:45:25.000+00:00",
+            "record_type": "销售",
+            "product_name": "戴尔电脑",
+            "product_type": "戴尔(DELL)Vostro笔记本电脑5410 123色 戴尔成就3500Vostro1625D",
+            "customer_id": 2,
+            "operator": "xiaoshoujingli",
+            "amount": 100,
+            "unit_price": 3000.00,
+            "total_price": 300000.00
+        },
+        {
+            "sale_time": "2022-05-23T16:45:25.000+00:00",
+            "record_type": "销售",
+            "product_name": "小米手机",
+            "product_type": "lalalalala",
+            "customer_id": 2,
+            "operator": "xiaoshoujingli",
+            "amount": 100,
+            "unit_price": 4200.00,
+            "total_price": 420000.00
+        }
+    ]
+}
+```
+
+
+
+###### 预期结果
+
+同上
+
+##### GET 查看经营情况表
+
+GET /bsSheet/sheet-show
+
+查看经营情况表
+
+###### 请求参数
+
+| 名称          | 位置   | 类型   | 必选 | 说明 |
+| ------------- | ------ | ------ | ---- | ---- |
+| beginDateStr  | query  | string | 否   | none |
+| endDateStr    | query  | string | 否   | none |
+| Authorization | header | string | 否   | none |
+
+> 返回示例
+
+###### 返回结果
+
+| 状态码 | 状态码含义                                              | 说明 | 数据模型 |
+| ------ | ------------------------------------------------------- | ---- | -------- |
+| 200    | [OK](https://tools.ietf.org/html/rfc7231#section-6.3.1) | 成功 | Inline   |
+
+```json
+{
+    "code": "00000",
+    "msg": "Success",
+    "result": {
+        "businessIncomeVO": {
+            "incomeAfterDiscount": 6231400,
+            "discount": 0.8,
+            "saleIncome": 4431400,
+            "purchaseReturnsIncome": 1800000
+        },
+        "businessOutcomeVO": {
+            "outcome": 8308100,
+            "saleReturnOutcome": 0,
+            "purchaseOutcome": 8300000,
+            "salary": 8100
+        },
+        "profit": -2076700
+    }
+}
+```
+
+
+
+###### 预期结果
+
+同上
+
+
+
 #### 2.1.3 API测试/人力资源模块
 
 > 最后一次修改: 杨峥
@@ -1505,4 +1658,3 @@ GET /yearEndAwards/findAllYearEndSalary
 
 #### 4. 查看销售明细表
 
-### 

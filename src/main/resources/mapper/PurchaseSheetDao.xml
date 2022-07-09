@@ -3,7 +3,7 @@
 <mapper namespace="com.nju.edu.erp.dao.PurchaseSheetDao">
     <insert id="save" parameterType="PurchaseSheetPO">
         insert into purchase_sheet (id, supplier, operator, remark, total_amount, state, create_time)
-        values (#{id},#{supplier},#{operator},#{remark},#{totalAmount},#{state}, #{createTime})
+        values (#{id},#{supplier},#{operator},#{remark},#{totalAmount},#{state}, #{create_time})
     </insert>
     <update id="updateState">
         update purchase_sheet
