@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CM2 implements CalculateMethod{
   private final String identifier = "基本工资 + 提成 + 岗位工资 - 税款";
-  private final BigDecimal ratio = new BigDecimal(0.01);
+  private final BigDecimal ratio = new BigDecimal("0.01");
 
   private JobDao jobDao;
   private SaleSheetDao saleSheetDao;
@@ -38,7 +38,7 @@ public class CM2 implements CalculateMethod{
     //计算提成, 规则:该销售员在过去30天内参与的所有销售单金额 * 0.01
     List<SaleSheetPO> saleSheetPOList = saleSheetDao.findAllByState(SaleSheetState.SUCCESS);
     BigDecimal totalSaleAmount = BigDecimal.ZERO;
-    Date monthBefore = new Date(System.currentTimeMillis() - 30 * 24 * 60 * 60 * 1000);
+    Date monthBefore = new Date(System.currentTimeMillis() - 30 * 24 * 60 * 60 * 1000L);
     for (SaleSheetPO saleSheetPO : saleSheetPOList) {
       assert saleSheetPO.getCreate_time() != null; //已经审批完成，应该具有日期
       if (saleSheetPO.getCreate_time().after(monthBefore)) {

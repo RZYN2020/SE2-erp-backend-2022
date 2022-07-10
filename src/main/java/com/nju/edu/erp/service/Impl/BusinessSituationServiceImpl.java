@@ -56,7 +56,7 @@ public class BusinessSituationServiceImpl implements BusinessSituationService {
                 if (rawSaleIncome == null) rawSaleIncome = new BigDecimal(0);
                 BigDecimal finalSaleIncome = saleSheetDao.getTotalFinalAmountByTime(beginDate, endDate); //销售收入
                 if (finalSaleIncome == null) finalSaleIncome = new BigDecimal(0);
-                // 考虑除零异常, 回来做
+                // 考虑除零异常
                 double discount;
                 if (finalSaleIncome.intValue() == 0) discount = 0;
                 else discount = finalSaleIncome.divide(rawSaleIncome, 2, BigDecimal.ROUND_HALF_DOWN).doubleValue(); // 折扣

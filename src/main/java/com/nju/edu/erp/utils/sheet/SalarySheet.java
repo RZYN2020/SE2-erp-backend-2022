@@ -70,7 +70,7 @@ public class SalarySheet implements Sheet {
     //计算提成, 规则:该销售员在过去30天内参与的所有销售单金额 * ratio
     List<SaleSheetPO> saleSheetPOList = saleSheetDao.findAllByState(SaleSheetState.SUCCESS);
     BigDecimal totalSaleAmount = BigDecimal.ZERO;
-    Date monthBefore = new Date(System.currentTimeMillis() - 30 * 24 * 60 * 60 * 1000);
+    Date monthBefore = new Date(System.currentTimeMillis() - 30 * 24 * 60 * 60 * 1000L);
     for (SaleSheetPO saleSheetPO : saleSheetPOList) {
       assert saleSheetPO.getCreate_time() != null; //已经审批完成，应该具有日期
       if (saleSheetPO.getCreate_time().after(monthBefore)) {
@@ -147,7 +147,6 @@ public class SalarySheet implements Sheet {
 //      if (effectLines == 0) throw new RuntimeException("状态更新失败");
 
       //修改时间
-      salarySheetPO.setCreate_time(new Date());
       effectLines = salarySheetDao.updateDate(salarySheetPO.getId(), new Date());
       assert effectLines > 0;
 
