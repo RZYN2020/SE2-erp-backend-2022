@@ -6,13 +6,467 @@
 >
 > 最后一次修改日期: 2022/7/9
 
+| 修改人员 | 日期       | 修改原因                      | 版本号 |
+| -------- | ---------- | ----------------------------- | ------ |
+| 杨峥     | 2022/07/08 | 后端全部单元测试              | 1.0    |
+| 何浩达   | 2022/07/09 | 集成测试-api测试-财务模块     | 1.1    |
+| 赵勇臻   | 2022/07/09 | 集成测试-api测试-促销模块     | 1.3    |
+| 杨峥     | 2022/07/09 | 集成测试-api测试-人力资源模块 | 1.4    |
+| 赵勇臻   | 2022/07/09 | 系统测试                      | 2.0    |
+
 ## 2. 单元测试
 
-### 2.1 后端API测试
+> 最后一次修改: 杨峥
+>
+> 最后一次修改日期: 2022/7/8
+
+**所有后端单元测试均已通过测试**
+
+![后端单元测试](https://raw.githubusercontent.com/heiyan-2020/SE2/master/%E5%90%8E%E7%AB%AF%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95.png)
+
+### 2.1 财务模块
+
+#### 2.1.1 账户管理
+
+```java
+package com.nju.edu.erp.service;
+
+import com.nju.edu.erp.model.vo.BankAccountVO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@SpringBootTest
+public class BankAccountTest {
+
+    @Autowired
+    BankAccountService bankAccountService;
+
+    @Test
+    @Transactional
+    @Rollback
+    public void AllTest() {
+        BankAccountVO bankAccountVO1 = BankAccountVO.builder()
+                .accountName("Horizon")
+                .amount(7)
+                .build();
+        BankAccountVO bankAccountVO2 = BankAccountVO.builder()
+                .accountName("Seer")
+                .amount(10)
+                .build();
+        bankAccountService.createBankAccount(bankAccountVO1);
+        bankAccountService.createBankAccount(bankAccountVO2);
+        List<BankAccountVO> list = bankAccountService.findAll();
+        Assertions.assertEquals("Horizon", list.get(list.size() - 2).getAccountName());
+        Assertions.assertEquals(7, list.get(list.size() - 2).getAmount());
+        Assertions.assertEquals("Seer", list.get(list.size() - 1).getAccountName());
+        Assertions.assertEquals(10, list.get(list.size() - 1).getAmount());
+        bankAccountService.delete("Seer");
+        list = bankAccountService.findAll();
+        Assertions.assertEquals("Horizon", list.get(list.size() - 1).getAccountName());
+        Assertions.assertEquals(7, list.get(list.size() - 1).getAmount());
+        System.out.println("Horizon");
+    }
+
+
+}
+```
+
+#### 2.1.2 制定收款单
+
+```java
+package com.nju.edu.erp.service;
+
+import com.nju.edu.erp.dao.IncomeSheetDao;
+import com.nju.edu.erp.enums.Role;
+import com.nju.edu.erp.enums.sheetState.IncomeSheetState;
+import com.nju.edu.erp.enums.sheetState.SaleSheetState;
+import com.nju.edu.erp.model.po.IncomeSheetContentPO;
+import com.nju.edu.erp.model.po.IncomeSheetPO;
+import com.nju.edu.erp.model.po.SaleSheetContentPO;
+import com.nju.edu.erp.model.po.SaleSheetPO;
+import com.nju.edu.erp.model.vo.EmployeeVO;
+import com.nju.edu.erp.model.vo.UserVO;
+import com.nju.edu.erp.model.vo.income.IncomeSheetContentVO;
+import com.nju.edu.erp.model.vo.income.IncomeSheetVO;
+import com.nju.edu.erp.utils.IdGenerator;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+@SpringBootTest
+public class IncomeServiceTest {
+
+  @Autowired
+  IncomeService incomeService;
+
+  @Autowired
+  IncomeSheetDao incomeSheetDao;
+
+  @Test
+  @Transactional
+  @Rollback
+  public void createTest() {
+    UserVO userVO = UserVO.builder()
+        .name("赵勇臻")
+        .role(Role.FINANCIAL_STAFF)
+        .build();
+
+    List<IncomeSheetContentVO> vos = new ArrayList<>();
+    vos.add(IncomeSheetContentVO.builder()
+    .account("bank-001-000")
+    .amount(BigDecimal.valueOf(1000)).remark("item 1")
+    .build());
+
+    vos.add(IncomeSheetContentVO.builder()
+        .account("bank-001-001")
+        .amount(BigDecimal.valueOf(10000)).remark("item 2")
+        .build());
+    IncomeSheetVO incomeSheetVO = IncomeSheetVO.builder()
+        .income_sheet_content(vos)
+        .customer_id(2)
+        .build();
+    IncomeSheetPO prevSheet = incomeSheetDao.getLatest();
+    String realSheetId = IdGenerator
+        .generateSheetId(prevSheet == null ? null : prevSheet.getId(), "SKD");
+    incomeService.makeIncomeSheet(userVO, incomeSheetVO);
+
+
+    IncomeSheetPO latestSheet = incomeSheetDao.getLatest();
+    Assertions.assertNotNull(latestSheet);
+    Assertions.assertEquals(realSheetId, latestSheet.getId());
+    Assertions.assertEquals(0, latestSheet.getTotal_amount().compareTo(BigDecimal.valueOf(11000.00)));
+    Assertions.assertEquals(IncomeSheetState.PENDING, latestSheet.getState());
+
+    String sheetId = latestSheet.getId();
+    Assertions.assertNotNull(sheetId);
+    List<IncomeSheetContentPO> content = incomeSheetDao.findContentBySheetId(sheetId);
+    Assertions.assertEquals(2, content.size());
+  }
+
+}
+```
+
+#### 2.1.3 查看经营情况表
+
+```java
+package com.nju.edu.erp.service;
+
+
+import com.nju.edu.erp.model.vo.businessSituation.BusinessSituationVO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+
+@SpringBootTest
+public class BusinessSituationServiceTest {
+
+    @Autowired
+    BusinessSituationService businessSituationService;
+
+    @Test
+    @Transactional
+    @Rollback
+    public void AllTest() {
+        BusinessSituationVO vo = businessSituationService.getBusinessSituationByTime("2022-01-12 11:38:30", "2022-12-12 11:38:30");
+        Assertions.assertEquals(0, new BigDecimal(5610400).compareTo(vo.getProfit()));
+    }
+}
+```
+
+#### 2.1.4 期初建账
+
+```java
+package com.nju.edu.erp.service;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+@SpringBootTest
+public class OpeningAccountsTest {
+
+    @Autowired
+    OpeningAccountsService openingAccountsService;
+
+    @Test
+    @Transactional
+    @Rollback
+    public void Test1() {
+        openingAccountsService.find("2022-07");
+    }
+}
+```
+
+### 2.2 人力资源模块
+
+#### 2.2.1 员工管理
+
+```java
+package com.nju.edu.erp.service;
+
+
+import com.nju.edu.erp.enums.Role;
+import com.nju.edu.erp.model.po.EmployeePO;
+import com.nju.edu.erp.model.vo.EmployeeVO;
+import com.nju.edu.erp.model.vo.UserVO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+
+
+@SpringBootTest
+public class EmployeeServiceTest {
+
+    @Autowired
+    EmployeeService employeeService;
+
+    @Test
+    @Transactional
+    @Rollback
+    public void createTest() {
+        EmployeeVO employeeVO = EmployeeVO.builder()
+                .name("哈队")
+                .gender("男")
+                .birthDate(new Date(1647258440))
+                .phoneNumber("123456")
+                .job("SALE_MANAGER")
+                .jobLevel(2)
+                .account("1248616394")
+                .build();
+        employeeService.createEmployee(employeeVO);
+        List<EmployeeVO> list = employeeService.findAll();
+        EmployeeVO target = list.get(list.size() - 1);
+        Assertions.assertEquals(employeeVO.getName(), target.getName());
+        Assertions.assertEquals(employeeVO.getGender(), target.getGender());
+        Assertions.assertEquals(employeeVO.getBirthDate().toString().compareTo(target.getBirthDate().toString()), 0);
+        Assertions.assertEquals(employeeVO.getPhoneNumber(), target.getPhoneNumber());
+        Assertions.assertEquals(employeeVO.getJob(), target.getJob());
+        Assertions.assertEquals(employeeVO.getJobLevel(), target.getJobLevel());
+        Assertions.assertEquals(employeeVO.getAccount(), target.getAccount());
+
+        UserVO userVO = employeeService.findUserByEmployeeId(10);
+        Assertions.assertEquals("哈队", userVO.getName());
+        Assertions.assertEquals(Role.SALE_MANAGER, userVO.getRole());
+        Assertions.assertEquals("123456", userVO.getPassword());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void signInTest() {
+        employeeService.signIn("lock");
+        EmployeePO lockson = employeeService.findOneById(1);
+        Assertions.assertEquals(2, lockson.getSignTimes());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void findAbsenceTest() {
+        Date now = new Date();
+        Assertions.assertEquals(Integer.parseInt(now.toString().split(" ")[2]) - 1, employeeService.findAbsence("lock"));
+    }
+
+}
+```
+
+#### 2.2.2 岗位管理
+
+```java
+package com.nju.edu.erp.service;
+
+import com.nju.edu.erp.enums.PaymentMethod;
+import com.nju.edu.erp.enums.Role;
+import com.nju.edu.erp.model.po.JobPO;
+import com.nju.edu.erp.model.vo.JobVO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@SpringBootTest
+public class JobServiceTest {
+
+    @Autowired
+    JobService jobService;
+
+    @Test
+    @Transactional
+    @Rollback
+    public void findAllTest() {
+        List<JobVO> list = jobService.findAll();
+        JobVO random = list.get(4);
+        Assertions.assertEquals(Role.HR.name(), random.getName());
+        Assertions.assertEquals(0, new BigDecimal(2000).compareTo(random.getBasicSalary()));
+        Assertions.assertEquals(0, new BigDecimal(3000).compareTo(random.getJobSalary()));
+        Assertions.assertEquals(2, random.getJobLevel());
+        Assertions.assertEquals(1, random.getCalculateMethod());
+        Assertions.assertEquals(PaymentMethod.Monthly, random.getPaymentMethod());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void updateJobTest() {
+        JobVO jobVO = jobService.findAll().get(0);
+        JobPO jobPO = new JobPO();
+        BeanUtils.copyProperties(jobVO, jobPO);
+        jobPO.setJobSalary(new BigDecimal(20000));
+        jobPO.setPaymentMethod(PaymentMethod.Yearly);
+        jobService.updateJob(jobPO);
+        jobVO = jobService.findAll().get(0);
+        Assertions.assertEquals(0, jobVO.getJobSalary().compareTo(new BigDecimal(20000)));
+        Assertions.assertEquals(PaymentMethod.Yearly, jobVO.getPaymentMethod());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void findAllCalculateMethodTest() {
+        List<String> list = jobService.findAllCalculateMethod();
+        Assertions.assertEquals("基本工资 + 岗位工资 - 税款", list.get(0));
+        Assertions.assertEquals("基本工资 + 提成 + 岗位工资 - 税款", list.get(1));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void findAllPaymentMethodTest() {
+        List<PaymentMethod> list = jobService.findAllPaymentMethod();
+        Assertions.assertEquals(PaymentMethod.Monthly, list.get(0));
+        Assertions.assertEquals(PaymentMethod.Yearly, list.get(1));
+    }
+}
+```
+
+#### 2.2.3 制定工资单
+
+```java
+package com.nju.edu.erp.service;
+
+import com.nju.edu.erp.dao.SalarySheetDao;
+import com.nju.edu.erp.enums.Role;
+import com.nju.edu.erp.enums.sheetState.SalarySheetState;
+import com.nju.edu.erp.model.po.SalarySheetPO;
+import com.nju.edu.erp.model.vo.EmployeeVO;
+import com.nju.edu.erp.model.vo.Salary.SalarySheetVO;
+import com.nju.edu.erp.model.vo.UserVO;
+import com.nju.edu.erp.utils.sheet.SalarySheet;
+import java.util.Date;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+@SpringBootTest
+public class SalaryTests {
+  @Autowired
+  SalaryService salaryService;
+
+  @Autowired
+  EmployeeService employeeService;
+
+  @Autowired
+  SalarySheetDao salarySheetDao;
+
+  @Test
+  @Transactional
+  @Rollback(value = true)
+  public void createTest() {
+    UserVO userVO = UserVO.builder()
+        .name("hale zhao")
+        .role(Role.HR)
+        .build();
+
+    SalarySheetVO salarySheetVO = SalarySheetVO.builder()
+        .employee_name("DTA")
+        .employee_id(1)
+        .operator("simimasai")
+        .build();
+    salaryService.makeSalarySheet(userVO, salarySheetVO);
+    SalarySheetPO salarySheet = salarySheetDao.getLatest();
+  }
+
+}
+```
+
+#### 2.2.4 发放年终奖
+
+```java
+package com.nju.edu.erp.service;
+
+import com.nju.edu.erp.model.vo.YearEndAwardsVO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@SpringBootTest
+public class YearEndAwardsTest {
+    @Autowired
+    YearEndAwardsService yearEndAwardsService;
+
+    @Test
+    @Transactional
+    @Rollback
+    public void AllTest() {
+        List<YearEndAwardsVO> list = yearEndAwardsService.findAllYearEndSalary();
+        yearEndAwardsService.establishYearEndAwards(1,new BigDecimal(1500));
+        list = yearEndAwardsService.findAllYearEndSalary();
+        Assertions.assertEquals("一级库存管理人员A", list.get(0).getEmployeeName());
+        Assertions.assertEquals(0, new BigDecimal(1500).compareTo(list.get(0).getYearEndAwards()));
+    }
+}
+```
+
+## 3. 集成测试
+
+### 3.1 API测试
 
 数据库此时已经过配置填充。
 
-#### 2.1.1 API测试/总经理模块
+#### 3.1.1 API测试/总经理模块
 
 > 最后一次修改: 赵勇臻
 >
@@ -356,7 +810,7 @@ POST /promotion/user/create
 
 同上
 
-#### 2.1.2 API测试/财务模块
+#### 3.1.2 API测试/财务模块
 
 > 最后一次修改: 何浩达
 >
@@ -991,7 +1445,7 @@ GET /bsSheet/sheet-show
 
 
 
-#### 2.1.3 API测试/人力资源模块
+#### 3.1.3 API测试/人力资源模块
 
 > 最后一次修改: 杨峥
 >
@@ -1584,7 +2038,7 @@ GET /yearEndAwards/findAllYearEndSalary
 
 同上
 
-## 3. 系统测试
+## 4. 系统测试
 
 ### 销售人员
 
@@ -1592,39 +2046,39 @@ GET /yearEndAwards/findAllYearEndSalary
 
 + 登录销售人员账户，进入客户管理页面，点击新增客户，并输入客户信息
 
-![image-20220709145138835](ERP系统测试文档.assets/image-20220709145138835-16573679661781.png)
+![image-20220709145138835](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709145138835-16573679661781.png)
 
-![image-20220709145214621](ERP系统测试文档.assets/image-20220709145214621-16573679661792.png)
+![image-20220709145214621](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709145214621-16573679661792.png)
 
 + 点击确定后，发现已经创建好客户
 
-![image-20220709145301751](ERP系统测试文档.assets/image-20220709145301751-16573679661793.png)
+![image-20220709145301751](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709145301751-16573679661793.png)
 
 #### 2.  制定销售单以及审批
 
 + 进入销售管理页面点击创建销售单
 
-![image-20220709152434435](ERP系统测试文档.assets/image-20220709152434435-16573679661794.png)
+![image-20220709152434435](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709152434435-16573679661794.png)
 
 + 创建完成后点击对勾，审批通过，销售单状态变为待总经理进行二级审批
 
-![image-20220709154709825](ERP系统测试文档.assets/image-20220709154709825-16573679661795.png)
+![image-20220709154709825](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709154709825-16573679661795.png)
 
-![image-20220709154727963](ERP系统测试文档.assets/image-20220709154727963-16573679661796.png)
+![image-20220709154727963](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709154727963-16573679661796.png)
 
 + 否则，点击红色×，则状态变为审批失败
 
-![image-20220709154803037](ERP系统测试文档.assets/image-20220709154803037-16573679661797.png)
+![image-20220709154803037](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709154803037-16573679661797.png)
 
 #### 3.  制定销售退货单以及审批
 
 + 进入销售退货页面，点击创建销售退货，选择相关联的
 
-![image-20220709163640639](ERP系统测试文档.assets/image-20220709163640639.png)
+![image-20220709163640639](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709163640639.png)
 
 + 创建完成后可以进行审批，过程与销售单类似
 
-![image-20220709164123296](ERP系统测试文档.assets/image-20220709164123296.png)
+![image-20220709164123296](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709164123296.png)
 
 ### 总经理
 
@@ -1632,41 +2086,41 @@ GET /yearEndAwards/findAllYearEndSalary
 
 + 总经理可以对各种单据进行二级审批或者审批，如进货单的二级审批
 
-![image-20220709164242249](ERP系统测试文档.assets/image-20220709164242249.png)
+![image-20220709164242249](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709164242249.png)
 
-![image-20220709173902395](ERP系统测试文档.assets/image-20220709173902395.png)
+![image-20220709173902395](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709173902395.png)
 
 + 点击√后单据状态变为审批完成，否则变为审批失败
 
-![image-20220709164519093](ERP系统测试文档.assets/image-20220709164519093.png)
+![image-20220709164519093](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709164519093.png)
 
 #### 2. 制定年终奖
 
 + 总经理进入年终奖制定页面，选择需要制定的员工
 
-![image-20220709180433768](ERP系统测试文档.assets/image-20220709180433768.png)
+![image-20220709180433768](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709180433768.png)
 
 + 总经理输入金额，点击制定，制定成功
 
-![image-20220709180513674](ERP系统测试文档.assets/image-20220709180513674.png)
+![image-20220709180513674](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709180513674.png)
 
-![image-20220709180532330](ERP系统测试文档.assets/image-20220709180532330.png)
+![image-20220709180532330](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709180532330.png)
 
 #### 3. 制定促销策略
 
 + 登录总经理账户，进入策略制定页面，默认进入“争对不同级别的用户制定促销策略”子页面。
 
-![image-20220709145340529](ERP系统测试文档.assets/image-20220709145340529-16573679661798.png)
+![image-20220709145340529](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709145340529-16573679661798.png)
 
 + 点击新增用户策略，针对级别为10的用户制定销售策略，并点击立即创建。
 
-![image-20220709145950764](ERP系统测试文档.assets/image-20220709145950764-16573679661799.png)
+![image-20220709145950764](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709145950764-16573679661799.png)
 
-![image-20220709150038538](ERP系统测试文档.assets/image-20220709150038538-165736796617910.png)
+![image-20220709150038538](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709150038538-165736796617910.png)
 
 + 策略创建后，当有用户的销售单被审批成功后，就会生成库存赠送单，并且送给该用户代金券
 
-![image-20220709152845476](ERP系统测试文档.assets/image-20220709152845476-165736796617911.png)
+![image-20220709152845476](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709152845476-165736796617911.png)
 
 ### 人力资源管理人员
 
@@ -1674,41 +2128,167 @@ GET /yearEndAwards/findAllYearEndSalary
 
 + 员工可以通过左下角打卡按键打卡，系统还显示本月该员工缺勤天数。
 
-![image-20220709193553843](ERP系统测试文档.assets/image-20220709193553843.png)
+![image-20220709193553843](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709193553843.png)
 
 #### 2. 岗位管理
 
 + 人力资源管理人员可以进入岗位管理页面编辑岗位信息
 
-![image-20220709193840606](ERP系统测试文档.assets/image-20220709193840606.png)
+![image-20220709193840606](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709193840606.png)
 
 + 点击编辑操作并保存，即完成岗位信息的修改
 
-![image-20220709193925147](ERP系统测试文档.assets/image-20220709193925147.png)
+![image-20220709193925147](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709193925147.png)
 
-![image-20220709194156600](ERP系统测试文档.assets/image-20220709194156600.png)
+![image-20220709194156600](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709194156600.png)
 
 #### 3.  工资单制定和审批
 
 + 人力资源管理人员可以在工资管理页面点击“制定工资单”按键制定工资单
 
-![image-20220709194310640](ERP系统测试文档.assets/image-20220709194310640.png)
+![image-20220709194310640](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709194310640.png)
 
 + 点击“立即创建”制定成功
 
-![image-20220709194807426](ERP系统测试文档.assets/image-20220709194807426.png)
+![image-20220709194807426](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709194807426.png)
 
 + 人力资源管理人员还可以点击√和×进行审批
 
-![image-20220709195143468](ERP系统测试文档.assets/image-20220709195143468.png)
+![image-20220709195143468](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709195143468.png)
 
 ### 财务人员
 
-#### 1. 查看经营情况表
+#### 1. 账户管理
 
-#### 2. 查看经营历程表以及红冲，红冲复制
+* 登录财务人员账户，进入账户制定界面
 
-#### 3. 查看经营情况表
+  ![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A11.png)
 
-#### 4. 查看销售明细表
+* 点击新增账户，新增一条用户名为"zyz"，余额为15000的账户信息，并点击“确定”
 
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A12.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A13.png)
+
+* 点击删除账户会弹出提示框，以防止信息误删；点击“确定”后，该条账户信息被删除。
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A14.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A15.png)
+
+#### 2. 收款管理
+
+* 登陆财务人员账户，进入“收款管理”页面
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A16.png)
+
+* 点击每条收款单后面的“展开”，可以显示详细转账列表
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A17.png)
+
+* 点击制定收款单，为客户“赵勇臻”制定如下一条收款单
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A18.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A19.png)
+
+#### 3. 付款管理
+
+* 登陆财务人员账户，进入“付款管理”页面
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A110.png)
+
+* 点击每条付款单后面的“展开”，可以显示详细转账列表
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A111.png)
+
+* 点击制定付款单，为客户“赵勇臻”制定如下一条付款单
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A112.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A113.png)
+
+#### 4. 查看工资发放单
+
+* 登陆财务人员账户，进入“工资发放单管理”页面
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A114.png)
+
+* 点击每条工资发放单后面的“展开”，可以显示工资单详细的明细
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A115.png)
+
+#### 5. 查看经营历程表以及红冲，红冲复制
+
++ 财务人员可以查看经营历程表
+
+![image-20220709213046783](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709213046783.png)
+
++ 可以根据条件筛选表单
+
+![image-20220709213233799](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709213233799.png)
+
+![image-20220709213243849](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709213243849.png)
+
++ 点击“查看单据细节”可以显示所选单据详细信息
+
+![image-20220709213447795](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709213447795.png)
+
++ 点击“红冲”并确认，即进行红冲操作
+
+![image-20220709213523630](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709213523630.png)
+
+![image-20220709215050905](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709215050905.png)
+
++ 点击红冲复制，可以进行红冲复制操作。红冲复制时会跳转到对应单据创建页面，以选中单据为模板修改创建。
+
+![image-20220709215556935](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709215556935.png)
+
++ 点击“导出EXCEL”可以导出EXCEL格式的表格
+
+![image-20220709220712060](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709220712060.png)
+
+![image-20220709220744262](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709220744262.png)
+
+#### 6. 查看销售情况表
+
+* 登陆财务人员账户，进入“销售情况表”页面，初始状态下所有数据均为空值
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A116.png)
+
+* 输入或选择开始日期和结束日期，点击查询后刷新页面数据为此时间段内公司销售情况信息
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A117.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A118.png)
+
+#### 7. 查看销售明细表
+
+* 登陆财务人员账户，进入“销售明细表”页面，默认展示所有销售明细
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A119.png)
+
+* 输入或选择开始日期和结束日期，点击”筛选日期“后页面仅显示在此时间范围内的销售明细
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A120.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A121.png)
+
+* 选择重置日期后，开始日期和结束日期被置空，页面重新展示所有销售明细
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A122.png)
+
+* 点击”销售时间“旁的排序箭头，可以实现对销售明细按时间先后的排序
+  ![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A123.png)
+
+* 可以点击”商品名称“、”客户ID“、”操作员“表头旁边的下拉选择箭头，以实现根据对应列信息的筛选，此处以”商品名称“作为演示。
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A124.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A125.png)
+
+* 点击”导出EXCEL“，可以将当前页面内所展示的所有的销售明细以EXCEL格式导出并保存到本地
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A126.png)
+
+![](https://raw.githubusercontent.com/heiyan-2020/SE2/master/image-20220709-%E8%B4%A2%E5%8A%A127.png)
